@@ -1,3 +1,6 @@
 # mobile-development
 Mobile application development group
-Test
+Member:
+Đỗ Thành Nam
+Nguyễn Hữu Nam
+Đặng Thành Nguyên
