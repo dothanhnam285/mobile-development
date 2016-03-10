@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,9 +8,78 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".View.HomeActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <fragment
+            android:id="@+id/fragmentSearchHome"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            class="omega.bkara.View.Fragment.SearchFragment"
+            tools:layout="@layout/fragment_search" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-</RelativeLayout>
+        <ViewFlipper
+            android:id="@+id/viewFlipperHotVideosHome"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/fragmentSearchHome"
+            android:layout_marginBottom="10dp"
+            android:autoStart="true"
+            android:inAnimation="@android:anim/slide_in_left"
+            android:outAnimation="@android:anim/slide_out_right"
+            android:flipInterval="3000"
+            android:layout_marginTop="15dp" >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/civilwar"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/uncharted4"/>
+
+        </ViewFlipper>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutNewVideosHome"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginBottom="15dp"
+            android:layout_below="@id/viewFlipperHotVideosHome">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/kungfupanda3"
+                android:scaleType="fitXY"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="15dp"
+                    android:src="@drawable/daredevil"
+                    android:scaleType="fitXY"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/spiderman"
+                    android:scaleType="fitXY"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="188dp"
+            android:layout_below="@id/linearLayoutNewVideosHome"
+            android:src="@drawable/pepsi"
+            android:scaleType="fitXY"/>
+    </RelativeLayout>
+
+</ScrollView>
