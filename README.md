@@ -10,7 +10,7 @@ Nguyễn Hữu Nam - 51202262
 
 ---
 ##PROJECT
-**Name**: BaKaRa
+**Name**: BKaRa
 
 **Description**: Karaoke app to sing on karaoke video and record yourself.
 
