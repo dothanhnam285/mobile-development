@@ -23,7 +23,7 @@
         android:layout_gravity="center_vertical" />
 
     <LinearLayout
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="15dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,18 +32,18 @@
             android:id="@+id/nav_header_tv_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Sign in"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:clickable="true"
             android:onClick=""/>
 
         <TextView
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:id="@+id/nav_header_tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="Join BKara"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:clickable="true" />
     </LinearLayout>
 
