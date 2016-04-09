@@ -1,13 +1,23 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context="com.beast.bkara.fragments.SongsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <variable
+            name="songVm"
+            type="com.beast.bkara.viewmodel.SongViewModel" />
+    </data>
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="HELLO SONGS FRAGMENT" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <!-- TODO: Update blank fragment layout -->
+        <ListView
+            app:items="@{songVm.songList}"
+            app:itemView="@{songVm.songView}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+</layout>
+

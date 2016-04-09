@@ -17,6 +17,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
@@ -30,4 +33,7 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'com.android.support:percent:23.2.1'
+    compile 'com.hedgehog.ratingbar:app:1.0.4'
+    compile 'me.tatarka.bindingcollectionadapter:bindingcollectionadapter:1.1.0'
+
 }

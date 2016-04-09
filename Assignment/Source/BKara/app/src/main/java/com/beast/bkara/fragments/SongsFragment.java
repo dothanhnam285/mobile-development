@@ -1,6 +1,7 @@
 package com.beast.bkara.fragments;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.beast.bkara.R;
+import com.beast.bkara.databinding.FragmentSongsBinding;
+import com.beast.bkara.viewmodel.SongViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +22,8 @@ import com.beast.bkara.R;
  * create an instance of this fragment.
  */
 public class SongsFragment extends Fragment {
+    FragmentSongsBinding binding;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,13 +64,17 @@ public class SongsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_songs, container, false);
+        SongViewModel songVm = new SongViewModel();
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_songs, container, false);
+        binding.setSongVm(songVm);
+        return binding.getRoot();
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -54,7 +54,6 @@
                     android:layout_height="wrap_content">
 
                 <ImageView
-
                     android:src="@drawable/img_home_test7"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -77,6 +76,7 @@
                         android:layout_height="0dp">
 
                         <ImageView
+
                             android:src="@drawable/img_home_test5"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
