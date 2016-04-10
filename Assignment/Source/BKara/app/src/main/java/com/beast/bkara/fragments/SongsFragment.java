@@ -85,6 +85,7 @@ public class SongsFragment extends Fragment {
         TabLayout fragSongsTabLayout = (TabLayout) v.findViewById(R.id.frag_songs_tablayout);
         fragSongsTabLayout.setupWithViewPager(fragSongsViewPager);
 
+
         fragSongsTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -107,6 +108,7 @@ public class SongsFragment extends Fragment {
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -122,17 +124,23 @@ public class SongsFragment extends Fragment {
             return mFragmentList.size();
         }
 
-        public void addFrag(Fragment fragment) {
+        public void addFrag(Fragment fragment, String title) {
             mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 
     private void setupViewPager(ViewPager viewPager) {
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFrag(new SongListFragment());
-        adapter.addFrag(new SongListFragment());
-        adapter.addFrag(new SongListFragment());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFrag(new SongListFragment(), "ALL");
+        adapter.addFrag(new SongListFragment(), "HOT");
+        adapter.addFrag(new SongListFragment(), "NEW");
         viewPager.setAdapter(adapter);
     }
 
