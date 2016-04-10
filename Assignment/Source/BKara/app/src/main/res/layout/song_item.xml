@@ -32,7 +32,7 @@
 
             </android.support.percent.PercentRelativeLayout>
 
-            <com.hedgehog.ratingbar.RatingBar
+<!--            <com.hedgehog.ratingbar.RatingBar
                 android:id="@+id/ratingbar"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -44,7 +44,7 @@
                 hedgehog:clickable="true"
                 hedgehog:starImageSize="22dp"
 
-                />
+                />-->
 
         </LinearLayout>
 
@@ -58,7 +58,7 @@
             <TextView
                 android:id="@+id/song_item_title"
                 android:textSize="20dp"
-                android:textColor="@color/colorLightBlue"
+                android:textColor="?attr/colorPrimary"
                 android:text="@{song.title}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -83,17 +83,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
+            <RelativeLayout
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_below="@+id/song_item_genre"
-                android:text="view"
-                android:textSize="10dp"
-                android:layout_alignParentRight="true"
-                app:setView="@{song.view}"
-                android:gravity="top"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.hedgehog.ratingbar.RatingBar
+                    android:id="@+id/ratingbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    hedgehog:starEmpty="@mipmap/ic_star_empty"
+                    hedgehog:starFill="@mipmap/ic_star_fill"
+                    hedgehog:starCount="5"
+                    hedgehog:clickable="true"
+                    hedgehog:starImageSize="25dp"
+
+                    />
+
+                <TextView
+                    android:text="view"
+                    android:textSize="10dp"
+                    android:layout_alignParentRight="true"
+                    app:setView="@{song.view}"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 

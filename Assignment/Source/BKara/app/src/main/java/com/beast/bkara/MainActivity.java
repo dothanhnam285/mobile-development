@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         BlankFragment.OnFragmentInteractionListener,
         HomeFragment.OnFragmentInteractionListener,
-        SongsFragment.OnFragmentInteractionListener {
+        SongsFragment.OnFragmentInteractionListener,
+        SongListFragment.OnFragmentInteractionListener
+{
 
     private RelativeLayout mLayout;
     private LayoutInflater mLayoutInflater;

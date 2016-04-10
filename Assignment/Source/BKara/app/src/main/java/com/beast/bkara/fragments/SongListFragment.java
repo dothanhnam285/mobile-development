@@ -2,33 +2,24 @@ package com.beast.bkara.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.databinding.adapters.TableLayoutBindingAdapter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.beast.bkara.R;
+import com.beast.bkara.databinding.FragmentListSongBinding;
 import com.beast.bkara.viewmodel.SongViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SongsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SongsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by Darka on 4/10/2016.
  */
-public class SongsFragment extends Fragment {
+public class SongListFragment extends Fragment {
+
+    FragmentListSongBinding binding;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,8 +31,8 @@ public class SongsFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public SongsFragment() {
-        // Required empty public constructor
+    public SongListFragment() {
+
     }
 
     /**
@@ -50,11 +41,11 @@ public class SongsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SongsFragment.
+     * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongsFragment newInstance(String param1, String param2) {
-        SongsFragment fragment = new SongsFragment();
+    public static SongListFragment newInstance(String param1, String param2) {
+        SongListFragment fragment = new SongListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -69,73 +60,17 @@ public class SongsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_songs, container, false);
-
-        final ViewPager fragSongsViewPager = (ViewPager) v.findViewById(R.id.frag_songs_viewpager);
-        setupViewPager(fragSongsViewPager);
-
-        TabLayout fragSongsTabLayout = (TabLayout) v.findViewById(R.id.frag_songs_tablayout);
-        fragSongsTabLayout.setupWithViewPager(fragSongsViewPager);
-
-        fragSongsTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                fragSongsViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        return v;
+        SongViewModel songVm = new SongViewModel();
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
+        binding.setSongVm(songVm);
+        return binding.getRoot();
     }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFrag(Fragment fragment) {
-            mFragmentList.add(fragment);
-        }
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFrag(new SongListFragment());
-        adapter.addFrag(new SongListFragment());
-        adapter.addFrag(new SongListFragment());
-        viewPager.setAdapter(adapter);
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
