@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.beast.bkara.R;
+import com.beast.bkara.model.Song;
 import com.beast.bkara.viewmodel.SongViewModel;
 
 import java.util.ArrayList;
@@ -29,6 +30,9 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class SongsFragment extends Fragment {
+
+    private SongViewModel songVm;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,6 +46,11 @@ public class SongsFragment extends Fragment {
 
     public SongsFragment() {
         // Required empty public constructor
+    }
+
+    // Get song view model
+    public SongViewModel getSongViewModel() {
+        return songVm;
     }
 
     /**
@@ -69,6 +78,8 @@ public class SongsFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        songVm = new SongViewModel();
 
     }
 
@@ -138,9 +149,9 @@ public class SongsFragment extends Fragment {
     private void setupViewPager(ViewPager viewPager) {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFrag(new SongListFragment(), "ALL");
-        adapter.addFrag(new SongListFragment(), "HOT");
-        adapter.addFrag(new SongListFragment(), "NEW");
+        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_all), getString(R.string.frag_songs_tab_all));
+        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_hot), getString(R.string.frag_songs_tab_hot));
+        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_new), getString(R.string.frag_songs_tab_new));
         viewPager.setAdapter(adapter);
     }
 

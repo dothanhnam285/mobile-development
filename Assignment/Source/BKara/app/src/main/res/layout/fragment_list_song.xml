@@ -6,6 +6,9 @@
         <variable
             name="songVm"
             type="com.beast.bkara.viewmodel.SongViewModel" />
+        <variable
+            name="whichList"
+            type="int" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"
@@ -13,7 +16,7 @@
 
         <!-- TODO: Update blank fragment layout -->
         <ListView
-            app:items="@{songVm.songList}"
+            app:items="@{whichList == 0 ? songVm.songListAll : (whichList == 1 ? songVm.songListHot : songVm.songListNew)}"
             app:itemView="@{songVm.songView}"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

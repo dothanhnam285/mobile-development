@@ -19,7 +19,9 @@ import me.tatarka.bindingcollectionadapter.ItemView;
  */
 public class SongViewModel {
 
-    public ObservableList<Song> songList;
+    public ObservableList<Song> songListAll;
+    public ObservableList<Song> songListHot;
+    public ObservableList<Song> songListNew;
     public final ItemView songView = ItemView.of(1, R.layout.song_item);
 
     public SongViewModel() {
@@ -29,14 +31,34 @@ public class SongViewModel {
     }
 
     private void InitDummyData() {
-        songList = new ObservableArrayList<>();
+        songListAll = new ObservableArrayList<>();
         for(int i=0; i<5; i++) {
             Song song = new Song();
             song.setTitle("Chac ai do se ve");
             song.setGenre("Nhac tre");
             song.setSinger("Son Tung");
             song.setView(2048);
-            songList.add(song);
+            songListAll.add(song);
+        }
+
+        songListHot = new ObservableArrayList<>();
+        for(int i=0; i<5; i++) {
+            Song song = new Song();
+            song.setTitle("Bai HOT");
+            song.setGenre("Nhac tre");
+            song.setSinger("Son Tung");
+            song.setView(2048);
+            songListHot.add(song);
+        }
+
+        songListNew = new ObservableArrayList<>();
+        for(int i=0; i<5; i++) {
+            Song song = new Song();
+            song.setTitle("Bai NEW");
+            song.setGenre("Nhac tre");
+            song.setSinger("Son Tung");
+            song.setView(2048);
+            songListNew.add(song);
         }
     }
 

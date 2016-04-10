@@ -22,12 +22,10 @@ public class SongListFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String WHICH_LIST = "param1";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int whichList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -40,15 +38,13 @@ public class SongListFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongListFragment newInstance(String param1, String param2) {
+    public static SongListFragment newInstance(int param1) {
         SongListFragment fragment = new SongListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(WHICH_LIST, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,8 +53,7 @@ public class SongListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            whichList = getArguments().getInt(WHICH_LIST);
         }
     }
 
@@ -66,9 +61,21 @@ public class SongListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        SongViewModel songVm = new SongViewModel();
+        SongsFragment parentFragment = (SongsFragment) getParentFragment();
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
-        binding.setSongVm(songVm);
+        binding.setSongVm(parentFragment.getSongViewModel());
+        switch (whichList) {
+            case R.string.frag_songs_tab_all:
+                binding.setWhichList(0);
+                break;
+            case R.string.frag_songs_tab_hot:
+                binding.setWhichList(1);
+                break;
+            case R.string.frag_songs_tab_new:
+                binding.setWhichList(2);
+                break;
+        }
+
         return binding.getRoot();
     }
 
