@@ -32,20 +32,6 @@
 
             </android.support.percent.PercentRelativeLayout>
 
-<!--            <com.hedgehog.ratingbar.RatingBar
-                android:id="@+id/ratingbar"
-                android:layout_weight="1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:gravity="center_horizontal"
-                hedgehog:starEmpty="@mipmap/ic_star_empty"
-                hedgehog:starFill="@mipmap/ic_star_fill"
-                hedgehog:starCount="5"
-                hedgehog:clickable="true"
-                hedgehog:starImageSize="22dp"
-
-                />-->
-
         </LinearLayout>
 
         <RelativeLayout
@@ -97,7 +83,7 @@
                     hedgehog:starFill="@mipmap/ic_star_fill"
                     hedgehog:starCount="5"
                     hedgehog:clickable="true"
-                    hedgehog:starImageSize="25dp"
+                    hedgehog:starImageSize="20dp"
 
                     />
 

@@ -30,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements
         BlankFragment.OnFragmentInteractionListener,
         HomeFragment.OnFragmentInteractionListener,
         SongsFragment.OnFragmentInteractionListener,
-        SongListFragment.OnFragmentInteractionListener
+        SongListFragment.OnFragmentInteractionListener,
+        GenresFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -130,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Songs";
                 break;
             case R.id.nav_genre:
-                //fragment = new GenreFragment();
-                title = "Songs";
+                fragment = new GenresFragment();
+                title = "Genres";
                 break;
             case R.id.nav_playlist:
                 //fragment = new PlaylistFragment();

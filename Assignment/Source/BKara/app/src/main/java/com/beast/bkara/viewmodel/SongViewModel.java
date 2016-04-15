@@ -4,6 +4,7 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
 
+import com.beast.bkara.BR;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
 
@@ -22,7 +23,7 @@ public class SongViewModel {
     public ObservableList<Song> songListAll;
     public ObservableList<Song> songListHot;
     public ObservableList<Song> songListNew;
-    public final ItemView songView = ItemView.of(1, R.layout.song_item);
+    public final ItemView songView = ItemView.of(BR.song, R.layout.song_item);
 
     public SongViewModel() {
 
