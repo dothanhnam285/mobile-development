@@ -1,8 +1,10 @@
 package com.beast.bkara.fragments;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +21,9 @@ import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
+import com.beast.bkara.databinding.FragmentKaraokeBinding;
+import com.beast.bkara.model.Song;
+import com.beast.bkara.viewmodel.RecordViewModel;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -41,11 +46,18 @@ public class KaraokeFragment extends Fragment {
     private ToggleButton btnExpand;
     private ExpandableRelativeLayout erlSongInfo;
 
+    RecordViewModel recordVm;
+    Song song;
+    FragmentKaraokeBinding binding;
+
     // Controller
     private Controller controller;
 
     // Media Recorder
     private MediaRecorder mRecorder = null;
+
+    // Media Player
+    private MediaPlayer mediaPlayer;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,8 +104,17 @@ public class KaraokeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_karaoke, container, false);
+
+        recordVm = new RecordViewModel();
+        song = new Song();
+        song.setTitle("Chac ai do se ve");
+        song.setSinger("Son Tung");
+        song.setView(4096);
+        song.setVideo_id("vtxn0i4CVX8");
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
+        binding.setRecordVm(recordVm);
+        binding.setSong(song);
+        View v = binding.getRoot();
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
@@ -106,7 +127,7 @@ public class KaraokeFragment extends Fragment {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-                    youTubePlayer.loadVideo("vtxn0i4CVX8");
+                    youTubePlayer.loadVideo(song.getVideo_id());
                     youTubePlayer.play();
 
                 }

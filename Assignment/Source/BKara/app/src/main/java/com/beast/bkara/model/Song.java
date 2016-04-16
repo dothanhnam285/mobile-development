@@ -22,6 +22,7 @@ public class Song extends BaseObservable {
     private float rating;
     private String genre;
     private String singer;
+    private String video_id;
 
     @BindingAdapter("app:setGenre")
     public static void setGenre(TextView view, String songGenre) {
@@ -112,5 +113,13 @@ public class Song extends BaseObservable {
 
     public void setSinger(String singer) {
         this.singer = singer;
+    }
+
+    public String getVideo_id() {
+        return video_id;
+    }
+
+    public void setVideo_id(String video_id) {
+        this.video_id = video_id;
     }
 }

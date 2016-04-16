@@ -4,6 +4,10 @@
         <variable
             name="song"
             type="com.beast.bkara.model.Song" />
+        <variable
+            name="recordVm"
+            type="com.beast.bkara.viewmodel.RecordViewModel" />
+        <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
     </data>
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -49,6 +53,7 @@
                 android:layout_height="25dp" />
 
             <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+
                 android:id="@+id/frag_karaoke_erl_songInfo"
                 android:layout_below="@id/frag_karaoke_btnExpand"
                 android:layout_width="match_parent"
@@ -64,16 +69,16 @@
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/frag_karaoke_youtubeViewer"
                     android:hint="2048 view"
-                    android:text="@{song.view}"
+                    app:setView="@{song.view}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/fab_margin"
                     android:id="@+id/frag_karaoke_textViewTitle"
                     android:textColor="?attr/colorPrimary"
                     android:textSize="20dp"
                     android:hint="Em cua ngay hom qua"
+                    android:text="@{song.title}"
                     android:layout_below="@id/frag_karaoke_textViewView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -83,13 +88,13 @@
                     android:id="@+id/frag_karaoke_textViewArtist"
                     android:layout_below="@id/frag_karaoke_textViewTitle"
                     android:hint="Artist: Son Tung"
+                    app:setArtist="@{song.singer}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:id="@+id/frag_karaoke_ll_addtoplaylist"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/fab_margin"
                     android:layout_below="@id/frag_karaoke_textViewArtist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -102,7 +107,7 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
-                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_marginLeft="4dp"
                         android:gravity="center_vertical"
                         android:text="Add to playlist"
                         android:layout_width="wrap_content"
@@ -121,6 +126,13 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_below="@id/frag_karaoke_ll_addtoplaylist"
+                    android:background="?attr/colorPrimary"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"/>
+
 
             </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
@@ -130,17 +142,20 @@
                 android:id="@+id/frag_karaoke_textViewTopRecords"
                 android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
-                android:textSize="22dp"
+                android:textSize="20dp"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:text="Top Records"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
+                app:items="@{recordVm.recordList}"
+                app:itemView="@{recordVm.recordView}"
+                app:layoutManager="@{LayoutManagers.linear()}"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:layout_below="@id/frag_karaoke_textViewTopRecords"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
         </RelativeLayout>
 
