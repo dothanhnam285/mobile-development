@@ -7,6 +7,7 @@ import android.app.Application;
  */
 public class Controller extends Application {
     private boolean _loginStatus = false;
+    public static final String YOUTUBE_API_KEY = "AIzaSyDyyVofQ_tgdvQEh30ikZ7LipiQbWeLA1g";
 
     public boolean isLogin() {
         return _loginStatus;

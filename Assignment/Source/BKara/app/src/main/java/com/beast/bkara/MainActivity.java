@@ -31,7 +31,8 @@ public class MainActivity extends AppCompatActivity implements
         HomeFragment.OnFragmentInteractionListener,
         SongsFragment.OnFragmentInteractionListener,
         SongListFragment.OnFragmentInteractionListener,
-        GenresFragment.OnFragmentInteractionListener
+        GenresFragment.OnFragmentInteractionListener,
+        KaraokeFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
         // Set the default view to Home item
-        displayView(R.id.nav_home);
+        //displayView(R.id.nav_home);
+        displayView(2048);
     }
 
     @Override
@@ -122,6 +124,12 @@ public class MainActivity extends AppCompatActivity implements
         String title = getString(R.string.app_name);
 
         switch (viewId) {
+
+            case(2048):
+                fragment = new KaraokeFragment();
+                title = "Karaoke";
+                break;
+
             case R.id.nav_home:
                 fragment = new HomeFragment();
                 title = "BKara";

@@ -8,5 +8,8 @@
     <dimen name="fab_margin">8dp</dimen>
     <dimen name="fab_padding">8dp</dimen>
 
+    <!-- Small box size for square button -->
+    <dimen name="box_sm">50dp</dimen>
+
     <dimen name="spacing_medium">8dp</dimen>
 </resources>
