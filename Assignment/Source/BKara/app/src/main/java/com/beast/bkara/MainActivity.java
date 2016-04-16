@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
@@ -23,6 +24,8 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.beast.bkara.dialogfragments.LoginDialogFragment;
+import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
 
 public class MainActivity extends AppCompatActivity implements
@@ -32,7 +35,9 @@ public class MainActivity extends AppCompatActivity implements
         SongsFragment.OnFragmentInteractionListener,
         SongListFragment.OnFragmentInteractionListener,
         GenresFragment.OnFragmentInteractionListener,
-        KaraokeFragment.OnFragmentInteractionListener
+		KaraokeFragment.OnFragmentInteractionListener,
+        LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
+        SignUpDialogFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -71,8 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         navigationView.setNavigationItemSelectedListener(this);
 
         // Set the default view to Home item
-        //displayView(R.id.nav_home);
-        displayView(2048);
+        displayView(R.id.nav_home);
     }
 
     @Override
@@ -124,12 +128,6 @@ public class MainActivity extends AppCompatActivity implements
         String title = getString(R.string.app_name);
 
         switch (viewId) {
-
-            case(2048):
-                fragment = new KaraokeFragment();
-                title = "Karaoke";
-                break;
-
             case R.id.nav_home:
                 fragment = new HomeFragment();
                 title = "BKara";
@@ -196,5 +194,21 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    public void login(View v) {
+        DialogFragment loginFragment = LoginDialogFragment.newInstance(null, null);
+        loginFragment.show(getSupportFragmentManager(),"LOGIN");
+}
+
+    @Override
+    public void onLoginDialogFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onOpenSignUpForm() {
+        DialogFragment signUpFragment = SignUpDialogFragment.newInstance(null, null);
+        signUpFragment.show(getSupportFragmentManager(),"SIGN UP");
     }
 }
