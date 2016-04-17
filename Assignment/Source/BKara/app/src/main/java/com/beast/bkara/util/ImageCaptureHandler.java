@@ -1,7 +1,6 @@
 package com.beast.bkara.util;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,15 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.VideoView;
-
 import com.beast.bkara.R;
-import com.github.siyamed.shapeimageview.CircularImageView;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -254,7 +249,7 @@ public class ImageCaptureHandler {
         //outState.putBoolean(VIDEOVIEW_VISIBILITY_STORAGE_KEY, (mVideoUri != null) );
     }
 
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+    public void onViewStateRestored(Bundle savedInstanceState) {
         if( savedInstanceState == null )
             return;
         mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
