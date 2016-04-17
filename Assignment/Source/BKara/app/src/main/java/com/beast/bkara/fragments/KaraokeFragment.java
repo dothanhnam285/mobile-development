@@ -11,18 +11,23 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.MyRecyclerViewAdapter;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentKaraokeBinding;
+import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.RecordViewModel;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -31,6 +36,11 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import java.io.File;
 import java.io.IOException;
+
+import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
+import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
+import me.tatarka.bindingcollectionadapter.ItemViewArg;
+import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,14 +59,18 @@ public class KaraokeFragment extends Fragment {
     RecordViewModel recordVm;
     FragmentKaraokeBinding binding;
 
+    public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
+        @Override
+        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            return new MyRecyclerViewAdapter<>(arg, getActivity());
+        }
+    };
+
     // Controller
     private Controller controller;
 
     // Media Recorder
     private MediaRecorder mRecorder = null;
-
-    // Media Player
-    private MediaPlayer mediaPlayer;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -108,6 +122,7 @@ public class KaraokeFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
         binding.setRecordVm(recordVm);
         binding.setSong(whichSong);
+        binding.setKaraokeFrag(this);
         View v = binding.getRoot();
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
@@ -210,6 +225,7 @@ public class KaraokeFragment extends Fragment {
         super.onStop();
         if (btnRecord.isChecked())
             btnRecord.toggle();
+        
     }
 
     @Override

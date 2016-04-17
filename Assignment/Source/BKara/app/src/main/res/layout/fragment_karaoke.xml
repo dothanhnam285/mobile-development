@@ -7,6 +7,9 @@
         <variable
             name="recordVm"
             type="com.beast.bkara.viewmodel.RecordViewModel" />
+        <variable
+            name="karaokeFrag"
+            type="com.beast.bkara.fragments.KaraokeFragment" />
         <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
     </data>
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -149,9 +152,11 @@
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/frag_karaoke_rv_recordList"
                 app:items="@{recordVm.recordList}"
                 app:itemView="@{recordVm.recordView}"
                 app:layoutManager="@{LayoutManagers.linear()}"
+                app:adapter="@{karaokeFrag.mFactory}"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:layout_below="@id/frag_karaoke_textViewTopRecords"
                 android:layout_width="match_parent"

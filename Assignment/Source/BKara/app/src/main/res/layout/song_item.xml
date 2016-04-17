@@ -24,6 +24,7 @@
                 android:layout_height="0dp">
 
                 <ImageView
+                    android:id="@+id/song_item_poster"
                     android:src="@drawable/img_home_test7"
                     android:layout_width="0dp"
                     android:layout_height="0dp"

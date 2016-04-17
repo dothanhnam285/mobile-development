@@ -17,6 +17,7 @@ public class Record extends BaseObservable {
     private int view;
     private Date date_created;
     private float rating;
+    private String dummy_path;
 
     @BindingAdapter("app:setDate")
     public static void setDate(TextView view, Date date) {
@@ -68,5 +69,13 @@ public class Record extends BaseObservable {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public String getDummy_path() {
+        return dummy_path;
+    }
+
+    public void setDummy_path(String dummy_path) {
+        this.dummy_path = dummy_path;
     }
 }

@@ -48,7 +48,7 @@ public class TestPlayerActivity extends AppCompatActivity {
         seekBarTest3.setEnabled(false);
 
         final String path = Environment.getExternalStorageDirectory() + "/";
-        Log.d("MP", path);
+        Log.d("MP PATH", path);
         String filename = "haha";
         //mediaPlayer = MediaPlayer.create(this, Uri.parse(path + filename + ".m4a"));
         //seekBarTest.setMax(mediaPlayer.getDuration());

@@ -65,6 +65,7 @@
             android:layout_marginBottom="@dimen/fab_margin">
 
             <ToggleButton
+                android:id="@+id/record_item_btnPlay"
                 android:textOn=""
                 android:textOff=""
                 android:background="@drawable/toggle_play"
@@ -72,6 +73,7 @@
                 android:layout_height="32dp" />
 
             <SeekBar
+                android:id="@+id/record_item_seekBar"
                 android:progressTint="?attr/colorPrimary"
                 android:thumbTint="?attr/colorPrimary"
                 android:layout_gravity="center_vertical"
