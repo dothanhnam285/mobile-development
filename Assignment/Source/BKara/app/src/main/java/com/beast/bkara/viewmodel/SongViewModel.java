@@ -39,26 +39,29 @@ public class SongViewModel {
             song.setGenre("Nhac tre");
             song.setSinger("Son Tung");
             song.setView(2048);
+            song.setVideo_id("vtxn0i4CVX8");
             songListAll.add(song);
         }
 
         songListHot = new ObservableArrayList<>();
         for(int i=0; i<5; i++) {
             Song song = new Song();
-            song.setTitle("Bai HOT");
+            song.setTitle("Sau tat ca");
             song.setGenre("Nhac tre");
-            song.setSinger("Son Tung");
+            song.setSinger("Erik");
             song.setView(2048);
+            song.setVideo_id("eEZpywMUzGI");
             songListHot.add(song);
         }
 
         songListNew = new ObservableArrayList<>();
         for(int i=0; i<5; i++) {
             Song song = new Song();
-            song.setTitle("Bai NEW");
-            song.setGenre("Nhac tre");
-            song.setSinger("Son Tung");
+            song.setTitle("Trai tim ben le");
+            song.setGenre("Nhac vang");
+            song.setSinger("Bang Kieu");
             song.setView(2048);
+            song.setVideo_id("u3i3bIzt2xg");
             songListNew.add(song);
         }
     }

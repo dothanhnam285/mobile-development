@@ -17,6 +17,7 @@
 
         <!-- TODO: Update blank fragment layout -->
         <android.support.v7.widget.RecyclerView
+            android:tag="frag_list_song_rvSongList"
             app:layoutManager="@{LayoutManagers.linear()}"
             app:items="@{whichList == 0 ? songVm.songListAll : (whichList == 1 ? songVm.songListHot : songVm.songListNew)}"
             app:itemView="@{songVm.songView}"

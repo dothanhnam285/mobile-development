@@ -47,7 +47,6 @@ public class KaraokeFragment extends Fragment {
     private ExpandableRelativeLayout erlSongInfo;
 
     RecordViewModel recordVm;
-    Song song;
     FragmentKaraokeBinding binding;
 
     // Controller
@@ -61,11 +60,11 @@ public class KaraokeFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String WHICH_SONG = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Song whichSong;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -78,15 +77,15 @@ public class KaraokeFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param whichSong Parameter 1.
      * @param param2 Parameter 2.
      * @return A new instance of fragment KaraokeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static KaraokeFragment newInstance(String param1, String param2) {
+    public static KaraokeFragment newInstance(Song whichSong, String param2) {
         KaraokeFragment fragment = new KaraokeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putParcelable(WHICH_SONG, whichSong);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -96,7 +95,7 @@ public class KaraokeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            whichSong = (Song) getArguments().getParcelable(WHICH_SONG);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -106,14 +105,9 @@ public class KaraokeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         recordVm = new RecordViewModel();
-        song = new Song();
-        song.setTitle("Chac ai do se ve");
-        song.setSinger("Son Tung");
-        song.setView(4096);
-        song.setVideo_id("vtxn0i4CVX8");
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
         binding.setRecordVm(recordVm);
-        binding.setSong(song);
+        binding.setSong(whichSong);
         View v = binding.getRoot();
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
@@ -127,7 +121,7 @@ public class KaraokeFragment extends Fragment {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
-                    youTubePlayer.loadVideo(song.getVideo_id());
+                    youTubePlayer.loadVideo(whichSong.getVideo_id());
                     youTubePlayer.play();
 
                 }

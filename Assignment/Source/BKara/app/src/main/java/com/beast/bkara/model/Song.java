@@ -2,6 +2,8 @@ package com.beast.bkara.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -11,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Darka on 4/9/2016.
  */
-public class Song extends BaseObservable {
+public class Song extends BaseObservable implements Parcelable {
 
     private int id;
     private String title;
@@ -42,6 +44,9 @@ public class Song extends BaseObservable {
         view.setText(String.valueOf(songView) + " View(s)");
     }
 
+    public Song() {
+
+    }
 
     public int getId() {
         return id;
@@ -122,4 +127,55 @@ public class Song extends BaseObservable {
     public void setVideo_id(String video_id) {
         this.video_id = video_id;
     }
+
+    //Parcelling part
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(getId());
+        parcel.writeString(getTitle());
+        parcel.writeInt(getView());
+        parcel.writeInt(getLength());
+        parcel.writeValue(getDate_added());
+        parcel.writeFloat(getRating());
+        parcel.writeString(getGenre());
+        parcel.writeString(getPoster());
+        parcel.writeString(getSinger());
+        parcel.writeString(getVideo_id());
+    }
+
+    private Song(Parcel in) {
+        setId(in.readInt());
+        setTitle(in.readString());
+        setView(in.readInt());
+        setLength(in.readInt());
+        setDate_added((Date) in.readValue(null));
+        setRating(in.readFloat());
+        setGenre(in.readString());
+        setPoster(in.readString());
+        setSinger(in.readString());
+        setVideo_id(in.readString());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Song> CREATOR
+            = new Parcelable.Creator<Song>() {
+
+        // This simply calls our new constructor (typically private) and
+        // passes along the unmarshalled `Parcel`, and then returns the new object!
+        @Override
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
+        }
+
+        // We just need to copy this and change the type to match our class.
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 }

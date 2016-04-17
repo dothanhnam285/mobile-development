@@ -5,12 +5,17 @@ import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentListSongBinding;
+import com.beast.bkara.model.Song;
+import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.SongViewModel;
 
 /**
@@ -19,6 +24,8 @@ import com.beast.bkara.viewmodel.SongViewModel;
 public class SongListFragment extends Fragment {
 
     FragmentListSongBinding binding;
+
+    RecyclerView rvSongList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,7 +68,7 @@ public class SongListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        SongsFragment parentFragment = (SongsFragment) getParentFragment();
+        final SongsFragment parentFragment = (SongsFragment) getParentFragment();
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
         binding.setSongVm(parentFragment.getSongViewModel());
         switch (whichList) {
@@ -76,7 +83,33 @@ public class SongListFragment extends Fragment {
                 break;
         }
 
-        return binding.getRoot();
+        View v = binding.getRoot();
+        rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
+        ItemClickSupport.addTo(rvSongList).setOnItemClickListener(
+                new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Song song = null;
+                        switch (whichList) {
+                            case R.string.frag_songs_tab_all:
+                                song = parentFragment.getSongViewModel().songListAll.get(position);
+                                break;
+                            case R.string.frag_songs_tab_hot:
+                                song = parentFragment.getSongViewModel().songListHot.get(position);
+                                break;
+                            case R.string.frag_songs_tab_new:
+                                song = parentFragment.getSongViewModel().songListNew.get(position);
+                                break;
+                        }
+                        if (song != null) {
+                            Fragment karaokeFragment = KaraokeFragment.newInstance(song, "bla");
+                            ((MainActivity) getActivity()).displayCustomFragment(karaokeFragment, "Karaoke");
+                        }
+                    }
+                }
+        );
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

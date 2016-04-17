@@ -10,6 +10,7 @@
     tools:context="com.beast.bkara.TestPlayerActivity">
 
     <LinearLayout
+        android:id="@+id/llTestPlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/fab_margin">
@@ -24,6 +25,60 @@
 
         <SeekBar
             android:id="@+id/seekBarTest"
+            android:progressTint="?attr/colorPrimary"
+            android:thumbTint="?attr/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llTestPlay2"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_below="@id/llTestPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_margin">
+
+        <ToggleButton
+            android:id="@+id/btnTestPlay2"
+            android:textOn=""
+            android:textOff=""
+            android:background="@drawable/toggle_play"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+
+        <SeekBar
+            android:id="@+id/seekBarTest2"
+            android:progressTint="?attr/colorPrimary"
+            android:thumbTint="?attr/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llTestPlay3"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:layout_below="@id/llTestPlay2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_margin">
+
+        <ToggleButton
+            android:id="@+id/btnTestPlay3"
+            android:textOn=""
+            android:textOff=""
+            android:background="@drawable/toggle_play"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+
+        <SeekBar
+            android:id="@+id/seekBarTest3"
             android:progressTint="?attr/colorPrimary"
             android:thumbTint="?attr/colorPrimary"
             android:layout_gravity="center_vertical"
