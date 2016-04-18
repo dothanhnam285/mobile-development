@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.viewmodel.SongViewModel;
@@ -31,6 +32,7 @@ import java.util.List;
  */
 public class SongsFragment extends Fragment {
 
+    private Controller controller;
     private SongViewModel songVm;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -79,7 +81,8 @@ public class SongsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        songVm = new SongViewModel();
+        controller = (Controller) getActivity().getApplicationContext();
+        songVm = new SongViewModel(controller);
 
     }
 

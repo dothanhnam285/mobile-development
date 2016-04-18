@@ -2,11 +2,15 @@ package com.beast.bkara.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Date;
 
@@ -15,11 +19,10 @@ import java.util.Date;
  */
 public class Song extends BaseObservable implements Parcelable {
 
-    private int id;
+    private int song_id;
     private String title;
     private int view;
     private String poster;
-    private int length;
     private Date date_added;
     private float rating;
     private String genre;
@@ -38,6 +41,11 @@ public class Song extends BaseObservable implements Parcelable {
         view.setText(Html.fromHtml(text));
     }
 
+    @BindingAdapter("app:setPoster")
+    public static void setPoster(ImageView view, String songPoster) {
+        ImageLoader.getInstance().displayImage(songPoster, view);
+    }
+
 
     @BindingAdapter("app:setView")
     public static void setView(TextView view, int songView) {
@@ -48,12 +56,13 @@ public class Song extends BaseObservable implements Parcelable {
 
     }
 
-    public int getId() {
-        return id;
+
+    public int getSong_id() {
+        return song_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setSong_id(int song_id) {
+        this.song_id = song_id;
     }
 
     public String getTitle() {
@@ -70,14 +79,6 @@ public class Song extends BaseObservable implements Parcelable {
 
     public void setView(int view) {
         this.view = view;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
     }
 
     public Date getDate_added() {
@@ -132,10 +133,9 @@ public class Song extends BaseObservable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(getId());
+        parcel.writeInt(getSong_id());
         parcel.writeString(getTitle());
         parcel.writeInt(getView());
-        parcel.writeInt(getLength());
         parcel.writeValue(getDate_added());
         parcel.writeFloat(getRating());
         parcel.writeString(getGenre());
@@ -145,10 +145,9 @@ public class Song extends BaseObservable implements Parcelable {
     }
 
     private Song(Parcel in) {
-        setId(in.readInt());
+        setSong_id(in.readInt());
         setTitle(in.readString());
         setView(in.readInt());
-        setLength(in.readInt());
         setDate_added((Date) in.readValue(null));
         setRating(in.readFloat());
         setGenre(in.readString());
@@ -178,4 +177,5 @@ public class Song extends BaseObservable implements Parcelable {
             return new Song[size];
         }
     };
+
 }

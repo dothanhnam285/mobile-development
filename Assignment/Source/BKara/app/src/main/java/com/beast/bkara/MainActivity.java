@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -48,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Set up universal image loader
+        ImageLoaderConfiguration imageLoaderConfig = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(imageLoaderConfig);
 
         // Get views
         mLayout = (RelativeLayout) findViewById(R.id.content_main_rl_layout);

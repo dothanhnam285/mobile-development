@@ -25,7 +25,7 @@
 
                 <ImageView
                     android:id="@+id/song_item_poster"
-                    android:src="@drawable/img_home_test7"
+                    app:setPoster="@{song.poster}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layout_aspectRatio="100%"
@@ -56,7 +56,6 @@
                 android:id="@+id/song_item_artist"
                 android:layout_below="@+id/song_item_title"
                 android:text="Singer"
-                app:setArtist="@{song.singer}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

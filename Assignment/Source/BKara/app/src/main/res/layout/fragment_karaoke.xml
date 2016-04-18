@@ -91,7 +91,6 @@
                     android:id="@+id/frag_karaoke_textViewArtist"
                     android:layout_below="@id/frag_karaoke_textViewTitle"
                     android:hint="Artist: Son Tung"
-                    app:setArtist="@{song.singer}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

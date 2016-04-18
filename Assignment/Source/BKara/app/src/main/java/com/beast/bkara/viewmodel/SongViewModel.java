@@ -5,6 +5,7 @@ import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
 
 import com.beast.bkara.BR;
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
 
@@ -25,15 +26,17 @@ public class SongViewModel {
     public ObservableList<Song> songListNew;
     public final ItemView songView = ItemView.of(BR.song, R.layout.song_item);
 
-    public SongViewModel() {
+    private Controller controller;
 
+    public SongViewModel(Controller controller) {
+        this.controller = controller;
         InitDummyData();
-
     }
 
     private void InitDummyData() {
         songListAll = new ObservableArrayList<>();
-        for(int i=0; i<5; i++) {
+        controller.GetSongListAll(songListAll);
+/*        for(int i=0; i<5; i++) {
             Song song = new Song();
             song.setTitle("Chac ai do se ve");
             song.setGenre("Nhac tre");
@@ -41,7 +44,7 @@ public class SongViewModel {
             song.setView(2048);
             song.setVideo_id("vtxn0i4CVX8");
             songListAll.add(song);
-        }
+        }*/
 
         songListHot = new ObservableArrayList<>();
         for(int i=0; i<5; i++) {

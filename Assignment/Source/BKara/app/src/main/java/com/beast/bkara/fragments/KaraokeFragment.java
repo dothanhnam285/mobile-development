@@ -2,8 +2,6 @@ package com.beast.bkara.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -17,27 +15,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
-import com.beast.bkara.MyRecyclerViewAdapter;
+import com.beast.bkara.util.RecordListRecyclerViewAdapter;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentKaraokeBinding;
-import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
-import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.RecordViewModel;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
-import java.io.File;
 import java.io.IOException;
 
-import me.tatarka.bindingcollectionadapter.BindingListViewAdapter;
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
 import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
@@ -59,18 +52,24 @@ public class KaraokeFragment extends Fragment {
     RecordViewModel recordVm;
     FragmentKaraokeBinding binding;
 
-    public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
-        @Override
-        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
-            return new MyRecyclerViewAdapter<>(arg, getActivity());
-        }
-    };
+    RecyclerView rvRecordList;
 
     // Controller
     private Controller controller;
 
     // Media Recorder
     private MediaRecorder mRecorder = null;
+
+    // Media Player
+    private MediaPlayer mPlayer = null;
+
+    // Bingding adapter for record list recyclerview - used for handle playing multiple records
+    public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
+        @Override
+        public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
+            return new RecordListRecyclerViewAdapter<>(arg, getActivity());
+        }
+    };
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,6 +123,8 @@ public class KaraokeFragment extends Fragment {
         binding.setSong(whichSong);
         binding.setKaraokeFrag(this);
         View v = binding.getRoot();
+
+        rvRecordList = (RecyclerView) v.findViewById(R.id.frag_karaoke_rv_recordList);
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
@@ -196,10 +197,12 @@ public class KaraokeFragment extends Fragment {
     }
 
     private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.reset();
-        mRecorder.release();
-        mRecorder = null;
+        if (mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.reset();
+            mRecorder.release();
+            mRecorder = null;
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -225,7 +228,11 @@ public class KaraokeFragment extends Fragment {
         super.onStop();
         if (btnRecord.isChecked())
             btnRecord.toggle();
-        
+        stopRecording();
+
+        // Detach adapter to stop running media player
+        rvRecordList.setAdapter(null);
+
     }
 
     @Override

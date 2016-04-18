@@ -1,4 +1,4 @@
-package com.beast.bkara;
+package com.beast.bkara.util;
 
 import android.content.Context;
 import android.databinding.ViewDataBinding;
@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
+import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ import me.tatarka.bindingcollectionadapter.ItemViewArg;
 /**
  * Created by Darka on 4/17/2016.
  */
-public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
+public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 
     private MediaPlayer mediaPlayer;
     private Context mContext;
@@ -51,7 +53,7 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
         }
     }
 
-    public MyRecyclerViewAdapter(@NonNull ItemViewArg<T> arg, Context context) {
+    public RecordListRecyclerViewAdapter(@NonNull ItemViewArg<T> arg, Context context) {
         super(arg);
         this.mContext = context;
         toggleButtonList = new ArrayList<ToggleButton>();
@@ -68,6 +70,12 @@ public class MyRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
             seekBarList.get(i).setProgress(0);
             toggleButtonList.get(i).setChecked(false);
         }
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        StopMediaPlayer();
     }
 
     @Override
