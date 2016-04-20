@@ -66,31 +66,35 @@
                 app:ael_interpolator="bounce"
                 app:ael_orientation="vertical">
 
-                <TextView
+                <LinearLayout
                     android:layout_marginTop="@dimen/fab_margin"
-                    android:id="@+id/frag_karaoke_textViewView"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/frag_karaoke_youtubeViewer"
-                    android:hint="2048 view"
-                    app:setView="@{song.view}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:id="@+id/frag_karaoke_textViewTitle"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="20dp"
-                    android:hint="Em cua ngay hom qua"
-                    android:text="@{song.title}"
-                    android:layout_below="@id/frag_karaoke_textViewView"
+                    android:id="@+id/frag_karaoke_ll_title"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="20dp"
+                        android:hint="Em cua ngay hom qua"
+                        android:text="@{song.title}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:gravity="right"
+                        android:hint="2048 view"
+                        app:setView="@{song.view}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
 
                 <TextView
-
                     android:id="@+id/frag_karaoke_textViewArtist"
-                    android:layout_below="@id/frag_karaoke_textViewTitle"
-                    android:hint="Artist: Son Tung"
+                    android:layout_below="@id/frag_karaoke_ll_title"
+                    app:setSinger="@{song.singer}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

@@ -26,7 +26,7 @@ public class Song extends BaseObservable implements Parcelable {
     private Date date_added;
     private float rating;
     private String genre;
-    private String singer;
+    private Singer singer;
     private String video_id;
 
     @BindingAdapter("app:setGenre")
@@ -35,11 +35,25 @@ public class Song extends BaseObservable implements Parcelable {
         view.setText(Html.fromHtml(text));
     }
 
-    @BindingAdapter("app:setArtist")
-    public static void setArtist(TextView view, String songSinger) {
-        String text = "<b>Artist: </b>" + songSinger;
+    @BindingAdapter("app:setSinger")
+    public static void setArtist(TextView view, Singer singer) {
+        String text = "";
+        if (singer != null && singer.getName() != null && singer.getName() != "")
+            text = "<b>Singer: </b>" + singer.getName();
+        else
+            text = "<b>Singer: </b> Unknown";
         view.setText(Html.fromHtml(text));
     }
+
+/*    @BindingAdapter("app:setSinger")
+    public static void setArtist(TextView view, String singer) {
+        String text = "";
+        if (singer != null && singer != null)
+            text = "<b>Singer: </b>" + singer;
+        else
+            text = "<b>Singer: </b> Unknown";
+        view.setText(Html.fromHtml(text));
+    }*/
 
     @BindingAdapter("app:setPoster")
     public static void setPoster(ImageView view, String songPoster) {
@@ -113,11 +127,11 @@ public class Song extends BaseObservable implements Parcelable {
         this.poster = poster;
     }
 
-    public String getSinger() {
+    public Singer getSinger() {
         return singer;
     }
 
-    public void setSinger(String singer) {
+    public void setSinger(Singer singer) {
         this.singer = singer;
     }
 
@@ -130,7 +144,6 @@ public class Song extends BaseObservable implements Parcelable {
     }
 
     //Parcelling part
-
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(getSong_id());
@@ -140,7 +153,7 @@ public class Song extends BaseObservable implements Parcelable {
         parcel.writeFloat(getRating());
         parcel.writeString(getGenre());
         parcel.writeString(getPoster());
-        parcel.writeString(getSinger());
+        parcel.writeParcelable(getSinger(), i);
         parcel.writeString(getVideo_id());
     }
 
@@ -152,7 +165,7 @@ public class Song extends BaseObservable implements Parcelable {
         setRating(in.readFloat());
         setGenre(in.readString());
         setPoster(in.readString());
-        setSinger(in.readString());
+        setSinger((Singer) in.readParcelable(Singer.class.getClassLoader()));
         setVideo_id(in.readString());
     }
 

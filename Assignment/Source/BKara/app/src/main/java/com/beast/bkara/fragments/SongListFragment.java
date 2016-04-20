@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentListSongBinding;
@@ -26,7 +28,10 @@ public class SongListFragment extends Fragment {
 
     FragmentListSongBinding binding;
 
+    private Controller controller;
+
     RecyclerView rvSongList;
+    ProgressBar progressBarWaiting;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,6 +68,8 @@ public class SongListFragment extends Fragment {
         if (getArguments() != null) {
             whichList = getArguments().getInt(WHICH_LIST);
         }
+
+        controller = (Controller) getActivity().getApplicationContext();
     }
 
     @Override
@@ -86,6 +93,7 @@ public class SongListFragment extends Fragment {
 
         View v = binding.getRoot();
         rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
+        progressBarWaiting = (ProgressBar) v.findViewById(R.id.frag_songs_progressBarWaiting);
         ItemClickSupport.addTo(rvSongList).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
@@ -109,6 +117,8 @@ public class SongListFragment extends Fragment {
                     }
                 }
         );
+
+        controller.GetSongListAll(parentFragment.getSongViewModel().songListAll, progressBarWaiting);
 
         return v;
     }

@@ -3,21 +3,22 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+	xmlns:p="http://primefaces.org/ui" 
+        xmlns:b="http://bootsfaces.net/ui">
 <h:head>
 	<title>My Team</title>
 </h:head>
 
 <h:body>
-	<b:container layout="fluid">
+	<b:container>
+		<h2>My Team 2</h2>
 		<h2>My Team</h2>
-		<h2>My Team</h2>
-		<h2>My Team</h2>
+		<h2>My Team 4</h2>
 		<hr />
 
 
 		<b:row>
-			<b:column medium-screen="12">
+			<b:column>
 				<h:form id="empForm">
 
 
@@ -73,7 +74,7 @@
 				</b:row>
 				<b:row>
 					<b:commandButton value="Add" look="success" class="pull-right"
-						action="#{empBean.addEmployee}" update="empForm" dismiss="modal" />
+						action="#{empBean.addEmployee}" update="empForm"/>
 				</b:row>
 
 			</h:form>

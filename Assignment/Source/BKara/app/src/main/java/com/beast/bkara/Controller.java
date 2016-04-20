@@ -4,6 +4,8 @@ import android.app.Application;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.beast.bkara.model.Song;
 import com.beast.bkara.util.BkaraRestfulApi;
@@ -48,14 +50,15 @@ public class Controller extends Application {
         bkaraService = retrofit.create(BkaraRestfulApi.class);
     }
 
-    public void GetSongListAll(final ObservableList<Song> songListAll) {
+    public void GetSongListAll(final ObservableList<Song> songListAll, final ProgressBar progressBar) {
         Call<List<Song>> call = bkaraService.getSongListAll();
         call.enqueue(new Callback<List<Song>>() {
             @Override
             public void onResponse(Call<List<Song>> call, Response<List<Song>> response) {
-                Log.d("RESTFUL SONG LIST ALL", "SUCCESS");
+                Log.d("RESTFUL SONG LIST ALL", "SUCCESS " + response.body().toString());
                 songListAll.clear();
                 songListAll.addAll(response.body());
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
@@ -32,7 +33,6 @@ import java.util.List;
  */
 public class SongsFragment extends Fragment {
 
-    private Controller controller;
     private SongViewModel songVm;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -81,8 +81,7 @@ public class SongsFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        controller = (Controller) getActivity().getApplicationContext();
-        songVm = new SongViewModel(controller);
+        songVm = new SongViewModel();
 
     }
 

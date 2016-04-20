@@ -55,7 +55,7 @@
                 android:textSize="15dp"
                 android:id="@+id/song_item_artist"
                 android:layout_below="@+id/song_item_title"
-                android:text="Singer"
+                app:setSinger="@{song.singer}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

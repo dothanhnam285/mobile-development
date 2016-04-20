@@ -26,16 +26,12 @@ public class SongViewModel {
     public ObservableList<Song> songListNew;
     public final ItemView songView = ItemView.of(BR.song, R.layout.song_item);
 
-    private Controller controller;
-
-    public SongViewModel(Controller controller) {
-        this.controller = controller;
+    public SongViewModel() {
         InitDummyData();
     }
 
     private void InitDummyData() {
         songListAll = new ObservableArrayList<>();
-        controller.GetSongListAll(songListAll);
 /*        for(int i=0; i<5; i++) {
             Song song = new Song();
             song.setTitle("Chac ai do se ve");
@@ -51,7 +47,7 @@ public class SongViewModel {
             Song song = new Song();
             song.setTitle("Sau tat ca");
             song.setGenre("Nhac tre");
-            song.setSinger("Erik");
+            //song.setSinger("Erik");
             song.setView(2048);
             song.setVideo_id("eEZpywMUzGI");
             songListHot.add(song);
@@ -62,7 +58,7 @@ public class SongViewModel {
             Song song = new Song();
             song.setTitle("Trai tim ben le");
             song.setGenre("Nhac vang");
-            song.setSinger("Bang Kieu");
+            //song.setSinger("Bang Kieu");
             song.setView(2048);
             song.setVideo_id("u3i3bIzt2xg");
             songListNew.add(song);
