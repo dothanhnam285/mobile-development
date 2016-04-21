@@ -8,7 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name ="Song")
@@ -31,7 +34,9 @@ public class Song implements Serializable {
 
     private String poster;
 
-    
+    @ManyToOne
+    @JoinColumn(name = "singer_id")
+    private Singer singer;
 
     public int getView() {
             return view;
@@ -99,6 +104,20 @@ public class Song implements Serializable {
      */
     public void setSong_id(Long song_id) {
         this.song_id = song_id;
+    }
+
+    /**
+     * @return the singer
+     */
+    public Singer getSinger() {
+        return singer;
+    }
+
+    /**
+     * @param singer the singer to set
+     */
+    public void setSinger(Singer singer) {
+        this.singer = singer;
     }
 
 }

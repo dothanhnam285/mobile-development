@@ -1,8 +1,8 @@
 package com.beast.bkara;
 
 import android.app.Application;
-import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,7 +12,6 @@ import com.beast.bkara.util.BkaraRestfulApi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,7 +31,7 @@ import retrofit2.http.Query;
 public class Controller extends Application {
 
     public static final String YOUTUBE_API_KEY = "AIzaSyDyyVofQ_tgdvQEh30ikZ7LipiQbWeLA1g";
-    public static final String RESTFUL_URL = "http://192.168.1.102:8084/myteam/bkaraservice/";
+    public static final String RESTFUL_URL = "http://192.168.1.102:8080/myteam/bkaraservice/";
 
     private boolean _loginStatus = false;
     private BkaraRestfulApi bkaraService;
@@ -64,6 +63,7 @@ public class Controller extends Application {
             @Override
             public void onFailure(Call<List<Song>> call, Throwable t) {
                 Log.d("RESTFUL SONG LIST ALL", "FAILED " + t.getMessage());
+                GetSongListAll(songListAll, progressBar);
             }
         });
     }

@@ -79,8 +79,13 @@ public class SongListFragment extends Fragment {
         final SongsFragment parentFragment = (SongsFragment) getParentFragment();
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
         binding.setSongVm(parentFragment.getSongViewModel());
+        View v = binding.getRoot();
+        rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
+        progressBarWaiting = (ProgressBar) v.findViewWithTag("frag_songs_progressBarWaiting");
+
         switch (whichList) {
             case R.string.frag_songs_tab_all:
+                controller.GetSongListAll(parentFragment.getSongViewModel().songListAll, progressBarWaiting);
                 binding.setWhichList(0);
                 break;
             case R.string.frag_songs_tab_hot:
@@ -91,9 +96,7 @@ public class SongListFragment extends Fragment {
                 break;
         }
 
-        View v = binding.getRoot();
-        rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
-        progressBarWaiting = (ProgressBar) v.findViewById(R.id.frag_songs_progressBarWaiting);
+
         ItemClickSupport.addTo(rvSongList).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
@@ -118,7 +121,7 @@ public class SongListFragment extends Fragment {
                 }
         );
 
-        controller.GetSongListAll(parentFragment.getSongViewModel().songListAll, progressBarWaiting);
+
 
         return v;
     }
