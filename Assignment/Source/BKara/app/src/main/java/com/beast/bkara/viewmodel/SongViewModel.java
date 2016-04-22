@@ -3,11 +3,14 @@ package com.beast.bkara.viewmodel;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.beast.bkara.BR;
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.util.BkaraService;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -21,48 +24,22 @@ import me.tatarka.bindingcollectionadapter.ItemView;
  */
 public class SongViewModel {
 
-    public ObservableList<Song> songListAll;
-    public ObservableList<Song> songListHot;
-    public ObservableList<Song> songListNew;
+    public ObservableList<Song> songList;
     public final ItemView songView = ItemView.of(BR.song, R.layout.song_item);
 
-    public SongViewModel() {
-        InitDummyData();
+    private BkaraService bkaraService;
+
+    public SongViewModel(BkaraService.WhichList whichList, ProgressBar progressBar) {
+        bkaraService = BkaraService.getInstance();
+        songList = new ObservableArrayList<>();
+        bkaraService.GetSongList(whichList, songList, progressBar);
     }
 
-    private void InitDummyData() {
-        songListAll = new ObservableArrayList<>();
-/*        for(int i=0; i<5; i++) {
-            Song song = new Song();
-            song.setTitle("Chac ai do se ve");
-            song.setGenre("Nhac tre");
-            song.setSinger("Son Tung");
-            song.setView(2048);
-            song.setVideo_id("vtxn0i4CVX8");
-            songListAll.add(song);
-        }*/
+    public SongViewModel(BkaraService.SearchFilter searchFilter, String searchValue , ProgressBar progressBar) {
+        bkaraService = BkaraService.getInstance();
+        songList = new ObservableArrayList<>();
 
-        songListHot = new ObservableArrayList<>();
-        for(int i=0; i<5; i++) {
-            Song song = new Song();
-            song.setTitle("Sau tat ca");
-            song.setGenre("Nhac tre");
-            //song.setSinger("Erik");
-            song.setView(2048);
-            song.setVideo_id("eEZpywMUzGI");
-            songListHot.add(song);
-        }
-
-        songListNew = new ObservableArrayList<>();
-        for(int i=0; i<5; i++) {
-            Song song = new Song();
-            song.setTitle("Trai tim ben le");
-            song.setGenre("Nhac vang");
-            //song.setSinger("Bang Kieu");
-            song.setView(2048);
-            song.setVideo_id("u3i3bIzt2xg");
-            songListNew.add(song);
-        }
+        bkaraService.FindSongs(searchFilter, searchValue, songList, progressBar);
     }
 
 }

@@ -36,5 +36,9 @@ public class SongServiceImpl implements SongService, Serializable {
 	public List<Song> findAllSongs() {
 		return songDao.findAllSongs();
 	}
+        
+        public List<Song> findSongByName(String name) {
+            return songDao.findSongByName(name);
+        }
 
 }

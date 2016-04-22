@@ -15,5 +15,7 @@ public interface SongDao {
 	public Song findSongById(long songId);
 	
 	public List<Song> findAllSongs();
+        
+        public List<Song> findSongByName(String name);
 	
 }

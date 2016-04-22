@@ -6,6 +6,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * Created by Darka on 4/18/2016.
@@ -18,4 +19,7 @@ public interface BkaraRestfulApi {
 
     @GET("songlist/all")
     Call<List<Song>> getSongListAll();
+
+    @GET("songlist/search/name/{songname}")
+    Call<List<Song>> findSongsByName(@Path("songname") String songName);
 }

@@ -35,6 +35,10 @@ public class SongBean implements Serializable {
 		songlistall = songService.findAllSongs();
 		return songlistall;
 	}
+        
+        public List<Song> findSongByName(String name) {
+            return songService.findSongByName(name);
+        }
 
 	public void setSonglistall(List<Song> songlist) {
 		this.songlistall = songlist;

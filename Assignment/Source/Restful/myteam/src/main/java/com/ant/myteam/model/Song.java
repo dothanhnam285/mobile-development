@@ -24,6 +24,9 @@ public class Song implements Serializable {
 
     @Column(nullable = false)
     private String title;
+    
+    @Column(nullable = true)
+    private String title_search;
 
     private int view;
     private Date date_added;

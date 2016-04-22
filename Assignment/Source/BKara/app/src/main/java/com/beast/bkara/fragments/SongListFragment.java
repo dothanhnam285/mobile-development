@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentListSongBinding;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.SongViewModel;
 
@@ -26,7 +28,8 @@ import com.beast.bkara.viewmodel.SongViewModel;
  */
 public class SongListFragment extends Fragment {
 
-    FragmentListSongBinding binding;
+    private FragmentListSongBinding binding;
+    private SongViewModel songVm;
 
     private Controller controller;
 
@@ -36,9 +39,13 @@ public class SongListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String WHICH_LIST = "param1";
+    private static final String SEARCH_FILTER = "param2";
+    private static final String SEARCH_VALUE = "param3";
 
     // TODO: Rename and change types of parameters
-    private int whichList;
+    private BkaraService.WhichList whichList;
+    private BkaraService.SearchFilter searchFilter;
+    private String searchValue;
 
     private OnFragmentInteractionListener mListener;
 
@@ -54,10 +61,28 @@ public class SongListFragment extends Fragment {
      * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongListFragment newInstance(int param1) {
+    public static SongListFragment newInstance(BkaraService.WhichList param1) {
         SongListFragment fragment = new SongListFragment();
         Bundle args = new Bundle();
-        args.putInt(WHICH_LIST, param1);
+        args.putSerializable(WHICH_LIST, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment BlankFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static SongListFragment newInstance(BkaraService.SearchFilter param1, String param2) {
+        SongListFragment fragment = new SongListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(SEARCH_FILTER, param1);
+        args.putString(SEARCH_VALUE, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +91,11 @@ public class SongListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            whichList = getArguments().getInt(WHICH_LIST);
+            whichList = (BkaraService.WhichList) getArguments().getSerializable(WHICH_LIST);
+            if (whichList == null) {
+                searchFilter = (BkaraService.SearchFilter) getArguments().getSerializable(SEARCH_FILTER);
+                searchValue = getArguments().getString(SEARCH_VALUE);
+            }
         }
 
         controller = (Controller) getActivity().getApplicationContext();
@@ -76,43 +105,23 @@ public class SongListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final SongsFragment parentFragment = (SongsFragment) getParentFragment();
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
-        binding.setSongVm(parentFragment.getSongViewModel());
         View v = binding.getRoot();
         rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
         progressBarWaiting = (ProgressBar) v.findViewWithTag("frag_songs_progressBarWaiting");
 
-        switch (whichList) {
-            case R.string.frag_songs_tab_all:
-                controller.GetSongListAll(parentFragment.getSongViewModel().songListAll, progressBarWaiting);
-                binding.setWhichList(0);
-                break;
-            case R.string.frag_songs_tab_hot:
-                binding.setWhichList(1);
-                break;
-            case R.string.frag_songs_tab_new:
-                binding.setWhichList(2);
-                break;
-        }
-
+        if (whichList != null)
+            songVm = new SongViewModel(whichList, progressBarWaiting);
+        else
+            songVm = new SongViewModel(searchFilter, searchValue, progressBarWaiting);
+        binding.setSongVm(songVm);
 
         ItemClickSupport.addTo(rvSongList).setOnItemClickListener(
                 new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Song song = null;
-                        switch (whichList) {
-                            case R.string.frag_songs_tab_all:
-                                song = parentFragment.getSongViewModel().songListAll.get(position);
-                                break;
-                            case R.string.frag_songs_tab_hot:
-                                song = parentFragment.getSongViewModel().songListHot.get(position);
-                                break;
-                            case R.string.frag_songs_tab_new:
-                                song = parentFragment.getSongViewModel().songListNew.get(position);
-                                break;
-                        }
+                        song = songVm.songList.get(position);
                         if (song != null) {
                             Fragment karaokeFragment = KaraokeFragment.newInstance(song, "bla");
                             ((MainActivity) getActivity()).displayCustomFragment(karaokeFragment, "Karaoke");

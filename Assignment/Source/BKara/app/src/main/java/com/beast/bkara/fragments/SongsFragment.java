@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.viewmodel.SongViewModel;
 
 import java.util.ArrayList;
@@ -33,26 +34,19 @@ import java.util.List;
  */
 public class SongsFragment extends Fragment {
 
-    private SongViewModel songVm;
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String IS_SEARCH = "param1";
+    private static final String SEARCH_WHAT = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private boolean isSearch;
+    private String searchWhat;
 
     private OnFragmentInteractionListener mListener;
 
     public SongsFragment() {
         // Required empty public constructor
-    }
-
-    // Get song view model
-    public SongViewModel getSongViewModel() {
-        return songVm;
     }
 
     /**
@@ -64,11 +58,11 @@ public class SongsFragment extends Fragment {
      * @return A new instance of fragment SongsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongsFragment newInstance(String param1, String param2) {
+    public static SongsFragment newInstance(boolean param1, String param2) {
         SongsFragment fragment = new SongsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(IS_SEARCH, param1);
+        args.putString(SEARCH_WHAT, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,12 +71,9 @@ public class SongsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            isSearch = getArguments().getBoolean(IS_SEARCH);
+            searchWhat = getArguments().getString(SEARCH_WHAT);
         }
-
-        songVm = new SongViewModel();
-
     }
 
 
@@ -151,9 +142,10 @@ public class SongsFragment extends Fragment {
     private void setupViewPager(ViewPager viewPager) {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_all), getString(R.string.frag_songs_tab_all));
-        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_hot), getString(R.string.frag_songs_tab_hot));
-        adapter.addFrag(SongListFragment.newInstance(R.string.frag_songs_tab_new), getString(R.string.frag_songs_tab_new));
+        adapter.addFrag(SongListFragment.newInstance(BkaraService.WhichList.ALL), getString(R.string.frag_songs_tab_all));
+        adapter.addFrag(SongListFragment.newInstance(BkaraService.WhichList.HOT), getString(R.string.frag_songs_tab_hot));
+        adapter.addFrag(SongListFragment.newInstance(BkaraService.WhichList.NEW), getString(R.string.frag_songs_tab_new));
+
         viewPager.setAdapter(adapter);
     }
 
