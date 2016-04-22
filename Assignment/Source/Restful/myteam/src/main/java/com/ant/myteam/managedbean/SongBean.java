@@ -24,11 +24,7 @@ public class SongBean implements Serializable {
 	
 	private List<Song> songlistall = new ArrayList<Song>();
 	
-	private Song song = new Song();
-	
 	public SongBean() {
-		getSong().setTitle("Em cua ngay hom qua");
-		getSong().setVideo_id("9tQa5B4iVsA");
 	}
 
 	public List<Song> getSonglistall() {
@@ -42,15 +38,6 @@ public class SongBean implements Serializable {
 
 	public void setSonglistall(List<Song> songlist) {
 		this.songlistall = songlist;
-	}
-
-	public Song getSong() {
-		return song;
-	}
-
-	public void setSong(Song song) {
-		this.song = song;
-	}
-	
+	}	
 	
 }

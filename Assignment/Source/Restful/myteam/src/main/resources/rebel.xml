@@ -2,18 +2,30 @@
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://www.zeroturnaround.com/alderaan/rebel-2_0.xsd">
 
 	<classpath>
+<<<<<<< Updated upstream
 		<dir name="E:/BachKhoa/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/target/classes">
+=======
+		<dir name="D:/BACH KHOA/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/target/classes">
+>>>>>>> Stashed changes
 		</dir>
 	</classpath>
 
 	<web>
 		<link target="/">
+<<<<<<< Updated upstream
 			<dir name="E:/BachKhoa/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/target/m2e-wtp/web-resources">
+=======
+			<dir name="D:/BACH KHOA/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/target/m2e-wtp/web-resources">
+>>>>>>> Stashed changes
 				<exclude name="/"/>
 			</dir>
 		</link>
 		<link target="/">
+<<<<<<< Updated upstream
 			<dir name="E:/BachKhoa/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/src/main/webapp">
+=======
+			<dir name="D:/BACH KHOA/HK8/Mobile/Assignment2/Assignment/Source/Restful/myteam/src/main/webapp">
+>>>>>>> Stashed changes
 			</dir>
 		</link>
 	</web>
