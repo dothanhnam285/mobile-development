@@ -165,7 +165,7 @@ public class KaraokeFragment extends Fragment {
 
         btnRecord = (ToggleButton) v.findViewById(R.id.frag_karaoke_btnRecord);
 
-        if (controller.isUserLogin()) {
+        if (controller.isLogin()) {
             btnRecord.setEnabled(true);
         }
 
@@ -203,7 +203,7 @@ public class KaraokeFragment extends Fragment {
 
     private String GenerateRecordPath() {
         String path = Environment.getExternalStorageDirectory() + "/";
-        return path + controller.getUser().getUserId() + "_" + whichSong.getTitle() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
+        return path + controller.getCurrUser().getUserId() + "_" + whichSong.getTitle() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
     }
 
     private void startRecording(String filepath) {

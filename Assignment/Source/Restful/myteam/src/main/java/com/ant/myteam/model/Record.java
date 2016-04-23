@@ -25,32 +25,24 @@ import org.hibernate.annotations.Fetch;
  * @author VINH
  */
 @Entity
-@Table(name="Record")
+@Table(name = "Record")
 public class Record implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long recordId;
-    
-    @ManyToOne //(cascade=CascadeType.ALL)
-    @JoinColumn(name="userId")
-    private User user;
-
-       
     private Float rating;
-    private Long views;
-    
-    @Temporal(TemporalType.DATE)
-    private Date dateCreated;
+    private Long view;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date_created;
     private Long length;
-    
-    
-    public User getUser() {
-        return user;
+
+    public Date getDate_created() {
+        return date_created;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setDate_created(Date date_created) {
+        this.date_created = date_created;
     }
 
     public Long getRecordId() {
@@ -69,20 +61,12 @@ public class Record implements Serializable {
         this.rating = rating;
     }
 
-    public Long getViews() {
-        return views;
+    public Long getView() {
+        return view;
     }
 
-    public void setViews(Long views) {
-        this.views = views;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setView(Long view) {
+        this.view = view;
     }
 
     public Long getLength() {

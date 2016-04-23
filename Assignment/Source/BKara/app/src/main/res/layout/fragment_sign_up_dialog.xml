@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.beast.bkara.dialogfragments.SignUpDialogFragment"
-    android:background="#fff">
+    android:background="@color/colorWhite">
 
     <ScrollView
         android:id="@+id/user_sign_up_form"
@@ -55,6 +55,7 @@
                     android:hint="@string/prompt_username"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:imeOptions="actionNext"
                     />
 
             </android.support.design.widget.TextInputLayout>
@@ -71,6 +72,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext"
                     />
 
             </android.support.design.widget.TextInputLayout>
@@ -87,6 +89,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:inputType="textPassword"
+                    android:imeOptions="actionNext"
                     />
 
             </android.support.design.widget.TextInputLayout>
@@ -103,6 +106,7 @@
                     android:maxLines="1"
                     android:singleLine="true"
                     android:inputType="textPassword"
+                    android:imeOptions="actionDone"
                     />
 
             </android.support.design.widget.TextInputLayout>

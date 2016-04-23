@@ -6,9 +6,16 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.beast.bkara.model.Song;
+import com.beast.bkara.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
+import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,8 +35,9 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
-    private BkaraRestfulAPI bkaraRestful;
+    private final String RESTFUL_URL = //"http://192.168.1.103:8084/myteam/bkaraservice/";
+            "http://192.168.0.101:8080/myteam/bkaraservice/";
+    private BkaraRestfulApi bkaraRestful;
 
     public enum WhichList {
         ALL, HOT, NEW, SEARCH
@@ -40,8 +48,12 @@ public class BkaraService {
     }
 
     private void SetupRestfulService() {
+        // Restful server return error if keep using dd-MM-yyyy
+        // Can not parse date "24-04-2016:00:59:319": not compatible with any of standard forms
+        // ("yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "EEE, dd MMM yyyy HH:mm:ss zzz", "yyyy-MM-dd"))
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd")
+                .registerTypeAdapter(Date.class, new JsonDateDeserializer())
+                .setDateFormat(/*"dd-MM-yyyy:HH:mm:SS"*/"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -49,7 +61,7 @@ public class BkaraService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        bkaraRestful = retrofit.create(BkaraRestfulAPI.class);
+        bkaraRestful = retrofit.create(BkaraRestfulApi.class);
     }
 
     public void GetSongList(final WhichList whichList, final ObservableList<Song> songList, final ProgressBar progressBar) {
@@ -113,7 +125,23 @@ public class BkaraService {
         });
     }
 
+    public void login(User user, Callback<User> cb){
+        bkaraRestful.login(user).enqueue(cb);
+    }
+
+    public void signUp(User user, Callback<User> cb) {
+        bkaraRestful.signUp(user).enqueue(cb);
+    }
+
     private BkaraService() {
         SetupRestfulService();
+    }
+
+    public class JsonDateDeserializer implements JsonDeserializer<Date> {
+        public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            String s = json.getAsJsonPrimitive().getAsString();
+            Date d = new Date(Long.parseLong(s));
+            return d;
+        }
     }
 }

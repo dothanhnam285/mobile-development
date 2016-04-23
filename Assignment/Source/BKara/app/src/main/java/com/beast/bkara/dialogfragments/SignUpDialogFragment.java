@@ -23,11 +23,13 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.User;
 import com.beast.bkara.util.AlbumStorageDirFactory;
 import com.beast.bkara.util.BaseAlbumDirFactory;
+import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.util.FroyoAlbumDirFactory;
 import com.beast.bkara.util.ImageCaptureHandler;
 import com.beast.bkara.util.ImageResponse;
@@ -41,6 +43,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -50,13 +54,18 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SignUpDialogFragment.OnFragmentInteractionListener} interface
+ * {@link SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SignUpDialogFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class SignUpDialogFragment extends DialogFragment {
     private final String TAG = "SignUpDialogFragment";
+    private final String USER_DATA = "user";
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+
     private ImageCaptureHandler mImageCaptureHandler;
     private CircularImageView mImageView;
     private EditText userName,password , repassword, email;
@@ -70,7 +79,7 @@ public class SignUpDialogFragment extends DialogFragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnSignUpDialogFragmentInteractionListener mListener;
 
     public SignUpDialogFragment() {
         // Required empty public constructor
@@ -138,15 +147,23 @@ public class SignUpDialogFragment extends DialogFragment {
         v.findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateSignUpForm();
-                signUp();
+                if( isSignUpFormValid())
+                    signUp();
             }
         });
 
         return v;
     }
 
-    private void validateSignUpForm() {
+
+    public boolean isEmailValid(String email) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+        return matcher.find();
+    }
+
+
+    private boolean isSignUpFormValid() {
+        boolean isValid = false;
         if( userName.getText().toString().equalsIgnoreCase("") )
             userName.setError("Please fill in 'UserName' field");
         else if( password.getText().toString().equalsIgnoreCase("") )
@@ -155,8 +172,13 @@ public class SignUpDialogFragment extends DialogFragment {
             repassword.setError("Please re-type password");
         else if( email.getText().toString().equalsIgnoreCase("") )
             email.setError("Please fill in 'Email' field");
+        else if ( !isEmailValid(email.getText().toString()) )
+            email.setError("Email is not valid");
         else if ( !password.getText().toString().equals(repassword.getText().toString()) )
             repassword.setError("Re-type password mismatch");
+        else isValid = true;
+
+        return isValid;
     }
 
 
@@ -182,33 +204,54 @@ public class SignUpDialogFragment extends DialogFragment {
             });
         }
 
+        signUpContinue(imgLink[0]);
+    }
+
+
+    private void signUpContinue(String imgLink) {
         // Post new user info to our server
-        User user = new User();
+        final User user = new User();
         user.setUserName(userName.getText().toString());
         user.setPassword(password.getText().toString());
         user.setEmail(email.getText().toString());
-        if( imgLink[0] != null )
-            user.setAvatarLink(imgLink[0]);
+        if( imgLink != null )
+            user.setAvatarLink(imgLink);
         ArrayList<Record> records = new ArrayList<>();
-        records.add(new Record());
+        Record record = new Record();
+        record.setDate_created(new Date());
+        records.add(record);
         user.setRecords(records);
 
         // Do sign up
-        Controller controller = (Controller) getActivity().getApplicationContext();
-        controller.signUp(user, new Callback<ResponseBody>() {
+         BkaraService.getInstance().signUp(user, new Callback<User>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
                 if( response.isSuccessful() ) {
-                    Toast.makeText(getActivity().getApplicationContext(),"Sign up successfully "+response.body().toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.sign_up_success_msg, Toast.LENGTH_LONG).show();
+                    redirectToHome(response.body());
+                }else {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.user_existed_error, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getActivity().getApplicationContext(),"Sign up failed", Toast.LENGTH_LONG).show();
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(),R.string.network_error, Toast.LENGTH_LONG).show();
             }
         });
     }
+
+
+    private void redirectToHome(User user) {
+        /*if( getDialog() != null )
+            getDialog().dismiss();
+
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra(USER_DATA, user);
+        getActivity().startActivity(intent);*/
+        mListener.onSignUpSuccessfully(user);
+    }
+
 
     /**
      * As its name suggested
@@ -218,6 +261,7 @@ public class SignUpDialogFragment extends DialogFragment {
         Intent takePictureIntent = mImageCaptureHandler.dispatchTakePictureIntent(actionCode);
         startActivityForResult(takePictureIntent, actionCode);
     }
+
 
     /**
      * Get result back from camera intent and set image to ImageView
@@ -262,16 +306,16 @@ public class SignUpDialogFragment extends DialogFragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        /*if (mListener != null) {
+            mListener.(uri);
+        }*/
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnSignUpDialogFragmentInteractionListener) {
+            mListener = (OnSignUpDialogFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -294,9 +338,9 @@ public class SignUpDialogFragment extends DialogFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnSignUpDialogFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onSignUpSuccessfully(User user);
     }
 
 

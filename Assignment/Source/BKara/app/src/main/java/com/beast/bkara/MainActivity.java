@@ -2,6 +2,7 @@ package com.beast.bkara;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -23,12 +24,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
+import com.beast.bkara.model.User;
 import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.util.SongSearchView;
 import com.beast.bkara.util.UploadToSoundCloudTask;
@@ -46,12 +49,13 @@ public class MainActivity extends AppCompatActivity implements
         GenresFragment.OnFragmentInteractionListener,
         KaraokeFragment.OnFragmentInteractionListener,
         LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
-        SignUpDialogFragment.OnFragmentInteractionListener,
+        SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
         SaveRecordDialogFragment.OnFragmentInteractionListener {
 
     private RelativeLayout mLayout;
     private LayoutInflater mLayoutInflater;
     private PopupWindow mPopupWindow;
+    private DialogFragment loginFragment,signUpFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,15 +99,29 @@ public class MainActivity extends AppCompatActivity implements
 //        uploadToSoundCloudTask.execute();
 
     }
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+
+        // Double back pressed
+        if( doubleBackToExitPressedOnce ){
             super.onBackPressed();
+            return;
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, R.string.press_twice_exit_app_msg, Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 
     @Override
@@ -196,7 +214,6 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Display view based on selected navigation item
-     *
      * @param viewId selected navigation item's id
      */
     private void displayView(int viewId) {
@@ -287,9 +304,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void login(View v) {
-        DialogFragment loginFragment = LoginDialogFragment.newInstance(null, null);
-        loginFragment.show(getSupportFragmentManager(), "LOGIN");
-    }
+        loginFragment = LoginDialogFragment.newInstance(null, null);
+        loginFragment.show(getSupportFragmentManager(),"LOGIN");
+}
 
     @Override
     public void onLoginDialogFragmentInteraction(Uri uri) {
@@ -298,7 +315,73 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onOpenSignUpForm() {
-        DialogFragment signUpFragment = SignUpDialogFragment.newInstance(null, null);
-        signUpFragment.show(getSupportFragmentManager(), "SIGN UP");
+        signUpFragment = SignUpDialogFragment.newInstance(null, null);
+        signUpFragment.show(getSupportFragmentManager(),"SIGN UP");
+    }
+
+
+    @Override
+    public void onLoginSuccessfully(User user) {
+        if( loginFragment != null && loginFragment.getDialog() != null )
+            loginFragment.dismiss();
+        else {
+            loginFragment = (DialogFragment) getSupportFragmentManager().findFragmentByTag("LOGIN");
+            loginFragment.getDialog().dismiss();
+        }
+
+        setUserInfoAfterLoginSuccessfully(user);
+    }
+
+
+    @Override
+    public void onSignUpSuccessfully(User user) {
+        if( loginFragment != null && loginFragment.getDialog() != null )
+            loginFragment.dismiss();
+
+        if( signUpFragment != null && signUpFragment.getDialog() != null )
+            signUpFragment.dismiss();
+
+        setUserInfoAfterLoginSuccessfully(user);
+    }
+
+    private void setUserInfoAfterLoginSuccessfully(User user) {
+        final TextView welcome, login , logout;
+
+        welcome = (TextView) findViewById(R.id.nav_header_tv_welcome);
+        login = (TextView) findViewById(R.id.nav_header_tv_login);
+        logout = (TextView) findViewById(R.id.nav_header_tv_logout);
+
+        if ( welcome == null || login == null || logout == null)
+            return;
+
+        login.setVisibility(View.GONE);
+
+        final Controller controller = (Controller) getApplicationContext();
+        // it also means user has logon -> isLogin() returns true
+        controller.setCurrUser(user);
+
+        welcome.setText("Hi, " +user.getUserName());
+        welcome.setVisibility(View.VISIBLE);
+
+        logout.setVisibility(View.VISIBLE);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
+    }
+
+    private void logout() {
+        Controller controller = (Controller) getApplicationContext();
+        // isLogin() returns false
+        controller.setCurrUser(null);
+
+        findViewById(R.id.nav_header_tv_welcome).setVisibility(View.GONE);
+        findViewById(R.id.nav_header_tv_login).setVisibility(View.VISIBLE);
+        findViewById(R.id.nav_header_tv_logout).setVisibility(View.GONE);
+
+
     }
 }

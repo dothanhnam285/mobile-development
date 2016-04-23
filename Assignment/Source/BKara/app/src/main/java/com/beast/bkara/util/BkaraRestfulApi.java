@@ -17,7 +17,7 @@ import retrofit2.http.POST;
  */
 
 // Interface for calling restful server
-public interface BkaraRestfulAPI {
+public interface BkaraRestfulApi {
     // Request method and URL specified in the annotation
     // Callback for the parsed response is the last parameter
 
@@ -31,8 +31,8 @@ public interface BkaraRestfulAPI {
     Call<List<Song>> findSongsBySingerName(@Path("singername") String singerName);
 
     @POST("signUp")
-    Call<ResponseBody> signUp(@Body User user);
+    Call<User> signUp(@Body User user);
 
     @POST("login")
-    Call<ResponseBody> login(@Body User user);
+    Call<User> login(@Body User user);
 }

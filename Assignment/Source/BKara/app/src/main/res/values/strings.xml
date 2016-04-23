@@ -32,5 +32,10 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_re_password">Retype password</string>
     <string name="bkara_album_avatar">BkaraAvatarAlbum</string>
+    <string name="press_twice_exit_app_msg">Please click BACK again to exit</string>
+    <string name="network_error">Network error !!!</string>
+    <string name="user_existed_error">User is already existed !</string>
+    <string name="user_not_existed_error">User not found . Please try again !</string>
+    <string name="sign_up_success_msg">"Sign up successfully "</string>
 
 </resources>

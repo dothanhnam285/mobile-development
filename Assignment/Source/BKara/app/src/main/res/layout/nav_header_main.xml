@@ -34,18 +34,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
             android:clickable="true"
-            android:onClick="login"/>
+            android:onClick="login"
+            android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/nav_header_tv_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi, User"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:clickable="true"
+            android:visibility="gone"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/nav_header_tv_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+            android:clickable="true"
+            android:onClick="logout"
+            android:visibility="gone"
+            android:textSize="20sp"/>
+
+        <!--<TextView
             android:layout_marginTop="8dp"
             android:id="@+id/nav_header_tv_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Join BKara"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:clickable="true" />
+            android:clickable="true" />-->
     </LinearLayout>
 
 </LinearLayout>

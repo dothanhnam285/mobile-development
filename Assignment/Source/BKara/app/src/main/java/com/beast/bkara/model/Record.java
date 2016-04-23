@@ -19,6 +19,7 @@ public class Record extends BaseObservable {
     private float rating;
     private String dummy_path;
 
+
     @BindingAdapter("app:setDate")
     public static void setDate(TextView view, Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

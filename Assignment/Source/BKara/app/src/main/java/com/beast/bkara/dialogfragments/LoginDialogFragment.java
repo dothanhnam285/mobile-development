@@ -12,13 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.User;
+import com.beast.bkara.util.BkaraService;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +29,7 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class LoginDialogFragment extends DialogFragment {
+    private static final String USER_DATA = "user";
     private EditText userName , password;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -74,6 +72,8 @@ public class LoginDialogFragment extends DialogFragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        // retain this fragment
+        //setRetainInstance(true);
 
         // Full screen dialog
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
@@ -103,35 +103,40 @@ public class LoginDialogFragment extends DialogFragment {
         v.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User user = new User();
-                user.setUserName(userName.getText().toString());
-                user.setPassword(password.getText().toString());
-
-                Controller controller = (Controller) getActivity().getApplicationContext();
-                controller.login(user, new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            try {
-                                if(  response.isSuccessful() )
-                                    Toast.makeText(getActivity().getApplicationContext(),response.body().string(), Toast.LENGTH_LONG).show();
-                                else if ( response != null )
-                                    Toast.makeText(getActivity().getApplicationContext(),response.errorBody().string(), Toast.LENGTH_LONG).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Toast.makeText(getActivity().getApplicationContext(),"Login failed "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                login();
             }
         });
 
         return v;
     }
+
+
+    private void login(){
+        final User user = new User();
+        user.setUserName(userName.getText().toString());
+        user.setPassword(password.getText().toString());
+
+        BkaraService.getInstance().login(user, new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if(  response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Welcome "+ response.body().getUserName(), Toast.LENGTH_LONG).show();
+                    mListener.onLoginSuccessfully(response.body());
+                }
+                else {
+                    Toast.makeText(getActivity().getApplicationContext(), R.string.user_not_existed_error, Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.network_error, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -175,5 +180,7 @@ public class LoginDialogFragment extends DialogFragment {
         // TODO: Update argument type and name
         void onLoginDialogFragmentInteraction(Uri uri);
         void onOpenSignUpForm();
+
+        void onLoginSuccessfully(User user);
     }
 }

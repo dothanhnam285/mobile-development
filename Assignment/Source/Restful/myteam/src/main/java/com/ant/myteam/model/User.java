@@ -23,36 +23,34 @@ import javax.persistence.Table;
  * @author VINH
  */
 @Entity
-@Table(name="User")
-public class User implements Serializable{
+@Table(name = "User")
+public class User implements Serializable {
+
     private static final long serialVersionUID = 1L;
-    
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long userId;
-    
+
     @Column(nullable = false, unique = true)
     private String userName;
-    
-    @Column(nullable = false , unique = true)
+
+    @Column(nullable = false, unique = true)
     private String email;
-    
+
     @Column(nullable = false)
     private String password;
-    
+
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String avatarLink;
     private String country;
     private String address;
-    
-    //@OneToMany(mappedBy = "User", cascade = CascadeType.ALL)
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "userId")
     private List<Record> records;
-    
 
     public Long getUserId() {
         return userId;
@@ -133,7 +131,6 @@ public class User implements Serializable{
     public void setAddress(String address) {
         this.address = address;
     }
-   
 
     public List<Record> getRecords() {
         return records;

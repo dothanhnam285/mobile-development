@@ -33,16 +33,23 @@ public class UserDao {
         return false;
     }
     
-    public boolean checkUserExisted(User user){
+    public User checkUserExisted(User user){
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE username = :username AND password = :password");
+            Query query;
+            if( user.getPassword() == null || user.getPassword().equals("") ){
+                query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE username = :username");
+                query.setParameter("username", user.getUserName());
+            }else{
+                query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE username = :username AND password = :password");
             query.setParameter("username", user.getUserName());
             query.setParameter("password", user.getPassword());
-            if( query.uniqueResult() != null )
-                return true;
+            }
+            
+            //if( query.uniqueResult() != null )
+                return (User) query.uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 }

@@ -22,7 +22,7 @@ public class SongSearchView extends SearchView {
     }
 
     public interface OnSearchViewCollapsedEventListener{
-        public void onSearchViewCollapsed();
+        void onSearchViewCollapsed();
     }
 
     public void setOnSearchViewCollapsedEventListener(OnSearchViewCollapsedEventListener eventListener) {
