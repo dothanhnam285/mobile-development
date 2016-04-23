@@ -11,34 +11,38 @@ import com.ant.myteam.model.Song;
 
 @Service
 public class SongServiceImpl implements SongService, Serializable {
-	
-	private static final long serialVersionUID = 1L;
-	
-	@Autowired
-	private SongDao songDao;
 
-	public boolean addSong(Song song) {
-		return songDao.addSong(song);
-	}
+    private static final long serialVersionUID = 1L;
 
-	public boolean updateSong(Song song) {
-		return songDao.updateSong(song);
-	}
+    @Autowired
+    private SongDao songDao;
 
-	public boolean deleteSong(Song song) {
-		return songDao.deleteSong(song);
-	}
+    public boolean addSong(Song song) {
+        return songDao.addSong(song);
+    }
 
-	public Song findSongById(long songId) {
-		return songDao.findSongById(songId);
-	}
+    public boolean updateSong(Song song) {
+        return songDao.updateSong(song);
+    }
 
-	public List<Song> findAllSongs() {
-		return songDao.findAllSongs();
-	}
-        
-        public List<Song> findSongByName(String name) {
-            return songDao.findSongByName(name);
-        }
+    public boolean deleteSong(Song song) {
+        return songDao.deleteSong(song);
+    }
+
+    public Song findSongById(long songId) {
+        return songDao.findSongById(songId);
+    }
+
+    public List<Song> findAllSongs() {
+        return songDao.findAllSongs();
+    }
+
+    public List<Song> findSongsByName(String name) {
+        return songDao.findSongsByName(name);
+    }
+
+    public List<Song> findSongsBySingerName(String name) {
+        return songDao.findSongsBySingerName(name);
+    }
 
 }

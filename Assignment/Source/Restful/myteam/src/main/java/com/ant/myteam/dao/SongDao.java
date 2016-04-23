@@ -16,6 +16,8 @@ public interface SongDao {
 	
 	public List<Song> findAllSongs();
         
-        public List<Song> findSongByName(String name);
+        public List<Song> findSongsByName(String name);
+        
+        public List<Song> findSongsBySingerName(String name);
 	
 }

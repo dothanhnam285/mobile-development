@@ -41,6 +41,9 @@ public class Singer implements Serializable {
     private String name;
     
     @Column(nullable = true)
+    private String name_search;
+    
+    @Column(nullable = true)
     private String poster;
     
     @JsonIgnore

@@ -34,35 +34,39 @@ public class BkaraController {
     @Autowired
     private SongBean songBean;
 
-
     @Autowired
     private UserDao userDao;
-
 
     @RequestMapping(value = "/songlist/all", method = RequestMethod.GET)
     public List<Song> getListSongAll() {
         return songBean.getSonglistall();
     }
 
-    @RequestMapping(value = "/songlist/search/name/{songname}", method = RequestMethod.GET)
-    public List<Song> findSongByName(@PathVariable("songname") String songName) {
-        return songBean.findSongByName(songName);
+    @RequestMapping(value = "/songlist/search/songname/{songname}", method = RequestMethod.GET)
+    public List<Song> findSongsByName(@PathVariable("songname") String songName) {
+        return songBean.findSongsByName(songName);
     }
 
+    @RequestMapping(value = "/songlist/search/singername/{singername}", method = RequestMethod.GET)
+    public List<Song> findSongsBySingerName(@PathVariable("singername") String singerName) {
+        return songBean.findSongsBySingerName(singerName);
+    }
 
-    @RequestMapping(value= "/signUp",method = RequestMethod.POST)
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public ResponseEntity<Void> signUp(@RequestBody User user) {
         System.out.println("Creating User " + user.getUserName());
         userDao.save(user);
         return new ResponseEntity<Void>(new HttpHeaders(), HttpStatus.CREATED);
     }
 
-    @RequestMapping(value= "/login",method = RequestMethod.POST)
-    public ResponseEntity<String> checkUserExisted(@RequestBody User user){
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<String> checkUserExisted(@RequestBody User user) {
         System.out.println("Check User " + user.getUserName());
-        if( !userDao.checkUserExisted(user) )
-            return new ResponseEntity<String>("User not found . Please try again !",new HttpHeaders(), HttpStatus.NOT_FOUND);
-        else return new ResponseEntity<String>("Login successfully !!!",new HttpHeaders(), HttpStatus.OK);
+        if (!userDao.checkUserExisted(user)) {
+            return new ResponseEntity<String>("User not found . Please try again !", new HttpHeaders(), HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<String>("Login successfully !!!", new HttpHeaders(), HttpStatus.OK);
+        }
     }
 
 //    @RequestMapping(value = "/user/", method = RequestMethod.POST)
@@ -80,5 +84,4 @@ public class BkaraController {
 //        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
 //        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 //    }
-
 }

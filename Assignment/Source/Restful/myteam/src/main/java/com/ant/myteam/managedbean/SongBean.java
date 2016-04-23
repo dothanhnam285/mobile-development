@@ -14,30 +14,34 @@ import com.ant.myteam.service.SongService;
 
 @Component("songBean")
 public class SongBean implements Serializable {
-	
-	private static final long serialVersionUID = 1L;
 
-	Log log = LogFactory.getLog(SongBean.class);
-	
-	@Autowired
-	private SongService songService;
-	
-	private List<Song> songlistall = new ArrayList<Song>();
-	
-	public SongBean() {
-	}
+    private static final long serialVersionUID = 1L;
 
-	public List<Song> getSonglistall() {
-		songlistall = songService.findAllSongs();
-		return songlistall;
-	}
-        
-        public List<Song> findSongByName(String name) {
-            return songService.findSongByName(name);
-        }
+    Log log = LogFactory.getLog(SongBean.class);
 
-	public void setSonglistall(List<Song> songlist) {
-		this.songlistall = songlist;
-	}	
-	
+    @Autowired
+    private SongService songService;
+
+    private List<Song> songlistall = new ArrayList<Song>();
+
+    public SongBean() {
+    }
+
+    public List<Song> getSonglistall() {
+        songlistall = songService.findAllSongs();
+        return songlistall;
+    }
+
+    public void setSonglistall(List<Song> songlist) {
+        this.songlistall = songlist;
+    }
+
+    public List<Song> findSongsByName(String name) {
+        return songService.findSongsByName(name);
+    }
+
+    public List<Song> findSongsBySingerName(String name) {
+        return songService.findSongsBySingerName(name);
+    }
+
 }
