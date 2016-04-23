@@ -28,6 +28,7 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.hedgehog.ratingbar.RatingBar;
 
 import java.io.IOException;
 

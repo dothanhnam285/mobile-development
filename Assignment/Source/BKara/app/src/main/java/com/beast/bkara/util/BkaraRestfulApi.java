@@ -24,8 +24,11 @@ public interface BkaraRestfulAPI {
     @GET("songlist/all")
     Call<List<Song>> getSongListAll();
 
-    @GET("songlist/search/name/{songname}")
+    @GET("songlist/search/songname/{songname}")
     Call<List<Song>> findSongsByName(@Path("songname") String songName);
+
+    @GET("songlist/search/singername/{singername}")
+    Call<List<Song>> findSongsBySingerName(@Path("singername") String singerName);
 
     @POST("signUp")
     Call<ResponseBody> signUp(@Body User user);

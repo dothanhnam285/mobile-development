@@ -23,17 +23,16 @@
                 android:layout_height="wrap_content" />
 
             <com.hedgehog.ratingbar.RatingBar
-                android:gravity="right"
                 android:id="@+id/ratingbar"
+                android:gravity="right|center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                hedgehog:starEmpty="@mipmap/ic_star_empty"
-                hedgehog:starFill="@mipmap/ic_star_fill"
+                hedgehog:starEmpty="@drawable/ic_star_empty"
+                hedgehog:starFill="@drawable/ic_star_full"
+                hedgehog:starHalf="@drawable/ic_star_half"
                 hedgehog:starCount="5"
                 hedgehog:clickable="true"
-                hedgehog:starImageSize="20dp"
-
-                />
+                hedgehog:starImageSize="25dp" />
 
         </LinearLayout>
 

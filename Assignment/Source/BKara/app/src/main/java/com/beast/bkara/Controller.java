@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Controller extends Application {
 
     public static final String YOUTUBE_API_KEY = "AIzaSyDyyVofQ_tgdvQEh30ikZ7LipiQbWeLA1g";
-    public static final String RESTFUL_URL = "http://192.168.0.101:8080/myteam/bkaraservice/";
+    public static final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
             //"http://192.168.1.102:8080/myteam/bkaraservice/";
 
 
@@ -78,8 +78,24 @@ public class Controller extends Application {
         });
     }
 
+/*    public void Check() {
+        Call<ResponseBody> call = bkaraService.check("ph");
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("CHECK", "SUCCESS " + response.message());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("CHECK", "FAILED " + t.getMessage());
+            }
+        });
+    }*/
+
     public Controller() {
         SetupRestfulService();
+        //Check();
     }
 
     public boolean isLogin() {

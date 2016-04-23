@@ -29,7 +29,7 @@ public class BkaraService {
     }
 
     private final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
-    private BkaraRestfulApi bkaraRestful;
+    private BkaraRestfulAPI bkaraRestful;
 
     public enum WhichList {
         ALL, HOT, NEW, SEARCH
@@ -49,7 +49,7 @@ public class BkaraService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        bkaraRestful = retrofit.create(BkaraRestfulApi.class);
+        bkaraRestful = retrofit.create(BkaraRestfulAPI.class);
     }
 
     public void GetSongList(final WhichList whichList, final ObservableList<Song> songList, final ProgressBar progressBar) {
@@ -89,7 +89,7 @@ public class BkaraService {
 
         switch(searchFilter) {
             case SINGER_NAME:
-                call = bkaraRestful.findSongsByName(searchValue);
+                call = bkaraRestful.findSongsBySingerName(searchValue);
                 break;
             default:
                 call = bkaraRestful.findSongsByName(searchValue);
@@ -99,7 +99,7 @@ public class BkaraService {
         call.enqueue(new Callback<List<Song>>() {
             @Override
             public void onResponse(Call<List<Song>> call, Response<List<Song>> response) {
-                Log.d("RESTFUL CALL", "SUCCESS");
+                Log.d("RESTFUL CALL", "SUCCESS " + response.toString());
                 songList.clear();
                 songList.addAll(response.body());
                 progressBar.setVisibility(View.GONE);

@@ -2,14 +2,13 @@ package com.beast.bkara;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.support.design.widget.NavigationView;
@@ -30,6 +29,7 @@ import com.beast.bkara.dialogfragments.LoginDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
 import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.SongSearchView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -99,12 +99,33 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        // Handle SearchView behaviour
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SongSearchView searchView = (SongSearchView) MenuItemCompat.getActionView(searchItem);
+
+        final MenuItem filterBySongName = menu.findItem(R.id.filter_by_song_name);
+        final MenuItem filterBySingerName = menu.findItem(R.id.filter_by_singer_name);
+
+        searchView.setIconifiedByDefault(true);
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.findItem(R.id.action_filter).setVisible(true);
+            }
+        });
+
+        searchView.setOnSearchViewCollapsedEventListener(new SongSearchView.OnSearchViewCollapsedEventListener() {
+            @Override
+            public void onSearchViewCollapsed() {
+                menu.findItem(R.id.action_filter).setVisible(false);
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -112,8 +133,15 @@ public class MainActivity extends AppCompatActivity implements
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
-                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
-                displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SONG_NAME, query), "SONG");
+
+                if (filterBySongName.isChecked()) {
+                    Log.d("BKARA", "SEARCH BY SONG NAME");
+                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SONG_NAME, query), "SONG");
+                }
+                else {
+                    Log.d("BKARA", "SEARCH BY SINGER NAME");
+                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SINGER_NAME, query), "SONG");
+                }
 
                 searchView.clearFocus();
 
@@ -137,8 +165,15 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.filter_by_song_name:
+                item.setChecked(true);
+                return true;
+            case R.id.filter_by_singer_name:
+                item.setChecked(true);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
