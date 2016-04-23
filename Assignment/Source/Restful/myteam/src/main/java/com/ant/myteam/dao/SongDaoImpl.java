@@ -10,8 +10,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.ant.myteam.model.Employee;
 import com.ant.myteam.model.Song;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
@@ -72,7 +70,7 @@ public class SongDaoImpl implements SongDao, Serializable {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Song.class);
 		return (List<Song>) criteria.list();
 	}
-        
+
         public List<Song> findSongByName(String name) {
             Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Song.class);
             criteria.add(Restrictions.like("title_search", "%" + name + "%").ignoreCase());

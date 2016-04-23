@@ -67,6 +67,7 @@ public class ImageCaptureHandler {
     private VideoView mVideoView;
     private Uri mVideoUri;
 
+
     private String mCurrentPhotoPath;
 
     private static final String JPEG_FILE_PREFIX = "IMG_";
@@ -76,6 +77,16 @@ public class ImageCaptureHandler {
 
     private String albumName;
     private Activity mContext;
+
+    private boolean isAlreadyCaptured = false;
+
+    public boolean isAlreadyCaptured() {
+        return isAlreadyCaptured;
+    }
+
+    public String getmCurrentPhotoPath() {
+        return mCurrentPhotoPath;
+    }
 
     public ImageCaptureHandler(Activity context, ImageView imageView) {
         this.mContext = context;
@@ -222,6 +233,7 @@ public class ImageCaptureHandler {
         //mVideoUri = null;
         mImageView.setVisibility(View.VISIBLE);
         //mVideoView.setVisibility(View.INVISIBLE);
+        isAlreadyCaptured = true;
     }
 
     public void handleBigCameraPhoto() {
@@ -229,7 +241,8 @@ public class ImageCaptureHandler {
         if (mCurrentPhotoPath != null) {
             setPic();
             galleryAddPic();
-            mCurrentPhotoPath = null;
+            //mCurrentPhotoPath = null;
+            isAlreadyCaptured = true;
         }
 
     }

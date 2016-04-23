@@ -5,85 +5,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
 <h:head>
-	<title>My Team 222</title>
+	<title>My Team</title>
 </h:head>
 
 <h:body>
-	<b:container>
-		<h2>My Team 2 hahaha</h2>
-		<h2>My Team 3</h2>
-		<h2>My Team 4</h2>
-		<hr />
-
-
-		<b:row>
-			<b:column>
-				<h:form id="empForm">
-
-
-					<b:dataTable value="#{songBean.songlistall}" var="song" id="songPool"
-						styleClass="table table-striped table-bordered" style="width:100%">
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="FirstName" />
-							</f:facet>
-							<b:inputText value="#{song.singer.name}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="LastName" />
-							</f:facet>
-							<b:inputText value="#{song.poster}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">
-								<h:outputText value="Operation" />
-							</f:facet>
-
-							<b:commandButton value="Delete" look="danger" update="empForm"
-								action="#{empBean.deleteEmployee(emp)}" />
-							<b:commandButton value="Update" look="info" update="empForm"
-								action="#{empBean.updateEmployee(emp)}" style="margin-left:1em" />
-
-						</h:column>
-
-					</b:dataTable>
-				</h:form>
-			</b:column>
-		</b:row>
-		<b:row>
-			<button class="btn btn-success btn-sm pull-right"
-				data-target="#addemployeemodal" data-toggle="modal">Add</button>
-		</b:row>
-
-		<b:modal id="addemployeemodal" title="Add New Employee"
-			size="modal-sm" styleClass="modalPseudoClass">
-			<h:form style="padding:1em">
-				<b:row>
-					<h:panelGrid columns="2" cellpadding="5">
-						<h:outputText value="FirstName: " />
-						<b:inputText id="inputFirstName" style="margin-left:0.5em"
-							value="#{empBean.inputfirstname}" />
-						<h:outputText value="LastName: " />
-						<b:inputText id="inputLastName" style="margin-left:0.5em"
-							value="#{empBean.inputlastname}" />
-					</h:panelGrid>
-				</b:row>
-				<b:row>
-					<b:commandButton value="Add" look="success" class="pull-right"
-						action="#{empBean.addEmployee}" update="empForm" />
-				</b:row>
-
-			</h:form>
-
-
-			<f:facet name="footer">
-				<b:button value="Close" dismiss="modal" onclick="return false;" />
-			</f:facet>
-		</b:modal>
-
-	</b:container>
+	Hello
 </h:body>
 </html>

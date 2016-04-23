@@ -9,8 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
+import com.beast.bkara.model.User;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +32,8 @@ import com.beast.bkara.R;
  * create an instance of this fragment.
  */
 public class LoginDialogFragment extends DialogFragment {
+    private EditText userName , password;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -74,11 +87,46 @@ public class LoginDialogFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login_dialog, container, false);
 
+        userName = (EditText) v.findViewById(R.id.login_username);
+        password = (EditText) v.findViewById(R.id.login_password);
+
+        // Sign up button
         Button btnOpenSignUpForm = (Button) v.findViewById(R.id.sign_up_button);
         btnOpenSignUpForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onOpenSignUpForm();
+            }
+        });
+
+        // Login button
+        v.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User user = new User();
+                user.setUserName(userName.getText().toString());
+                user.setPassword(password.getText().toString());
+
+                Controller controller = (Controller) getActivity().getApplicationContext();
+                controller.login(user, new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            try {
+                                if(  response.isSuccessful() )
+                                    Toast.makeText(getActivity().getApplicationContext(),response.body().string(), Toast.LENGTH_LONG).show();
+                                else if ( response != null )
+                                    Toast.makeText(getActivity().getApplicationContext(),response.errorBody().string(), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(getActivity().getApplicationContext(),"Login failed "+ t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 

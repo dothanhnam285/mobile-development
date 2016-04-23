@@ -2,17 +2,15 @@ package com.beast.bkara.fragments;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.beast.bkara.R;
+//import com.beast.bkara.databinding.FragmentGenresBinding;
 import com.beast.bkara.databinding.FragmentGenresBinding;
 import com.beast.bkara.viewmodel.GenreViewModel;
 

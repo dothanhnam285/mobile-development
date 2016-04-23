@@ -10,27 +10,42 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
+import com.beast.bkara.model.Record;
+import com.beast.bkara.model.User;
 import com.beast.bkara.util.AlbumStorageDirFactory;
 import com.beast.bkara.util.BaseAlbumDirFactory;
 import com.beast.bkara.util.FroyoAlbumDirFactory;
 import com.beast.bkara.util.ImageCaptureHandler;
+import com.beast.bkara.util.ImageResponse;
+import com.beast.bkara.util.ImageUpload;
 import com.beast.bkara.util.ImageUtil;
+import com.beast.bkara.util.ImgurService;
 import com.github.siyamed.shapeimageview.CircularImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,9 +56,10 @@ import java.util.Date;
  * create an instance of this fragment.
  */
 public class SignUpDialogFragment extends DialogFragment {
-
+    private final String TAG = "SignUpDialogFragment";
     private ImageCaptureHandler mImageCaptureHandler;
     private CircularImageView mImageView;
+    private EditText userName,password , repassword, email;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -98,6 +114,13 @@ public class SignUpDialogFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_up_dialog, container, false);
 
+        // Find edit text
+        userName = (EditText) v.findViewById(R.id.sign_up_username);
+        password = (EditText) v.findViewById(R.id.sign_up_password);
+        repassword = (EditText) v.findViewById(R.id.sign_up_re_password);
+        email = (EditText) v.findViewById(R.id.sign_up_email);
+
+
         // In order to use @ImageCaptureHandler , you must initialize two things below here ( in @onCreate )
         mImageView = (CircularImageView) v.findViewById(R.id.sign_up_avatar);
         mImageCaptureHandler = new ImageCaptureHandler(getActivity(),mImageView);
@@ -112,7 +135,79 @@ public class SignUpDialogFragment extends DialogFragment {
         });
         // ~~
 
+        v.findViewById(R.id.sign_up_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateSignUpForm();
+                signUp();
+            }
+        });
+
         return v;
+    }
+
+    private void validateSignUpForm() {
+        if( userName.getText().toString().equalsIgnoreCase("") )
+            userName.setError("Please fill in 'UserName' field");
+        else if( password.getText().toString().equalsIgnoreCase("") )
+            password.setError("Please fill in 'Password' field");
+        else if( repassword.getText().toString().equalsIgnoreCase("") )
+            repassword.setError("Please re-type password");
+        else if( email.getText().toString().equalsIgnoreCase("") )
+            email.setError("Please fill in 'Email' field");
+        else if ( !password.getText().toString().equals(repassword.getText().toString()) )
+            repassword.setError("Re-type password mismatch");
+    }
+
+
+    private void signUp() {
+        final String[] imgLink = {null};
+
+        // New image is set in imageview -> upload to imgur server
+        if( mImageCaptureHandler.isAlreadyCaptured() ){
+            ImageUpload imgUpload = new ImageUpload(new File(mImageCaptureHandler.getmCurrentPhotoPath()));
+            ImgurService.getInstance().uploadFileToImgur(imgUpload, new Callback<ImageResponse>() {
+                @Override
+                public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {
+                    if( response.isSuccessful() ) {
+                        imgLink[0] = response.body().data.link;
+                        Log.i(TAG, "Post image successfully " + imgLink[0]);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ImageResponse> call, Throwable t) {
+                    Log.i(TAG, "Post image to IMGUR failed " + t.getLocalizedMessage());
+                }
+            });
+        }
+
+        // Post new user info to our server
+        User user = new User();
+        user.setUserName(userName.getText().toString());
+        user.setPassword(password.getText().toString());
+        user.setEmail(email.getText().toString());
+        if( imgLink[0] != null )
+            user.setAvatarLink(imgLink[0]);
+        ArrayList<Record> records = new ArrayList<>();
+        records.add(new Record());
+        user.setRecords(records);
+
+        // Do sign up
+        Controller controller = (Controller) getActivity().getApplicationContext();
+        controller.signUp(user, new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if( response.isSuccessful() ) {
+                    Toast.makeText(getActivity().getApplicationContext(),"Sign up successfully "+response.body().toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(),"Sign up failed", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -134,6 +229,7 @@ public class SignUpDialogFragment extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if( mImageCaptureHandler != null )
             mImageCaptureHandler.onActivityResult(requestCode,resultCode,data);
+
     }
 
 
@@ -160,6 +256,8 @@ public class SignUpDialogFragment extends DialogFragment {
         if( mImageCaptureHandler != null )
             mImageCaptureHandler.onViewStateRestored(savedInstanceState);
     }
+
+
 
 
     // TODO: Rename method, update argument and hook method into UI event
