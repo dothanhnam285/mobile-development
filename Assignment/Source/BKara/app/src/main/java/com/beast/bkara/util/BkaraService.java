@@ -41,7 +41,7 @@ public class BkaraService {
 
     private void SetupRestfulService() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd-MM-yyyy")
+                .setDateFormat("yyyy-MM-dd")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()

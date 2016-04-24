@@ -26,12 +26,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
+import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
 import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.util.SongSearchView;
+import com.beast.bkara.util.UploadToSoundCloudTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -40,10 +44,10 @@ public class MainActivity extends AppCompatActivity implements
         SongsFragment.OnFragmentInteractionListener,
         SongListFragment.OnFragmentInteractionListener,
         GenresFragment.OnFragmentInteractionListener,
-		KaraokeFragment.OnFragmentInteractionListener,
+        KaraokeFragment.OnFragmentInteractionListener,
         LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
-        SignUpDialogFragment.OnFragmentInteractionListener
-{
+        SignUpDialogFragment.OnFragmentInteractionListener,
+        SaveRecordDialogFragment.OnFragmentInteractionListener {
 
     private RelativeLayout mLayout;
     private LayoutInflater mLayoutInflater;
@@ -86,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set the default view to Home item
         displayView(R.id.nav_home);
+
+//        UploadToSoundCloudTask uploadToSoundCloudTask = new UploadToSoundCloudTask();
+//        uploadToSoundCloudTask.execute();
+
     }
 
     @Override
@@ -137,8 +145,7 @@ public class MainActivity extends AppCompatActivity implements
                 if (filterBySongName.isChecked()) {
                     Log.d("BKARA", "SEARCH BY SONG NAME");
                     displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SONG_NAME, query), "SONG");
-                }
-                else {
+                } else {
                     Log.d("BKARA", "SEARCH BY SINGER NAME");
                     displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SINGER_NAME, query), "SONG");
                 }
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Display view based on selected navigation item
+     *
      * @param viewId selected navigation item's id
      */
     private void displayView(int viewId) {
@@ -269,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements
         int width = displayMetrics.widthPixels;
 
         // Create popup window
-        mPopupWindow = new PopupWindow(container, (int)(height * 0.7), (int)(width * 0.8), true);
+        mPopupWindow = new PopupWindow(container, (int) (height * 0.7), (int) (width * 0.8), true);
         mPopupWindow.showAtLocation(mLayout, Gravity.CENTER, 0, 0);
     }
 
@@ -280,8 +288,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public void login(View v) {
         DialogFragment loginFragment = LoginDialogFragment.newInstance(null, null);
-        loginFragment.show(getSupportFragmentManager(),"LOGIN");
-}
+        loginFragment.show(getSupportFragmentManager(), "LOGIN");
+    }
 
     @Override
     public void onLoginDialogFragmentInteraction(Uri uri) {
@@ -291,6 +299,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onOpenSignUpForm() {
         DialogFragment signUpFragment = SignUpDialogFragment.newInstance(null, null);
-        signUpFragment.show(getSupportFragmentManager(),"SIGN UP");
+        signUpFragment.show(getSupportFragmentManager(), "SIGN UP");
     }
 }

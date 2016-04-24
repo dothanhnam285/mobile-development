@@ -7,6 +7,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentKaraokeBinding;
@@ -50,6 +52,8 @@ public class KaraokeFragment extends Fragment {
     private ToggleButton btnExpand;
     private ExpandableRelativeLayout erlSongInfo;
 
+    private String recordPath = "";
+
     RecordViewModel recordVm;
     FragmentKaraokeBinding binding;
 
@@ -63,6 +67,9 @@ public class KaraokeFragment extends Fragment {
 
     // Media Player
     private MediaPlayer mPlayer = null;
+
+    // Youtube Player
+    private YouTubePlayer yPlayer;
 
     // Bingding adapter for record list recyclerview - used for handle playing multiple records
     public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
@@ -124,10 +131,13 @@ public class KaraokeFragment extends Fragment {
         binding.setSong(whichSong);
         binding.setKaraokeFrag(this);
         View v = binding.getRoot();
+        //Toast.makeText(getActivity(), whichSong.toString(), Toast.LENGTH_SHORT).show();
+        Log.d("BKARA SONG", whichSong.toString());
+        Log.d("BKARA SONG DATE", whichSong.getDate_added().toString());
 
         rvRecordList = (RecyclerView) v.findViewById(R.id.frag_karaoke_rv_recordList);
 
-        YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+        final YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.add(R.id.frag_karaoke_youtubeViewer, youTubePlayerFragment).commit();
@@ -137,6 +147,7 @@ public class KaraokeFragment extends Fragment {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {
+                    yPlayer = youTubePlayer;
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                     youTubePlayer.loadVideo(whichSong.getVideo_id());
                     youTubePlayer.play();
@@ -153,13 +164,25 @@ public class KaraokeFragment extends Fragment {
         });
 
         btnRecord = (ToggleButton) v.findViewById(R.id.frag_karaoke_btnRecord);
+
+        if (controller.isUserLogin()) {
+            btnRecord.setEnabled(true);
+        }
+
         btnRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked)
-                    startRecording("test");
-                else
+                if (isChecked) {
+                    recordPath = GenerateRecordPath();
+                    startRecording(recordPath);
+                }
+                else {
+                    if (yPlayer != null)
+                        yPlayer.pause();
                     stopRecording();
+                    DialogFragment saveRecordDialog = SaveRecordDialogFragment.newInstance(recordPath, null);
+                    saveRecordDialog.show(getChildFragmentManager(), null);
+                }
             }
         });
 
@@ -178,16 +201,19 @@ public class KaraokeFragment extends Fragment {
         return v;
     }
 
-    private void startRecording(String filename) {
+    private String GenerateRecordPath() {
         String path = Environment.getExternalStorageDirectory() + "/";
+        return path + controller.getUser().getUserId() + "_" + whichSong.getTitle() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
+    }
+
+    private void startRecording(String filepath) {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioEncodingBitRate(96000);
         mRecorder.setAudioSamplingRate(44100);
-
-        mRecorder.setOutputFile(path + "/" + filename + ".m4a");
+        mRecorder.setOutputFile(filepath);
 
         try {
             mRecorder.prepare();

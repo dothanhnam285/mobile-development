@@ -30,10 +30,9 @@ public class Controller extends Application {
     public static final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
             //"http://192.168.1.102:8080/myteam/bkaraservice/";
 
-
-
-    private boolean _loginStatus = false;
     private BkaraRestfulAPI bkaraService;
+
+    private User user;
 
 
     private void SetupRestfulService() {
@@ -78,31 +77,26 @@ public class Controller extends Application {
         });
     }
 
-/*    public void Check() {
-        Call<ResponseBody> call = bkaraService.check("ph");
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("CHECK", "SUCCESS " + response.message());
-            }
+    public boolean isUserLogin() {
+        return (getUser() != null);
+    }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("CHECK", "FAILED " + t.getMessage());
-            }
-        });
-    }*/
+    private void CreateDummyUser() {
+        setUser(new User());
+        getUser().setUserId(1L);
+        getUser().setUserName("Tam");
+    }
 
     public Controller() {
         SetupRestfulService();
-        //Check();
+        CreateDummyUser();
     }
 
-    public boolean isLogin() {
-        return _loginStatus;
+    public User getUser() {
+        return user;
     }
 
-    public void setLoginStatus(boolean loginStatus) {
-        this._loginStatus = _loginStatus;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
