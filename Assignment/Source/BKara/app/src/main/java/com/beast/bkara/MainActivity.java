@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
@@ -35,6 +36,7 @@ import com.beast.bkara.model.User;
 import com.beast.bkara.util.BkaraService;
 import com.beast.bkara.util.SongSearchView;
 import com.beast.bkara.util.UploadToSoundCloudTask;
+import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -371,6 +373,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        if( user.getAvatarLink() != null ) {
+            CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+            ImageLoader.getInstance().displayImage(user.getAvatarLink(), avatar);
+        }
     }
 
     private void logout() {
@@ -381,7 +387,8 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_header_tv_welcome).setVisibility(View.GONE);
         findViewById(R.id.nav_header_tv_login).setVisibility(View.VISIBLE);
         findViewById(R.id.nav_header_tv_logout).setVisibility(View.GONE);
-
+        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+        avatar.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.img_account));
 
     }
 }

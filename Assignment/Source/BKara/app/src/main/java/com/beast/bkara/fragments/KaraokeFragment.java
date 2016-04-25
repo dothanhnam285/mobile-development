@@ -34,9 +34,11 @@ import com.hedgehog.ratingbar.RatingBar;
 
 import java.io.IOException;
 
+/*
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
 import me.tatarka.bindingcollectionadapter.ItemViewArg;
 import me.tatarka.bindingcollectionadapter.factories.BindingRecyclerViewAdapterFactory;
+*/
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,12 +74,12 @@ public class KaraokeFragment extends Fragment {
     private YouTubePlayer yPlayer;
 
     // Bingding adapter for record list recyclerview - used for handle playing multiple records
-    public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
+    /*public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
         @Override
         public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
             return new RecordListRecyclerViewAdapter<>(arg, getActivity());
         }
-    };
+    };*/
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -133,7 +135,7 @@ public class KaraokeFragment extends Fragment {
         View v = binding.getRoot();
         //Toast.makeText(getActivity(), whichSong.toString(), Toast.LENGTH_SHORT).show();
         Log.d("BKARA SONG", whichSong.toString());
-        Log.d("BKARA SONG DATE", whichSong.getDate_added().toString());
+        //Log.d("BKARA SONG DATE", whichSong.getDate_added().toString());
 
         rvRecordList = (RecyclerView) v.findViewById(R.id.frag_karaoke_rv_recordList);
 

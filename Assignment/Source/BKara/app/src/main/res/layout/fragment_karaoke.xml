@@ -161,11 +161,21 @@
                 app:items="@{recordVm.recordList}"
                 app:itemView="@{recordVm.recordView}"
                 app:layoutManager="@{LayoutManagers.linear()}"
-                app:adapter="@{karaokeFrag.mFactory}"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:layout_below="@id/frag_karaoke_textViewTopRecords"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <!--<android.support.v7.widget.RecyclerView
+                android:id="@+id/frag_karaoke_rv_recordList"
+                app:items="@{recordVm.recordList}"
+                app:itemView="@{recordVm.recordView}"
+                app:layoutManager="@{LayoutManagers.linear()}"
+                app:adapter="@{karaokeFrag.mFactory}"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_below="@id/frag_karaoke_textViewTopRecords"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />-->
 
         </RelativeLayout>
 

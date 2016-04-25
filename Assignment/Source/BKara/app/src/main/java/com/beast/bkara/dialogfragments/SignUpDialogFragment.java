@@ -1,5 +1,9 @@
 package com.beast.bkara.dialogfragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -61,7 +65,6 @@ import retrofit2.Response;
  */
 public class SignUpDialogFragment extends DialogFragment {
     private final String TAG = "SignUpDialogFragment";
-    private final String USER_DATA = "user";
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
@@ -80,6 +83,7 @@ public class SignUpDialogFragment extends DialogFragment {
     private String mParam2;
 
     private OnSignUpDialogFragmentInteractionListener mListener;
+    private ProgressDialog progressDialog;
 
     public SignUpDialogFragment() {
         // Required empty public constructor
@@ -166,14 +170,14 @@ public class SignUpDialogFragment extends DialogFragment {
         boolean isValid = false;
         if( userName.getText().toString().equalsIgnoreCase("") )
             userName.setError("Please fill in 'UserName' field");
-        else if( password.getText().toString().equalsIgnoreCase("") )
-            password.setError("Please fill in 'Password' field");
-        else if( repassword.getText().toString().equalsIgnoreCase("") )
-            repassword.setError("Please re-type password");
         else if( email.getText().toString().equalsIgnoreCase("") )
             email.setError("Please fill in 'Email' field");
         else if ( !isEmailValid(email.getText().toString()) )
             email.setError("Email is not valid");
+        else if( password.getText().toString().equalsIgnoreCase("") )
+            password.setError("Please fill in 'Password' field");
+        else if( repassword.getText().toString().equalsIgnoreCase("") )
+            repassword.setError("Please re-type password");
         else if ( !password.getText().toString().equals(repassword.getText().toString()) )
             repassword.setError("Re-type password mismatch");
         else isValid = true;
@@ -183,6 +187,8 @@ public class SignUpDialogFragment extends DialogFragment {
 
 
     private void signUp() {
+        showProgress(true);
+
         final String[] imgLink = {null};
 
         // New image is set in imageview -> upload to imgur server
@@ -194,17 +200,22 @@ public class SignUpDialogFragment extends DialogFragment {
                     if( response.isSuccessful() ) {
                         imgLink[0] = response.body().data.link;
                         Log.i(TAG, "Post image successfully " + imgLink[0]);
+                        signUpContinue(imgLink[0]);
                     }
+                    else showProgress(false);
                 }
 
                 @Override
                 public void onFailure(Call<ImageResponse> call, Throwable t) {
                     Log.i(TAG, "Post image to IMGUR failed " + t.getLocalizedMessage());
+                    Toast.makeText(getActivity().getApplicationContext(),R.string.network_error, Toast.LENGTH_LONG).show();
+                    showProgress(false);
                 }
             });
         }
+        else signUpContinue(null);
 
-        signUpContinue(imgLink[0]);
+
     }
 
 
@@ -228,29 +239,20 @@ public class SignUpDialogFragment extends DialogFragment {
             public void onResponse(Call<User> call, Response<User> response) {
                 if( response.isSuccessful() ) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.sign_up_success_msg, Toast.LENGTH_LONG).show();
-                    redirectToHome(response.body());
-                }else {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.user_existed_error, Toast.LENGTH_LONG).show();
-                }
+                    mListener.onSignUpSuccessfully(user);
+                }else Toast.makeText(getActivity().getApplicationContext(), R.string.user_existed_error, Toast.LENGTH_LONG).show();
+
+                showProgress(false);
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getActivity().getApplicationContext(),R.string.network_error, Toast.LENGTH_LONG).show();
+                showProgress(false);
             }
         });
     }
 
-
-    private void redirectToHome(User user) {
-        /*if( getDialog() != null )
-            getDialog().dismiss();
-
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra(USER_DATA, user);
-        getActivity().startActivity(intent);*/
-        mListener.onSignUpSuccessfully(user);
-    }
 
 
     /**
@@ -327,6 +329,18 @@ public class SignUpDialogFragment extends DialogFragment {
         super.onDetach();
         mListener = null;
     }
+
+    /**
+     * Shows the progress UI
+     */
+    private void showProgress(final boolean show) {
+        if( show ) {
+            progressDialog = ProgressDialog.show(getActivity(), "Please wait...", "Signing up ...", true);
+            progressDialog.setCancelable(true);
+        }else if( progressDialog != null && progressDialog.isShowing() )
+            progressDialog.dismiss();
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

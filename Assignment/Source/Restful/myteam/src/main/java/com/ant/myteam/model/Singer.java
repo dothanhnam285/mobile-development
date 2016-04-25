@@ -42,6 +42,14 @@ public class Singer implements Serializable {
     
     @Column(nullable = true)
     private String name_search;
+
+    public String getName_search() {
+        return name_search;
+    }
+
+    public void setName_search(String name_search) {
+        this.name_search = name_search;
+    }
     
     @Column(nullable = true)
     private String poster;
