@@ -1,7 +1,10 @@
 package com.ant.myteam.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -32,7 +36,7 @@ public class Song implements Serializable {
 
     private int view;
     
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date date_added;
     
     private float rating;
@@ -45,6 +49,11 @@ public class Song implements Serializable {
     @ManyToOne
     @JoinColumn(name = "singer_id")
     private Singer singer;
+    
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "song_id")
+    private Collection<Record> records;
 
     public int getView() {
             return view;
@@ -126,6 +135,34 @@ public class Song implements Serializable {
      */
     public void setSinger(Singer singer) {
         this.singer = singer;
+    }
+
+    /**
+     * @return the title_search
+     */
+    public String getTitle_search() {
+        return title_search;
+    }
+
+    /**
+     * @param title_search the title_search to set
+     */
+    public void setTitle_search(String title_search) {
+        this.title_search = title_search;
+    }
+
+    /**
+     * @return the records
+     */
+    public Collection<Record> getRecords() {
+        return records;
+    }
+
+    /**
+     * @param records the records to set
+     */
+    public void setRecords(Collection<Record> records) {
+        this.records = records;
     }
 
 }

@@ -5,7 +5,9 @@
  */
 package com.ant.myteam.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -48,9 +50,10 @@ public class User implements Serializable {
     private String country;
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
-    private List<Record> records;
+    private Collection<Record> records;
 
     public Long getUserId() {
         return userId;
@@ -132,11 +135,11 @@ public class User implements Serializable {
         this.address = address;
     }
 
-    public List<Record> getRecords() {
+    public Collection<Record> getRecords() {
         return records;
     }
 
-    public void setRecords(List<Record> records) {
+    public void setRecords(Collection<Record> records) {
         this.records = records;
     }
 }

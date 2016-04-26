@@ -1,5 +1,6 @@
 package com.ant.myteam.controller;
 
+import com.ant.myteam.dao.RecordDao;
 import com.ant.myteam.dao.UserDao;
 import com.ant.myteam.managedbean.SongBean;
 import com.ant.myteam.model.Record;
@@ -34,10 +35,11 @@ public class BkaraController {
     @Autowired
     private SongBean songBean;
 
+    @Autowired
+    private RecordDao recordDao;
 
     @Autowired
     private UserDao userDao;
-
 
     @RequestMapping(value = "/songlist/all", method = RequestMethod.GET)
     public List<Song> getListSongAll() {
@@ -54,21 +56,35 @@ public class BkaraController {
         return songBean.findSongsBySingerName(singerName);
     }
 
-    @RequestMapping(value= "/signUp",method = RequestMethod.POST)
-    public ResponseEntity<User> signUp(@RequestBody User user) {
-        System.out.println("Creating User " + user.getUserName());
-        if( userDao.checkUserExisted(user) == null){
-            userDao.save(user);
-            return new ResponseEntity<User>(/*"Sign up successfully !!!"*/user, HttpStatus.CREATED);
-        }else return new ResponseEntity<User>(/*"User is already existed !"*/ user, HttpStatus.NOT_ACCEPTABLE);
+    @RequestMapping(value = "/recordlist/song/{songid}", method = RequestMethod.GET)
+    public List<Record> findRecordsBySongId(@PathVariable("songid") Long songId) {
+        return recordDao.findRecordsBySongId(songId);
     }
 
-    @RequestMapping(value= "/login",method = RequestMethod.POST)
-    public ResponseEntity<User> checkUserExisted(@RequestBody User user){
+    @RequestMapping(value = "/recordlist/user/{userid}", method = RequestMethod.GET)
+    public List<Record> findRecordsByUserId(@PathVariable("userid") Long userId) {
+        return recordDao.findRecordsByUserId(userId);
+    }
+
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
+    public ResponseEntity<User> signUp(@RequestBody User user) {
+        System.out.println("Creating User " + user.getUserName());
+        if (userDao.checkUserExisted(user) == null) {
+            userDao.save(user);
+            return new ResponseEntity<User>(/*"Sign up successfully !!!"*/user, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<User>(/*"User is already existed !"*/user, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity<User> checkUserExisted(@RequestBody User user) {
         System.out.println("Check User " + user.getUserName());
-        if( (user = userDao.checkUserExisted(user)) == null)
-            return new ResponseEntity<User>(/*"User not found . Please try again !"*/ user , HttpStatus.NOT_ACCEPTABLE);
-        else return new ResponseEntity<User>(/*"Login successfully !!!"*/user, HttpStatus.OK);
+        if ((user = userDao.checkUserExisted(user)) == null) {
+            return new ResponseEntity<User>(/*"User not found . Please try again !"*/user, HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            return new ResponseEntity<User>(/*"Login successfully !!!"*/user, HttpStatus.OK);
+        }
     }
 
 //    @RequestMapping(value = "/user/", method = RequestMethod.POST)
@@ -86,5 +102,4 @@ public class BkaraController {
 //        headers.setLocation(ucBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri());
 //        return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
 //    }
-
 }
