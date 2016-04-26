@@ -1,7 +1,12 @@
 package com.beast.bkara.dialogfragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -29,8 +34,8 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class LoginDialogFragment extends DialogFragment {
-    private static final String USER_DATA = "user";
     private EditText userName , password;
+    private ProgressDialog progressDialog;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -112,6 +117,9 @@ public class LoginDialogFragment extends DialogFragment {
 
 
     private void login(){
+
+        showProgress(true);
+
         final User user = new User();
         user.setUserName(userName.getText().toString());
         user.setPassword(password.getText().toString());
@@ -124,15 +132,14 @@ public class LoginDialogFragment extends DialogFragment {
                     Toast.makeText(getActivity().getApplicationContext(), "Welcome "+ response.body().getUserName(), Toast.LENGTH_LONG).show();
                     mListener.onLoginSuccessfully(response.body());
                 }
-                else {
-                    Toast.makeText(getActivity().getApplicationContext(), R.string.user_not_existed_error, Toast.LENGTH_LONG).show();
-                }
-
+                else Toast.makeText(getActivity().getApplicationContext(), R.string.user_not_existed_error, Toast.LENGTH_LONG).show();
+                showProgress(false);
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(getActivity().getApplicationContext(), R.string.network_error, Toast.LENGTH_LONG).show();
+                showProgress(false);
             }
         });
     }
@@ -164,6 +171,19 @@ public class LoginDialogFragment extends DialogFragment {
 
     public void openSignUpForm() {
         mListener.onOpenSignUpForm();
+    }
+
+
+    /**
+     * Shows the progress UI
+     */
+    private void showProgress(final boolean show) {
+        if( show ) {
+            progressDialog = ProgressDialog.show(getActivity(), "Please wait...", "Signing in ...", true);
+            progressDialog.setCancelable(true);
+        }else if( progressDialog != null && progressDialog.isShowing() )
+            progressDialog.dismiss();
+
     }
 
     /**

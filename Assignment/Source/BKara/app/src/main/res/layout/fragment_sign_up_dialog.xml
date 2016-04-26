@@ -10,13 +10,20 @@
     tools:context="com.beast.bkara.dialogfragments.SignUpDialogFragment"
     android:background="@color/colorWhite">
 
+    <ProgressBar
+        android:id="@+id/signup_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
     <ScrollView
-        android:id="@+id/user_sign_up_form"
+        android:id="@+id/sign_up_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
         <LinearLayout
-            android:id="@+id/sign_up_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
