@@ -156,16 +156,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/frag_karaoke_rv_recordList"
-                app:items="@{recordVm.recordList}"
-                app:itemView="@{recordVm.recordView}"
-                app:layoutManager="@{LayoutManagers.linear()}"
-                app:adapter="@{karaokeFrag.mFactory}"
+            <ProgressBar
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:layout_below="@id/frag_karaoke_textViewTopRecords"
+                android:id="@+id/frag_karaoke_progressBarWaiting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/frag_karaoke_rv_recordList"-->
+                <!--app:items="@{recordVm.recordList}"-->
+                <!--app:itemView="@{recordVm.recordView}"-->
+                <!--app:layoutManager="@{LayoutManagers.linear()}"-->
+                <!--app:adapter="@{karaokeFrag.mFactory}"-->
+                <!--android:layout_marginTop="@dimen/fab_margin"-->
+                <!--android:layout_below="@id/frag_karaoke_textViewTopRecords"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+
+            <FrameLayout
+                android:id="@+id/frag_karaoke_frame_recordlist"
+                android:layout_below="@id/frag_karaoke_textViewTopRecords"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"></FrameLayout>
 
         </RelativeLayout>
 

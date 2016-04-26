@@ -44,7 +44,7 @@ public class SongListFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private BkaraService.WhichList whichList;
-    private BkaraService.SearchFilter searchFilter;
+    private BkaraService.SongSearchFilter searchFilter;
     private String searchValue;
 
     private OnFragmentInteractionListener mListener;
@@ -78,7 +78,7 @@ public class SongListFragment extends Fragment {
      * @return A new instance of fragment BlankFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongListFragment newInstance(BkaraService.SearchFilter param1, String param2) {
+    public static SongListFragment newInstance(BkaraService.SongSearchFilter param1, String param2) {
         SongListFragment fragment = new SongListFragment();
         Bundle args = new Bundle();
         args.putSerializable(SEARCH_FILTER, param1);
@@ -93,7 +93,7 @@ public class SongListFragment extends Fragment {
         if (getArguments() != null) {
             whichList = (BkaraService.WhichList) getArguments().getSerializable(WHICH_LIST);
             if (whichList == null) {
-                searchFilter = (BkaraService.SearchFilter) getArguments().getSerializable(SEARCH_FILTER);
+                searchFilter = (BkaraService.SongSearchFilter) getArguments().getSerializable(SEARCH_FILTER);
                 searchValue = getArguments().getString(SEARCH_VALUE);
             }
         }
@@ -108,7 +108,7 @@ public class SongListFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list_song, container, false);
         View v = binding.getRoot();
         rvSongList = (RecyclerView) v.findViewWithTag("frag_list_song_rvSongList");
-        progressBarWaiting = (ProgressBar) v.findViewWithTag("frag_songs_progressBarWaiting");
+        progressBarWaiting = (ProgressBar) v.findViewWithTag("frag_list_song_progressBarWaiting");
 
         if (whichList != null)
             songVm = new SongViewModel(whichList, progressBarWaiting);

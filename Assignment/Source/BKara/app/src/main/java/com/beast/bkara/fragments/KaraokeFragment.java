@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -54,19 +55,14 @@ public class KaraokeFragment extends Fragment {
 
     private String recordPath = "";
 
-    RecordViewModel recordVm;
-    FragmentKaraokeBinding binding;
-
-    RecyclerView rvRecordList;
+    private RecordViewModel recordVm;
+    private FragmentKaraokeBinding binding;
 
     // Controller
     private Controller controller;
 
     // Media Recorder
     private MediaRecorder mRecorder = null;
-
-    // Media Player
-    private MediaPlayer mPlayer = null;
 
     // Youtube Player
     private YouTubePlayer yPlayer;
@@ -75,7 +71,7 @@ public class KaraokeFragment extends Fragment {
     public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
         @Override
         public <T> BindingRecyclerViewAdapter<T> create(RecyclerView recyclerView, ItemViewArg<T> arg) {
-            return new RecordListRecyclerViewAdapter<>(arg, getActivity());
+            return new RecordListRecyclerViewAdapter<>(arg, getActivity(), true);
         }
     };
 
@@ -119,28 +115,32 @@ public class KaraokeFragment extends Fragment {
             whichSong = (Song) getArguments().getParcelable(WHICH_SONG);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        controller = (Controller) getActivity().getApplicationContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        recordVm = new RecordViewModel();
+
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
+        View v = binding.getRoot();
+
+        ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.frag_karaoke_progressBarWaiting);
+
+        recordVm = new RecordViewModel(controller.getCurrUser(), whichSong, progressBar);
+
         binding.setRecordVm(recordVm);
         binding.setSong(whichSong);
         binding.setKaraokeFrag(this);
-        View v = binding.getRoot();
-        //Toast.makeText(getActivity(), whichSong.toString(), Toast.LENGTH_SHORT).show();
-        Log.d("BKARA SONG", whichSong.toString());
-        Log.d("BKARA SONG DATE", whichSong.getDate_added().toString());
-
-        rvRecordList = (RecyclerView) v.findViewById(R.id.frag_karaoke_rv_recordList);
 
         final YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.frag_karaoke_youtubeViewer, youTubePlayerFragment).commit();
+        transaction.add(R.id.frag_karaoke_youtubeViewer, youTubePlayerFragment);
+        transaction.replace(R.id.frag_karaoke_frame_recordlist, RecordsFragment.newInstance(true, whichSong));
+        transaction.commit();
 
         controller = (Controller) getActivity().getApplicationContext();
         youTubePlayerFragment.initialize(controller.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -180,7 +180,7 @@ public class KaraokeFragment extends Fragment {
                     if (yPlayer != null)
                         yPlayer.pause();
                     stopRecording();
-                    DialogFragment saveRecordDialog = SaveRecordDialogFragment.newInstance(recordPath, null);
+                    DialogFragment saveRecordDialog = SaveRecordDialogFragment.newInstance(recordPath);
                     saveRecordDialog.show(getChildFragmentManager(), null);
                 }
             }
@@ -203,7 +203,8 @@ public class KaraokeFragment extends Fragment {
 
     private String GenerateRecordPath() {
         String path = Environment.getExternalStorageDirectory() + "/";
-        return path + controller.getCurrUser().getUserId() + "_" + whichSong.getTitle() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
+
+        return path + controller.getCurrUser().getUserId() + "_" + whichSong.getVideo_id() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
     }
 
     private void startRecording(String filepath) {
@@ -258,7 +259,7 @@ public class KaraokeFragment extends Fragment {
         stopRecording();
 
         // Detach adapter to stop running media player
-        rvRecordList.setAdapter(null);
+        //rvRecordList.setAdapter(null);
 
     }
 
@@ -281,5 +282,13 @@ public class KaraokeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public RecordViewModel getRecordViewModel() {
+        return recordVm;
+    }
+
+    public Song getSong() {
+        return whichSong;
     }
 }

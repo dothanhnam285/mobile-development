@@ -39,6 +39,6 @@ public class Controller extends Application {
     }
 
     private void setLoginStatus(boolean loginStatus) {
-        this._loginStatus = _loginStatus;
+        this._loginStatus = loginStatus;
     }
 }

@@ -1,5 +1,6 @@
 package com.beast.bkara.util;
 
+import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
 
@@ -29,6 +30,15 @@ public interface BkaraRestfulApi {
 
     @GET("songlist/search/singername/{singername}")
     Call<List<Song>> findSongsBySingerName(@Path("singername") String singerName);
+
+    @POST("saverecord")
+    Call<Record> saveRecord(@Body Record record);
+
+    @GET("recordlist/song/{songid}")
+    Call<List<Record>> findRecordsBySongId(@Path("songid") Long songId);
+
+    @GET("recordlist/user/{userid}")
+    Call<List<Record>> findRecordsByUserId(@Path("userid") Long userId);
 
     @POST("signUp")
     Call<User> signUp(@Body User user);

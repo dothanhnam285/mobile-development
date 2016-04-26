@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ import java.util.Date;
  */
 public class Song extends BaseObservable implements Parcelable {
 
-    private int song_id;
+    private Long song_id;
     private String title;
     private int view;
     private String poster;
@@ -31,7 +32,11 @@ public class Song extends BaseObservable implements Parcelable {
 
     @BindingAdapter("app:setGenre")
     public static void setGenre(TextView view, String songGenre) {
-        String text = "<b>Genre: </b>" + songGenre;
+        String text = "";
+        if (songGenre != null && songGenre != "")
+            text = "<b>Genre: </b>" + songGenre;
+        else
+            text = "<b>Genre: </b> Unknown";
         view.setText(Html.fromHtml(text));
     }
 
@@ -44,16 +49,6 @@ public class Song extends BaseObservable implements Parcelable {
             text = "<b>Singer: </b> Unknown";
         view.setText(Html.fromHtml(text));
     }
-
-/*    @BindingAdapter("app:setSinger")
-    public static void setArtist(TextView view, String singer) {
-        String text = "";
-        if (singer != null && singer != null)
-            text = "<b>Singer: </b>" + singer;
-        else
-            text = "<b>Singer: </b> Unknown";
-        view.setText(Html.fromHtml(text));
-    }*/
 
     @BindingAdapter("app:setPoster")
     public static void setPoster(ImageView view, String songPoster) {
@@ -71,11 +66,11 @@ public class Song extends BaseObservable implements Parcelable {
     }
 
 
-    public int getSong_id() {
+    public Long getSong_id() {
         return song_id;
     }
 
-    public void setSong_id(int song_id) {
+    public void setSong_id(Long song_id) {
         this.song_id = song_id;
     }
 
@@ -146,7 +141,7 @@ public class Song extends BaseObservable implements Parcelable {
     //Parcelling part
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(getSong_id());
+        parcel.writeLong(getSong_id());
         parcel.writeString(getTitle());
         parcel.writeInt(getView());
         parcel.writeValue(getDate_added());
@@ -158,7 +153,7 @@ public class Song extends BaseObservable implements Parcelable {
     }
 
     private Song(Parcel in) {
-        setSong_id(in.readInt());
+        setSong_id(in.readLong());
         setTitle(in.readString());
         setView(in.readInt());
         setDate_added((Date) in.readValue(null));

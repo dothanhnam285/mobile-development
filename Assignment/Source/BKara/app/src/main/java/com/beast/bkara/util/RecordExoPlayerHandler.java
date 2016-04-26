@@ -13,16 +13,19 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
+
+import com.devbrackets.android.exomedia.EMAudioPlayer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
- * Created by Darka on 4/24/2016.
+ * Created by Darka on 4/26/2016.
  */
-public class RecordPlayerHandler {
-
-    private MediaPlayer mediaPlayer;
+public class RecordExoPlayerHandler {
+    private EMAudioPlayer mediaPlayer;
     private Context mContext;
     private Handler threadHandler;
     private List<ToggleButton> toggleButtonList;
@@ -37,7 +40,7 @@ public class RecordPlayerHandler {
 
         public void run() {
             if (mediaPlayer != null) {
-                int currentPosition = mediaPlayer.getCurrentPosition();
+                int currentPosition = (int) mediaPlayer.getCurrentPosition();
                 sbar.setProgress(currentPosition);
                 if (isRepeat)
                     threadHandler.postDelayed(this, 500);
@@ -45,7 +48,7 @@ public class RecordPlayerHandler {
         }
     }
 
-    public RecordPlayerHandler(Context context, boolean isRemote) {
+    public RecordExoPlayerHandler(Context context, boolean isRemote) {
         this.mContext = context;
         this.isRemote = isRemote;
         toggleButtonList = new ArrayList<ToggleButton>();
@@ -81,7 +84,7 @@ public class RecordPlayerHandler {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isPlay) {
 
-                int itemIndex = toggleButtonList.indexOf((ToggleButton) compoundButton);
+                final int itemIndex = toggleButtonList.indexOf((ToggleButton) compoundButton);
                 final SeekBar sbar = seekBarList.get(itemIndex);
                 int currentProgress = seekBarList.get(itemIndex).getProgress();
 
@@ -100,6 +103,15 @@ public class RecordPlayerHandler {
                             mediaPlayer.release();
                         }
 
+                        mediaPlayer = new EMAudioPlayer(mContext);
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                toggleButton.setChecked(false);
+                                mediaPlayer.reset();
+                                sbar.setEnabled(false);
+                            }
+                        });
                         if (isRemote) {
 
                             toggleButton.setVisibility(View.INVISIBLE);
@@ -108,36 +120,50 @@ public class RecordPlayerHandler {
                             if (progressBar != null)
                                 progressBar.setVisibility(View.VISIBLE);
 
-                            mediaPlayer = new MediaPlayer();
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             try {
-                                mediaPlayer.setDataSource("https://api.soundcloud.com/tracks/260635969/stream?client_id=cab81827c76e36c852118774d8eef584");
+                                mediaPlayer.setDataSource(mContext, Uri.parse(pathList.get(itemIndex)));
                                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                                     @Override
                                     public void onPrepared(MediaPlayer mp) {
                                         toggleButton.setVisibility(View.VISIBLE);
                                         seekBar.setVisibility(View.VISIBLE);
 
+                                        for (int i = 0; i < seekBarList.size(); i++)
+                                            if (i != itemIndex) {
+                                                toggleButtonList.get(i).setVisibility(View.VISIBLE);
+                                                seekBarList.get(i).setVisibility(View.VISIBLE);
+                                            }
+
                                         if (progressBar != null)
                                             progressBar.setVisibility(View.GONE);
 
-                                        sbar.setMax(mediaPlayer.getDuration());
-                                        mediaPlayer.setLooping(true);
-                                        mediaPlayer.start();
+                                        sbar.setMax((int)mediaPlayer.getDuration());
+                                        //mediaPlayer.setLooping(true);
                                     }
                                 });
-                                mediaPlayer.prepareAsync();
+                                for (int i = 0; i < seekBarList.size(); i++)
+                                    if (i != itemIndex) {
+                                        toggleButtonList.get(i).setVisibility(View.INVISIBLE);
+                                        seekBarList.get(i).setVisibility(View.INVISIBLE);
+                                    }
 
-
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         } else {
-                            mediaPlayer = MediaPlayer.create(mContext, Uri.parse(pathList.get(itemIndex)));
-                            sbar.setMax(mediaPlayer.getDuration());
-                            mediaPlayer.setLooping(true);
-                            mediaPlayer.start();
+                            mediaPlayer.setDataSource(mContext, Uri.parse(pathList.get(itemIndex)));
+                            Log.d("LOCAL PLAY DURATION", "" + (int)mediaPlayer.getDuration());
+                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    Log.d("LOCAL PLAY DURATION", "" + (int)mediaPlayer.getDuration());
+                                    sbar.setMax((int) mediaPlayer.getDuration());
+                                }
+                            });
                         }
+                        mediaPlayer.prepareAsync();
+                        mediaPlayer.start();
                     } else {
                         mediaPlayer.start();
                     }
@@ -167,5 +193,4 @@ public class RecordPlayerHandler {
             toggleButtonList.get(i).setChecked(false);
         }
     }
-
 }

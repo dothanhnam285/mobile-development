@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements
         SongListFragment.OnFragmentInteractionListener,
         GenresFragment.OnFragmentInteractionListener,
         KaraokeFragment.OnFragmentInteractionListener,
+        RecordsFragment.OnFragmentInteractionListener,
         LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
         SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
         SaveRecordDialogFragment.OnFragmentInteractionListener {
@@ -94,9 +95,6 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set the default view to Home item
         displayView(R.id.nav_home);
-
-//        UploadToSoundCloudTask uploadToSoundCloudTask = new UploadToSoundCloudTask();
-//        uploadToSoundCloudTask.execute();
 
     }
     boolean doubleBackToExitPressedOnce = false;
@@ -162,10 +160,10 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (filterBySongName.isChecked()) {
                     Log.d("BKARA", "SEARCH BY SONG NAME");
-                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SONG_NAME, query), "SONG");
+                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SongSearchFilter.SONG_NAME, query), "SEARCH SONG");
                 } else {
                     Log.d("BKARA", "SEARCH BY SINGER NAME");
-                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SearchFilter.SINGER_NAME, query), "SONG");
+                    displayCustomFragment(SongListFragment.newInstance(BkaraService.SongSearchFilter.SINGER_NAME, query), "SEARCH SONG");
                 }
 
                 searchView.clearFocus();
@@ -242,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "History";
                 break;
             case R.id.nav_records:
-                //fragment = new RecordsFragment();
+                fragment = RecordsFragment.newInstance(false, null);
                 title = "Records";
                 break;
             case R.id.nav_setting:
@@ -322,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLoginSuccessfully(User user) {
+
         if( loginFragment != null && loginFragment.getDialog() != null )
             loginFragment.dismiss();
         else {

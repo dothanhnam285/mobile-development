@@ -2,6 +2,7 @@ package com.beast.bkara.util;
 
 import android.content.Context;
 import android.databinding.ViewDataBinding;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
@@ -18,10 +19,15 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
+import com.devbrackets.android.exomedia.EMAudioPlayer;
+import com.devbrackets.android.exomedia.EMVideoView;
+import com.devbrackets.android.exomedia.exoplayer.EMExoPlayer;
+import com.devbrackets.android.exomedia.listener.ExoPlayerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +40,15 @@ import me.tatarka.bindingcollectionadapter.ItemViewArg;
  */
 public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 
-    private RecordPlayerHandler recordPlayerHandler;
+    private RecordExoPlayerHandler recordPlayerHandler;
+    private boolean isShowUsername;
+    private Context mContext;
 
-    public RecordListRecyclerViewAdapter(@NonNull ItemViewArg<T> arg, Context context) {
+    public RecordListRecyclerViewAdapter(@NonNull ItemViewArg<T> arg, Context context, boolean isShowUsername) {
         super(arg);
-        recordPlayerHandler = new RecordPlayerHandler(context, true);
+        recordPlayerHandler = new RecordExoPlayerHandler(context, true);
+        this.isShowUsername = isShowUsername;
+        this.mContext = context;
     }
 
     @Override
@@ -65,6 +75,18 @@ public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter
         SeekBar seekBar = (SeekBar) v.findViewById(R.id.record_item_seekBar);
         ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.record_item_progressbar);
 
-        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, progressBar, record.getDummy_path());
+
+        if (isShowUsername) {
+            TextView textViewSongname = (TextView) v.findViewById(R.id.record_item_textview_songname);
+            textViewSongname.setVisibility(View.GONE);
+        }
+        else {
+
+            TextView textViewUsername = (TextView) v.findViewById(R.id.record_item_textview_username);
+            textViewUsername.setVisibility(View.GONE);
+            Log.d("BINDING ADAPTER", "GONE USERNAME");
+        }
+
+        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, progressBar, record.getStream_link());
     }
 }

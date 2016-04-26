@@ -4,25 +4,33 @@ import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
 import android.widget.TextView;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * Created by Darka on 4/16/2016.
  */
 public class Record extends BaseObservable {
 
+    @SerializedName("recordId")
     private int id;
+
     private int length;
     private int view;
     private Date date_created;
     private float rating;
-    private String dummy_path;
+    private Song song;
+    private User user;
+    private String stream_link;
 
 
     @BindingAdapter("app:setDate")
     public static void setDate(TextView view, Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         String strDate = sdf.format(date);
         view.setText(strDate);
     }
@@ -30,6 +38,16 @@ public class Record extends BaseObservable {
     @BindingAdapter("app:setView")
     public static void setView(TextView view, int recordView) {
         view.setText(String.valueOf(recordView) + " View(s)");
+    }
+
+    @BindingAdapter("app:setUsername")
+    public static void setUsername(TextView view, User user) {
+        view.setText(user.getUserName());
+    }
+
+    @BindingAdapter("app:setSongname")
+    public static void setSongname(TextView view, Song song) {
+        view.setText(song.getTitle());
     }
 
     public int getId() {
@@ -72,11 +90,27 @@ public class Record extends BaseObservable {
         this.rating = rating;
     }
 
-    public String getDummy_path() {
-        return dummy_path;
+    public String getStream_link() {
+        return stream_link;
     }
 
-    public void setDummy_path(String dummy_path) {
-        this.dummy_path = dummy_path;
+    public void setStream_link(String stream_link) {
+        this.stream_link = stream_link;
+    }
+
+    public Song getSong() {
+        return song;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

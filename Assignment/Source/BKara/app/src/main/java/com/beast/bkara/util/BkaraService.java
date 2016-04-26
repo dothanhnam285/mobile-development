@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
 import com.google.gson.Gson;
@@ -35,16 +36,20 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = //"http://192.168.1.103:8084/myteam/bkaraservice/";
-            "http://192.168.0.101:8080/myteam/bkaraservice/";
+    private final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
+            //"http://192.168.0.101:8080/myteam/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
 
     public enum WhichList {
         ALL, HOT, NEW, SEARCH
     }
 
-    public enum SearchFilter {
+    public enum SongSearchFilter {
         SONG_NAME, SINGER_NAME
+    }
+
+    public enum RecordSearchFilter {
+        SONG_ID, USER_ID
     }
 
     private void SetupRestfulService() {
@@ -96,7 +101,7 @@ public class BkaraService {
         });
     }
 
-    public void FindSongs(final SearchFilter searchFilter, final String searchValue, final ObservableList<Song> songList, final ProgressBar progressBar) {
+    public void FindSongs(final SongSearchFilter searchFilter, final String searchValue, final ObservableList<Song> songList, final ProgressBar progressBar) {
         Call<List<Song>> call;
 
         switch(searchFilter) {
@@ -121,6 +126,50 @@ public class BkaraService {
             public void onFailure(Call<List<Song>> call, Throwable t) {
                 Log.d("RESTFUL CALL", "FAILURE " + t.getMessage());
                 FindSongs(searchFilter, searchValue, songList, progressBar);
+            }
+        });
+    }
+
+    public void SaveRecord(Record record) {
+        Call<Record> call = bkaraRestful.saveRecord(record);
+        call.enqueue(new Callback<Record>() {
+            @Override
+            public void onResponse(Call<Record> call, Response<Record> response) {
+                Log.d("RESTFUL CALL", "SUCCESS SAVE RECORD " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Record> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAIL SAVE RECORD " + t.getMessage());
+            }
+        });
+    }
+
+    public void FindRecords(final RecordSearchFilter searchFilter, final Long searchValue, final ObservableList<Record> recordList, final ProgressBar progressBar) {
+        Call<List<Record>> call;
+
+        switch (searchFilter) {
+            case SONG_ID:
+                call = bkaraRestful.findRecordsBySongId(searchValue);
+                break;
+            default:
+                call = bkaraRestful.findRecordsByUserId(searchValue);
+                break;
+        }
+
+        call.enqueue(new Callback<List<Record>>() {
+            @Override
+            public void onResponse(Call<List<Record>> call, Response<List<Record>> response) {
+                Log.d("RESTFUL CALL", "SUCCESS");
+                recordList.clear();
+                recordList.addAll(response.body());
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<List<Record>> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED " + t.getMessage());
+                FindRecords(searchFilter, searchValue, recordList, progressBar);
             }
         });
     }

@@ -21,17 +21,35 @@ import java.io.InputStreamReader;
 /**
  * Created by Darka on 4/24/2016.
  */
-public class UploadToSoundCloudTask extends AsyncTask<Void, Void, Void> {
+public class UploadToSoundCloudTask extends AsyncTask<Void, Void, String> {
 
     ApiWrapper wrapper;
     Token token;
-    private final static String CLIENT_ID = "cab81827c76e36c852118774d8eef584";
+    public final static String CLIENT_ID = "cab81827c76e36c852118774d8eef584";
     private final static String CLIENT_SECRET = "78b2abd83b532632c7d226be11b79602";
     private final static String USERNAME = "aeon19944";
     private final static String PASSWORD = "bkaraservice";
 
+    public interface OnUploadDoneInterface {
+        public void OnUploadSuccess(String streamLink);
+        public void OnUploadFailed();
+    }
+
+    private OnUploadDoneInterface onUploadDoneInterface;
+    private String username;
+    private String songname;
+    private String path;
+
+    public UploadToSoundCloudTask(String path, String username, String songname, OnUploadDoneInterface onUploadDoneInterface) {
+        this.onUploadDoneInterface = onUploadDoneInterface;
+        this.username = username;
+        this.songname = songname;
+        this.path = path;
+    }
+
+
     @Override
-    protected Void doInBackground(Void... params) {
+    protected String doInBackground(Void... params) {
         // TODO Auto-generated method stub
         try {
             wrapper = new ApiWrapper(CLIENT_ID,
@@ -39,26 +57,35 @@ public class UploadToSoundCloudTask extends AsyncTask<Void, Void, Void> {
                     null,
                     null);
             token = wrapper.login(USERNAME, PASSWORD);
-            upload();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return null;
+        return upload();
     }
 
-    public void upload()
+    @Override
+    protected void onPostExecute(String streamLink) {
+        super.onPostExecute(streamLink);
+        if (streamLink != null)
+            onUploadDoneInterface.OnUploadSuccess(streamLink);
+        else
+            onUploadDoneInterface.OnUploadFailed();
+    }
+
+    public String upload()
     {
         try {
             Log.d("DDDDD", "uploading in background...");
-            File audioFile = new File(Environment.getExternalStorageDirectory().getPath() + "/hangouts_incoming_call.ogg");
+            File audioFile = new File(path);
             // replace the hardcoded path with the path of your audio file
             audioFile.setReadable(true, false);
             HttpResponse resp = wrapper.post(Request.to(Endpoints.TRACKS)
-                    .add(Params.Track.TITLE, "A1.mp3")
-                    .add(Params.Track.TAG_LIST, "demo upload")
+                    .add(Params.Track.TITLE, songname + "_" + username + "_" + System.currentTimeMillis())
+                    .add(Params.Track.TAG_LIST, "Bkara Record")
                     .withFile(Params.Track.ASSET_DATA, audioFile));
 
+            String streamLink = "";
             StringBuilder sb = new StringBuilder();
             try {
                 BufferedReader reader =
@@ -69,13 +96,15 @@ public class UploadToSoundCloudTask extends AsyncTask<Void, Void, Void> {
                     sb.append(line);
                 }
 
+                Log.d("DDDDD", "Response: " + sb.toString());
+
                 JSONObject respond = new JSONObject(sb.toString());
-                respond.getString("stream_url");
+                return streamLink = respond.getString("stream_url");
             }
             catch (IOException e) { e.printStackTrace(); }
             catch (Exception e) { e.printStackTrace(); }
 
-            Log.d("DDDDD",""+Integer.valueOf(resp.getStatusLine().getStatusCode()));
+
             Log.d("DDDDD", "background thread done...");
 
         } catch (IOException exp) {
@@ -83,7 +112,10 @@ public class UploadToSoundCloudTask extends AsyncTask<Void, Void, Void> {
                     "Error uploading audioclip: IOException: "
                             + exp.toString());
 
+            onUploadDoneInterface.OnUploadFailed();
+
         }
+        return null;
     }
 
 }

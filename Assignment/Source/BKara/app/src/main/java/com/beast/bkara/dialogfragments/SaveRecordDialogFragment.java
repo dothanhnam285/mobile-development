@@ -1,30 +1,25 @@
 package com.beast.bkara.dialogfragments;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
-import com.beast.bkara.util.RecordPlayerHandler;
+import com.beast.bkara.fragments.KaraokeFragment;
+import com.beast.bkara.model.Song;
+import com.beast.bkara.util.RecordExoPlayerHandler;
+import com.beast.bkara.util.UploadToSoundCloudTask;
 
 import java.io.File;
 
@@ -38,18 +33,20 @@ import java.io.File;
  */
 public class SaveRecordDialogFragment extends DialogFragment {
 
-    private RecordPlayerHandler recordPlayerHandler;
+    private RecordExoPlayerHandler recordPlayerHandler;
     private TextView textViewSave;
     private TextView textViewDiscard;
+
+    private Controller controller;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String RECORD_PATH = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String recordPath;
-    private String mParam2;
+
+    private Song song;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,15 +59,13 @@ public class SaveRecordDialogFragment extends DialogFragment {
      * this fragment using the provided parameters.
      *
      * @param recordPath Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment SaveRecordDialogFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SaveRecordDialogFragment newInstance(String recordPath, String param2) {
+    public static SaveRecordDialogFragment newInstance(String recordPath) {
         SaveRecordDialogFragment fragment = new SaveRecordDialogFragment();
         Bundle args = new Bundle();
         args.putString(RECORD_PATH, recordPath);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,10 +75,11 @@ public class SaveRecordDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             recordPath = getArguments().getString(RECORD_PATH);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        Log.d("SAVE RECORD", recordPath);
-        recordPlayerHandler = new RecordPlayerHandler(getActivity(), false);
+
+        recordPlayerHandler = new RecordExoPlayerHandler(getActivity(), false);
+        controller = (Controller) getActivity().getApplicationContext();
+        song = ((KaraokeFragment) getParentFragment()).getSong();
     }
 
     @Override
@@ -103,8 +99,7 @@ public class SaveRecordDialogFragment extends DialogFragment {
         textViewDiscard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File recordFile = new File(recordPath);
-                recordFile.delete();
+                DeleteRecordFromLocal();
                 getDialog().dismiss();
             }
         });
@@ -112,7 +107,30 @@ public class SaveRecordDialogFragment extends DialogFragment {
         textViewSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getActivity(), "Your record is being uploaded. You will receive a message when the upload is done", Toast.LENGTH_LONG).show();
+                UploadToSoundCloudTask uploadToSoundCloudTask = new UploadToSoundCloudTask(recordPath,
+                        controller.getCurrUser().getUserName(),
+                        song.getTitle(),
+                        new UploadToSoundCloudTask.OnUploadDoneInterface() {
+                            @Override
+                            public void OnUploadSuccess(String streamLink) {
+                                DeleteRecordFromLocal();
+                                Toast.makeText(getActivity(), streamLink, Toast.LENGTH_SHORT).show();
+                                ((KaraokeFragment) getParentFragment()).getRecordViewModel().SaveRecord(streamLink);
+                                Toast.makeText(getActivity(), "Upload record successfully !", Toast.LENGTH_SHORT).show();
+                                getDialog().dismiss();
+                                // TODO: Create and save a record for user
+                            }
 
+                            @Override
+                            public void OnUploadFailed() {
+                                DeleteRecordFromLocal();
+                                Toast.makeText(getActivity(), "Upload record failed !!!", Toast.LENGTH_SHORT).show();
+                                getDialog().dismiss();
+                            }
+                        });
+
+                uploadToSoundCloudTask.execute();
             }
         });
 
@@ -170,5 +188,10 @@ public class SaveRecordDialogFragment extends DialogFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void DeleteRecordFromLocal() {
+        File file = new File(recordPath);
+        file.delete();
     }
 }

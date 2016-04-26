@@ -2,11 +2,17 @@ package com.beast.bkara.viewmodel;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.databinding.adapters.ProgressBarBindingAdapter;
 import android.os.Environment;
+import android.widget.ProgressBar;
 
 import com.beast.bkara.BR;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
+import com.beast.bkara.model.Song;
+import com.beast.bkara.model.User;
+import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.UploadToSoundCloudTask;
 
 import java.util.Date;
 
@@ -20,22 +26,38 @@ public class RecordViewModel {
     public ObservableList<Record> recordList;
     public final ItemView recordView = ItemView.of(BR.record, R.layout.record_item);
 
-    public RecordViewModel() {
-        InitDummyData();
-    }
+    private User user;
+    private Song song;
 
-    private void InitDummyData() {
+    private BkaraService bkaraService;
+
+    public RecordViewModel(User user, Song song, ProgressBar progressBar) {
         recordList = new ObservableArrayList<>();
-        for(int i=0; i<5; i++) {
-            Record rec = new Record();
-            rec.setView(6969);
-            rec.setDate_created(new Date());
-            if (i % 2 == 0)
-                rec.setDummy_path(Environment.getExternalStorageDirectory().getPath() + "/test.m4a");
-            else
-                rec.setDummy_path(Environment.getExternalStorageDirectory().getPath() + "/hangouts_incoming_call.ogg");
-            recordList.add(rec);
+        bkaraService = BkaraService.getInstance();
+        this.user = user;
+        this.song = song;
+
+        BkaraService.RecordSearchFilter searchFilter;
+        Long searchValue;
+        if (song != null) {
+            searchFilter = BkaraService.RecordSearchFilter.SONG_ID;
+            searchValue = song.getSong_id();
         }
+        else {
+            searchFilter = BkaraService.RecordSearchFilter.USER_ID;
+            searchValue = user.getUserId();
+        }
+
+        bkaraService.FindRecords(searchFilter, searchValue, recordList, progressBar);
+
     }
 
+    public void SaveRecord(String stream_link) {
+        Record record = new Record();
+        record.setDate_created(new Date());
+        record.setSong(song);
+        record.setUser(user);
+        record.setStream_link(stream_link + "?client_id=" + UploadToSoundCloudTask.CLIENT_ID);
+        bkaraService.SaveRecord(record);
+    }
 }

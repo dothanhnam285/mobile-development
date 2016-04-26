@@ -35,10 +35,9 @@ public class SongViewModel {
         bkaraService.GetSongList(whichList, songList, progressBar);
     }
 
-    public SongViewModel(BkaraService.SearchFilter searchFilter, String searchValue , ProgressBar progressBar) {
+    public SongViewModel(BkaraService.SongSearchFilter searchFilter, String searchValue , ProgressBar progressBar) {
         bkaraService = BkaraService.getInstance();
         songList = new ObservableArrayList<>();
-
         bkaraService.FindSongs(searchFilter, searchValue, songList, progressBar);
     }
 
