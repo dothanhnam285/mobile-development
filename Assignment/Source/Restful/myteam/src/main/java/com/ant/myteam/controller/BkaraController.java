@@ -1,8 +1,10 @@
 package com.ant.myteam.controller;
 
 import com.ant.myteam.dao.RecordDao;
+import com.ant.myteam.dao.SongDao;
 import com.ant.myteam.dao.UserDao;
-import com.ant.myteam.managedbean.SongBean;
+import com.ant.myteam.model.RatingRecord;
+import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
 import com.ant.myteam.model.Song;
 import java.text.Normalizer;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @RestController
 public class BkaraController {
@@ -33,7 +36,7 @@ public class BkaraController {
     }
 
     @Autowired
-    private SongBean songBean;
+    private SongDao songDao;
 
     @Autowired
     private RecordDao recordDao;
@@ -43,22 +46,43 @@ public class BkaraController {
 
     @RequestMapping(value = "/songlist/all", method = RequestMethod.GET)
     public List<Song> getListSongAll() {
-        return songBean.getSonglistall();
+        return songDao.findAllSongs();
     }
 
     @RequestMapping(value = "/songlist/search/songname/{songname}", method = RequestMethod.GET)
     public List<Song> findSongsByName(@PathVariable("songname") String songName) {
-        return songBean.findSongsByName(songName);
+        return songDao.findSongsByName(songName);
     }
 
     @RequestMapping(value = "/songlist/search/singername/{singername}", method = RequestMethod.GET)
     public List<Song> findSongsBySingerName(@PathVariable("singername") String singerName) {
-        return songBean.findSongsBySingerName(singerName);
+        return songDao.findSongsBySingerName(singerName);
     }
 
     @RequestMapping(value = "/recordlist/song/{songid}", method = RequestMethod.GET)
     public List<Record> findRecordsBySongId(@PathVariable("songid") Long songId) {
         return recordDao.findRecordsBySongId(songId);
+    }
+
+    @RequestMapping(value = "/saverecord", method = RequestMethod.POST)
+    public ResponseEntity<Record> saveRecord(@RequestBody Record record) {
+        if (recordDao.saveRecord(record)) {
+            return new ResponseEntity<Record>(record, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<Record>(record, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @RequestMapping(value = "/rate/song", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void rateSong(@RequestBody RatingSong ratingSong) {
+        songDao.rateSong(ratingSong);
+    }
+
+    @RequestMapping(value = "/rate/record", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void rateRecord(@RequestBody RatingRecord ratingRecord) {
+        recordDao.rateRecord(ratingRecord);
     }
 
     @RequestMapping(value = "/recordlist/user/{userid}", method = RequestMethod.GET)

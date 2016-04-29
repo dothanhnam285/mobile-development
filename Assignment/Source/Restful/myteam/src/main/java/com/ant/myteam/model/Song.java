@@ -2,12 +2,14 @@ package com.ant.myteam.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,10 +20,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
-@Table(name ="Song")
+@Table(name = "Song")
 public class Song implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -30,15 +35,15 @@ public class Song implements Serializable {
 
     @Column(nullable = false)
     private String title;
-    
+
     @Column(nullable = true)
     private String title_search;
 
     private int view;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_added;
-    
+
     private float rating;
 
     @Column(nullable = false)
@@ -49,50 +54,62 @@ public class Song implements Serializable {
     @ManyToOne
     @JoinColumn(name = "singer_id")
     private Singer singer;
-    
+
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "song_id")
     private Collection<Record> records;
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "song_id")
+    private Collection<RatingSong> ratingSongs;
+
     public int getView() {
-            return view;
+        return view;
     }
 
     public void setView(int view) {
-            this.view = view;
+        this.view = view;
     }
 
     public Date getDate_added() {
-            return date_added;
+        return date_added;
     }
 
     public void setDate_added(Date date_added) {
-            this.date_added = date_added;
+        this.date_added = date_added;
     }
 
     public float getRating() {
-            return rating;
+        ArrayList<RatingSong> ratingList = new ArrayList<RatingSong>(ratingSongs);
+        if (ratingList.size() > 0) {
+            for (int i = 0; i < ratingList.size(); i++) {
+                rating += (float) ratingList.get(i).getRateValue();
+            }
+            rating = rating / ratingList.size();
+        }
+        return rating;
     }
 
     public void setRating(float rating) {
-            this.rating = rating;
+        this.rating = rating;
     }
 
     public String getVideo_id() {
-            return video_id;
+        return video_id;
     }
 
     public void setVideo_id(String video_id) {
-            this.video_id = video_id;
+        this.video_id = video_id;
     }
 
     public String getTitle() {
-            return title;
+        return title;
     }
 
     public void setTitle(String title) {
-            this.title = title;
+        this.title = title;
     }
 
     /**
@@ -163,6 +180,20 @@ public class Song implements Serializable {
      */
     public void setRecords(Collection<Record> records) {
         this.records = records;
+    }
+
+    /**
+     * @return the ratingSongs
+     */
+    public Collection<RatingSong> getRatingSongs() {
+        return ratingSongs;
+    }
+
+    /**
+     * @param ratingSongs the ratingSongs to set
+     */
+    public void setRatingSongs(Collection<RatingSong> ratingSongs) {
+        this.ratingSongs = ratingSongs;
     }
 
 }

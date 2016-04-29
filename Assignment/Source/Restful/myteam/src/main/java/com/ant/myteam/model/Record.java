@@ -5,7 +5,10 @@
  */
 package com.ant.myteam.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -15,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,16 +40,21 @@ public class Record implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date_created;
     private Long length;
-    
+
     @ManyToOne
     @JoinColumn(name = "song_id")
     private Song song;
-    
+
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
-    
+
     private String stream_link;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "recordId")
+    private Collection<RatingRecord> ratingRecords;
 
     public Date getDate_created() {
         return date_created;
@@ -64,6 +73,13 @@ public class Record implements Serializable {
     }
 
     public Float getRating() {
+        ArrayList<RatingRecord> ratingList = new ArrayList<RatingRecord>(ratingRecords);
+        if (ratingList.size() > 0) {
+            for (int i = 0; i < ratingList.size(); i++) {
+                rating += (float) ratingList.get(i).getRateValue();
+            }
+            rating = rating / ratingList.size();
+        }
         return rating;
     }
 

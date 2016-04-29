@@ -5,6 +5,8 @@
  */
 package com.ant.myteam.dao;
 
+import com.ant.myteam.model.RatingRecord;
+import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
 import java.util.List;
 import org.hibernate.Query;
@@ -44,6 +46,29 @@ public class RecordDao {
         Query query = sessionFactory.getCurrentSession().createQuery("FROM Record R WHERE R.user.userId IN (SELECT U.userId FROM User U WHERE U.userId = :userId)");
         query.setParameter("userId", userId);
         return (List<Record>) query.list();
+    }
+
+    public boolean rateRecord(RatingRecord ratingRecord) {
+        RatingRecord existed = checkExistRatingRecord(ratingRecord);
+        try {
+            if (existed == null)
+                sessionFactory.getCurrentSession().save(ratingRecord);
+            else {
+                existed.setRateValue(ratingRecord.getRateValue());
+                sessionFactory.getCurrentSession().update(existed);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private RatingRecord checkExistRatingRecord(RatingRecord ratingRecord) {
+        Query query = sessionFactory.getCurrentSession().createQuery("FROM RatingRecord RR WHERE RR.record.recordId = :recordId AND RR.user.userId = :userId");
+        query.setParameter("recordId", ratingRecord.getRecord().getRecordId());
+        query.setParameter("userId", ratingRecord.getUser().getUserId());
+        return (RatingRecord) query.uniqueResult();
     }
 
 }

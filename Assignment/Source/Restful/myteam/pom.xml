@@ -11,7 +11,7 @@
         <myfaces-version>2.2.9</myfaces-version>
         <primefaces-version>5.3</primefaces-version>
         <springframework-version>4.2.5.RELEASE</springframework-version>
-        <hibernate-version>4.1.0.Final</hibernate-version>
+        <hibernate-version>4.3.11.Final</hibernate-version>
         <jackson-version>2.7.3</jackson-version>
     </properties>
     <repositories>
@@ -107,6 +107,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
 
     </dependencies>
     <build>

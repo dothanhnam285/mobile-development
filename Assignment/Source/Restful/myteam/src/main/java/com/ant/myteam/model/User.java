@@ -55,6 +55,16 @@ public class User implements Serializable {
     @JoinColumn(name = "userId")
     private Collection<Record> records;
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private Collection<RatingRecord> ratingRecords;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId")
+    private Collection<RatingSong> ratingSongs;
+
     public Long getUserId() {
         return userId;
     }
