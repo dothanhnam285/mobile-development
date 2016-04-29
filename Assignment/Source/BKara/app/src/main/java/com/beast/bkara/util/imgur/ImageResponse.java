@@ -1,4 +1,4 @@
-package com.beast.bkara.util;
+package com.beast.bkara.util.imgur;
 
 /**
  * Created by AKiniyalocts on 1/14/15.

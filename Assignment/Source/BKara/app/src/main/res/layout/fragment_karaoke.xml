@@ -120,16 +120,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" />
 
-                    <com.hedgehog.ratingbar.RatingBar
-                        android:id="@+id/ratingbar"
+                    <com.beast.bkara.util.RatingBarView
+                        android:id="@+id/frag_karaoke_ratingbar"
                         android:gravity="right|center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:setRating="@{song.rating}"
                         hedgehog:starEmpty="@drawable/ic_star_empty"
                         hedgehog:starFill="@drawable/ic_star_full"
                         hedgehog:starHalf="@drawable/ic_star_half"
                         hedgehog:starCount="5"
-                        hedgehog:clickable="true"
+                        hedgehog:clickable="false"
                         hedgehog:starImageSize="25dp" />
 
                 </LinearLayout>

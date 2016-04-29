@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beast.bkara.model.supportmodel.RatingSong;
+import com.beast.bkara.util.RatingBarView;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -59,6 +62,11 @@ public class Song extends BaseObservable implements Parcelable {
     @BindingAdapter("app:setView")
     public static void setView(TextView view, int songView) {
         view.setText(String.valueOf(songView) + " View(s)");
+    }
+
+    @BindingAdapter("app:setRating")
+    public static void setRating(RatingBarView view, float rating) {
+        view.setStar(rating);
     }
 
     public Song() {
@@ -185,5 +193,4 @@ public class Song extends BaseObservable implements Parcelable {
             return new Song[size];
         }
     };
-
 }

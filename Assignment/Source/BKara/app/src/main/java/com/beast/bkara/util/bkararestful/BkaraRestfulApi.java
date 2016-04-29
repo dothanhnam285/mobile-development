@@ -1,8 +1,10 @@
-package com.beast.bkara.util;
+package com.beast.bkara.util.bkararestful;
 
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.RatingRecord;
+import com.beast.bkara.model.supportmodel.RatingSong;
 
 import java.util.List;
 
@@ -39,6 +41,12 @@ public interface BkaraRestfulApi {
 
     @GET("recordlist/user/{userid}")
     Call<List<Record>> findRecordsByUserId(@Path("userid") Long userId);
+
+    @POST("rate/song")
+    Call<Song> rateSong(@Body RatingSong ratingSong);
+
+    @POST("rate/record")
+    Call<Record> rateRecord(@Body RatingRecord ratingRecord);
 
     @POST("signUp")
     Call<User> signUp(@Body User user);

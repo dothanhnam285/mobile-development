@@ -1,20 +1,11 @@
 package com.beast.bkara.dialogfragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,33 +15,23 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.beast.bkara.Controller;
-import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.User;
-import com.beast.bkara.util.AlbumStorageDirFactory;
-import com.beast.bkara.util.BaseAlbumDirFactory;
-import com.beast.bkara.util.BkaraService;
-import com.beast.bkara.util.FroyoAlbumDirFactory;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.ImageCaptureHandler;
-import com.beast.bkara.util.ImageResponse;
-import com.beast.bkara.util.ImageUpload;
-import com.beast.bkara.util.ImageUtil;
-import com.beast.bkara.util.ImgurService;
+import com.beast.bkara.util.imgur.ImageResponse;
+import com.beast.bkara.util.imgur.ImageUpload;
+import com.beast.bkara.util.imgur.ImgurService;
 import com.github.siyamed.shapeimageview.CircularImageView;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -239,7 +220,7 @@ public class SignUpDialogFragment extends DialogFragment {
             public void onResponse(Call<User> call, Response<User> response) {
                 if( response.isSuccessful() ) {
                     Toast.makeText(getActivity().getApplicationContext(), R.string.sign_up_success_msg, Toast.LENGTH_LONG).show();
-                    mListener.onSignUpSuccessfully(user);
+                    mListener.onSignUpSuccessfully(response.body());
                 }else Toast.makeText(getActivity().getApplicationContext(), R.string.user_existed_error, Toast.LENGTH_LONG).show();
 
                 showProgress(false);

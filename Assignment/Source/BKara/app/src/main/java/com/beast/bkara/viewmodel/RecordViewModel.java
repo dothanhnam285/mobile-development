@@ -2,8 +2,6 @@ package com.beast.bkara.viewmodel;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
-import android.databinding.adapters.ProgressBarBindingAdapter;
-import android.os.Environment;
 import android.widget.ProgressBar;
 
 import com.beast.bkara.BR;
@@ -11,7 +9,7 @@ import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
-import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.UploadToSoundCloudTask;
 
 import java.util.Date;

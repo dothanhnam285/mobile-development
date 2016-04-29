@@ -1,4 +1,4 @@
-package com.beast.bkara.util;
+package com.beast.bkara.util.bkararestful;
 
 import android.databinding.ObservableList;
 import android.util.Log;
@@ -8,6 +8,8 @@ import android.widget.ProgressBar;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.RatingRecord;
+import com.beast.bkara.model.supportmodel.RatingSong;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -36,7 +38,7 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = "http://192.168.1.103:8084/myteam/bkaraservice/";
+    private final String RESTFUL_URL = "http://192.168.1.108:8084/myteam/bkaraservice/";
             //"http://192.168.0.101:8080/myteam/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
 
@@ -170,6 +172,36 @@ public class BkaraService {
             public void onFailure(Call<List<Record>> call, Throwable t) {
                 Log.d("RESTFUL CALL", "FAILED " + t.getMessage());
                 FindRecords(searchFilter, searchValue, recordList, progressBar);
+            }
+        });
+    }
+
+    public void RateSong(RatingSong ratingSong) {
+        Call<Song> call = bkaraRestful.rateSong(ratingSong);
+        call.enqueue(new Callback<Song>() {
+            @Override
+            public void onResponse(Call<Song> call, Response<Song> response) {
+                Log.d("RESTFUL CALL", "SUCCESS RATING SONG " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Song> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAIL RATING SONG " + t.getMessage());
+            }
+        });
+    }
+
+    public void RateRecord(RatingRecord ratingRecord) {
+        Call<Record> call = bkaraRestful.rateRecord(ratingRecord);
+        call.enqueue(new Callback<Record>() {
+            @Override
+            public void onResponse(Call<Record> call, Response<Record> response) {
+                Log.d("RESTFUL CALL", "SUCCESS RATING RECORD " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Record> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED RATING RECORD " + t.getMessage());
             }
         });
     }

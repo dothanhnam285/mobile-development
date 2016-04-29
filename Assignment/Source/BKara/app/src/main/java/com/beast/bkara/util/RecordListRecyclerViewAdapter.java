@@ -22,7 +22,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.R;
+import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.model.Record;
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 import com.devbrackets.android.exomedia.EMVideoView;

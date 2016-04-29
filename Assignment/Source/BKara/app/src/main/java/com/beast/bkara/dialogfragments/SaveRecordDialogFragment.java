@@ -104,10 +104,12 @@ public class SaveRecordDialogFragment extends DialogFragment {
             }
         });
 
+        final Context mContext = getActivity();
+
         textViewSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Your record is being uploaded. You will receive a message when the upload is done", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Your record is being uploaded. You will receive a message when the upload is done", Toast.LENGTH_LONG).show();
                 UploadToSoundCloudTask uploadToSoundCloudTask = new UploadToSoundCloudTask(recordPath,
                         controller.getCurrUser().getUserName(),
                         song.getTitle(),
@@ -115,22 +117,20 @@ public class SaveRecordDialogFragment extends DialogFragment {
                             @Override
                             public void OnUploadSuccess(String streamLink) {
                                 DeleteRecordFromLocal();
-                                Toast.makeText(getActivity(), streamLink, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, streamLink, Toast.LENGTH_SHORT).show();
                                 ((KaraokeFragment) getParentFragment()).getRecordViewModel().SaveRecord(streamLink);
-                                Toast.makeText(getActivity(), "Upload record successfully !", Toast.LENGTH_SHORT).show();
-                                getDialog().dismiss();
+                                Toast.makeText(mContext, "Upload record successfully !", Toast.LENGTH_SHORT).show();
                                 // TODO: Create and save a record for user
                             }
 
                             @Override
                             public void OnUploadFailed() {
                                 DeleteRecordFromLocal();
-                                Toast.makeText(getActivity(), "Upload record failed !!!", Toast.LENGTH_SHORT).show();
-                                getDialog().dismiss();
+                                Toast.makeText(mContext, "Upload record failed !!!", Toast.LENGTH_SHORT).show();
                             }
                         });
-
                 uploadToSoundCloudTask.execute();
+                getDialog().dismiss();
             }
         });
 

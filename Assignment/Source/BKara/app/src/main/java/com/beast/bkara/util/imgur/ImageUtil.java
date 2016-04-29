@@ -1,4 +1,4 @@
-package com.beast.bkara.util;
+package com.beast.bkara.util.imgur;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

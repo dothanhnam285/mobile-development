@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.VideoView;
 import com.beast.bkara.R;
+import com.beast.bkara.util.imgur.ImageUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;

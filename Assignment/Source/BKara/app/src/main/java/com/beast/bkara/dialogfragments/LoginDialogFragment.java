@@ -1,12 +1,8 @@
 package com.beast.bkara.dialogfragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -19,7 +15,7 @@ import android.widget.Toast;
 
 import com.beast.bkara.R;
 import com.beast.bkara.model.User;
-import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.bkararestful.BkaraService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
