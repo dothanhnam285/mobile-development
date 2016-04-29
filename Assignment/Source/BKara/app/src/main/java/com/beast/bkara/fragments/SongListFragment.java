@@ -6,20 +6,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.beast.bkara.Controller;
 import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentListSongBinding;
 import com.beast.bkara.model.Song;
-import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.SongViewModel;
 

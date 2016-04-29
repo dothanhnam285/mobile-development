@@ -1,8 +1,6 @@
 package com.beast.bkara.fragments;
 
 import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.databinding.adapters.TableLayoutBindingAdapter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -13,13 +11,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.beast.bkara.Controller;
 import com.beast.bkara.R;
-import com.beast.bkara.model.Song;
-import com.beast.bkara.util.BkaraService;
-import com.beast.bkara.viewmodel.SongViewModel;
+import com.beast.bkara.util.bkararestful.BkaraService;
 
 import java.util.ArrayList;
 import java.util.List;

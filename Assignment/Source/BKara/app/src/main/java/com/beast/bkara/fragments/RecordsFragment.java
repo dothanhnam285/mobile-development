@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentRecordsBinding;
+import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
 import com.beast.bkara.viewmodel.RecordViewModel;
 
@@ -100,6 +102,16 @@ public class RecordsFragment extends Fragment {
         TextView textViewPleaseLogin = (TextView) v.findViewById(R.id.frag_records_textview_pleaselogin);
         ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.frag_records_progressBarWaiting);
         rvRecordList = (RecyclerView) v.findViewById(R.id.frag_records_rv_recordList);
+
+        ItemClickSupport.addTo(rvRecordList).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                if (controller.isLogin()) {
+                    RatingDialogFragment ratingDialogFragment = RatingDialogFragment.newInstance(recordVm.recordList.get(position), false);
+                    ratingDialogFragment.show(getChildFragmentManager(), null);
+                }
+            }
+        });
 
         if (isShowUser) {
             textViewPleaseLogin.setVisibility(View.GONE);

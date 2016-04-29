@@ -1,11 +1,14 @@
 package com.beast.bkara.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by VINH on 4/22/2016.
  */
-public class User {
+public class User implements Parcelable {
 
 
     private Long userId;
@@ -19,6 +22,10 @@ public class User {
     private String country;
     private String address;
     private ArrayList<Record> records;
+
+    public User() {
+
+    }
 
     public Long getUserId() {
         return userId;
@@ -107,4 +114,58 @@ public class User {
     public void setRecords(ArrayList<Record> records) {
         this.records = records;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(getUserId());
+        dest.writeString(getUserName());
+        dest.writeString(getEmail());
+        dest.writeString(getPassword());
+        dest.writeString(getFirstName());
+        dest.writeString(getLastName());
+        dest.writeString(getPhoneNumber());
+        dest.writeString(getAvatarLink());
+        dest.writeString(getCountry());
+        dest.writeString(getAddress());
+        dest.writeList(getRecords());
+    }
+
+    private User(Parcel in) {
+        setUserId(in.readLong());
+        setUserName(in.readString());
+        setEmail(in.readString());
+        setPassword(in.readString());
+        setFirstName(in.readString());
+        setLastName(in.readString());
+        setPhoneNumber(in.readString());
+        setAvatarLink(in.readString());
+        setCountry(in.readString());
+        setAddress(in.readString());
+
+        ArrayList<Record> listRecord = null;
+        in.readList(listRecord,ArrayList.class.getClassLoader());
+        setRecords(listRecord);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<User> CREATOR
+            = new Parcelable.Creator<User>() {
+
+        // This simply calls our new constructor (typically private) and
+        // passes along the unmarshalled `Parcel`, and then returns the new object!
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        // We just need to copy this and change the type to match our class.
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

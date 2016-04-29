@@ -75,10 +75,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.hedgehog.ratingbar.RatingBar
+                <com.beast.bkara.util.RatingBarView
                     android:id="@+id/ratingbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:setRating="@{song.rating}"
                     hedgehog:starEmpty="@drawable/ic_star_empty"
                     hedgehog:starFill="@drawable/ic_star_full"
                     hedgehog:starHalf="@drawable/ic_star_half"

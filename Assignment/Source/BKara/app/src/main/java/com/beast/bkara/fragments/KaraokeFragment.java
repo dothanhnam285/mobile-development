@@ -21,12 +21,14 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentKaraokeBinding;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.viewmodel.RecordViewModel;
+import com.beast.bkara.viewmodel.SongViewModel;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -51,6 +53,7 @@ public class KaraokeFragment extends Fragment {
 
     private ToggleButton btnRecord;
     private ToggleButton btnExpand;
+    private RatingBar ratingBar;
     private ExpandableRelativeLayout erlSongInfo;
 
     private String recordPath = "";
@@ -128,6 +131,7 @@ public class KaraokeFragment extends Fragment {
         View v = binding.getRoot();
 
         ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.frag_karaoke_progressBarWaiting);
+        ratingBar = (RatingBar) v.findViewById(R.id.frag_karaoke_ratingbar);
 
         recordVm = new RecordViewModel(controller.getCurrUser(), whichSong, progressBar);
 
@@ -195,6 +199,16 @@ public class KaraokeFragment extends Fragment {
                     erlSongInfo.collapse();
                 else
                     erlSongInfo.expand();
+            }
+        });
+
+        ratingBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (controller.isLogin()) {
+                    RatingDialogFragment ratingDialogFragment = RatingDialogFragment.newInstance(whichSong, true);
+                    ratingDialogFragment.show(getChildFragmentManager(), null);
+                }
             }
         });
 

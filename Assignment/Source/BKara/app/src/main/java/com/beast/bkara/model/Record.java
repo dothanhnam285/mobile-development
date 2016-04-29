@@ -2,8 +2,11 @@ package com.beast.bkara.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.BindingAdapter;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.TextView;
 
+import com.beast.bkara.util.RatingBarView;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -13,10 +16,10 @@ import java.util.TimeZone;
 /**
  * Created by Darka on 4/16/2016.
  */
-public class Record extends BaseObservable {
+public class Record extends BaseObservable implements Parcelable {
 
     @SerializedName("recordId")
-    private int id;
+    private Long id;
 
     private int length;
     private int view;
@@ -26,6 +29,9 @@ public class Record extends BaseObservable {
     private User user;
     private String stream_link;
 
+    public Record() {
+
+    }
 
     @BindingAdapter("app:setDate")
     public static void setDate(TextView view, Date date) {
@@ -50,11 +56,16 @@ public class Record extends BaseObservable {
         view.setText(song.getTitle());
     }
 
-    public int getId() {
+    @BindingAdapter("app:setRating")
+    public static void setRating(RatingBarView view, float rating) {
+        view.setStar(rating);
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -113,4 +124,49 @@ public class Record extends BaseObservable {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(getId());
+        dest.writeInt(getLength());
+        dest.writeInt(getView());
+        dest.writeValue(getDate_created());
+        dest.writeFloat(getRating());
+        dest.writeString(getStream_link());
+        dest.writeParcelable(getSong(), flags);
+        dest.writeParcelable(getUser(), flags);
+    }
+
+    private Record(Parcel in) {
+        setId(in.readLong());
+        setLength(in.readInt());
+        setView(in.readInt());
+        setDate_created((Date) in.readValue(null));
+        setRating(in.readFloat());
+        setStream_link(in.readString());
+        setSong((Song) in.readParcelable(Song.class.getClassLoader()));
+        setUser((User) in.readParcelable(User.class.getClassLoader()));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Record> CREATOR
+            = new Parcelable.Creator<Record>() {
+
+        // This simply calls our new constructor (typically private) and
+        // passes along the unmarshalled `Parcel`, and then returns the new object!
+        @Override
+        public Record createFromParcel(Parcel in) {
+            return new Record(in);
+        }
+
+        // We just need to copy this and change the type to match our class.
+        @Override
+        public Record[] newArray(int size) {
+            return new Record[size];
+        }
+    };
 }

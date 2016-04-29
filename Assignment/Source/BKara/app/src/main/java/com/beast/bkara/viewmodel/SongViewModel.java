@@ -2,20 +2,12 @@ package com.beast.bkara.viewmodel;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
-import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.beast.bkara.BR;
-import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
-import com.beast.bkara.util.BkaraService;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import com.beast.bkara.util.bkararestful.BkaraService;
 
 import me.tatarka.bindingcollectionadapter.ItemView;
 

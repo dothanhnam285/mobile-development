@@ -29,18 +29,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
+import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.fragments.*;
 import com.beast.bkara.model.User;
-import com.beast.bkara.util.BkaraService;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.SongSearchView;
-import com.beast.bkara.util.UploadToSoundCloudTask;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -53,7 +51,9 @@ public class MainActivity extends AppCompatActivity implements
         RecordsFragment.OnFragmentInteractionListener,
         LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
         SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
-        SaveRecordDialogFragment.OnFragmentInteractionListener {
+        SaveRecordDialogFragment.OnFragmentInteractionListener,
+        RatingDialogFragment.OnFragmentInteractionListener
+{
 
     private RelativeLayout mLayout;
     private LayoutInflater mLayoutInflater;

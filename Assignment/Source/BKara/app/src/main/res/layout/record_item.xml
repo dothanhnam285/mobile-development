@@ -40,11 +40,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <com.hedgehog.ratingbar.RatingBar
+            <com.beast.bkara.util.RatingBarView
                 android:id="@+id/ratingbar"
                 android:gravity="right|center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:setRating="@{record.rating}"
                 hedgehog:starEmpty="@drawable/ic_star_empty"
                 hedgehog:starFill="@drawable/ic_star_full"
                 hedgehog:starHalf="@drawable/ic_star_half"
