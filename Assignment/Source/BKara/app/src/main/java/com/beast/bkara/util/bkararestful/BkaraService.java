@@ -206,6 +206,36 @@ public class BkaraService {
         });
     }
 
+    public void UpdateSong(Song song) {
+        Call<Song> call = bkaraRestful.updateSong(song);
+        call.enqueue(new Callback<Song>() {
+            @Override
+            public void onResponse(Call<Song> call, Response<Song> response) {
+                Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Song> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED UPDATE SONG " + t.getMessage());
+            }
+        });
+    }
+
+    public void UpdateRecord(Record record) {
+        Call<Record> call = bkaraRestful.updateRecord(record);
+        call.enqueue(new Callback<Record>() {
+            @Override
+            public void onResponse(Call<Record> call, Response<Record> response) {
+                Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Record> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED UPDATE SONG " + t.getMessage());
+            }
+        });
+    }
+
     public void login(User user, Callback<User> cb){
         bkaraRestful.login(user).enqueue(cb);
     }

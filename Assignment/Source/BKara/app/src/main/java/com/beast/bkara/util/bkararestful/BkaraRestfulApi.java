@@ -48,6 +48,12 @@ public interface BkaraRestfulApi {
     @POST("rate/record")
     Call<Record> rateRecord(@Body RatingRecord ratingRecord);
 
+    @POST("update/song")
+    Call<Song> updateSong(@Body Song song);
+
+    @POST("update/record")
+    Call<Record> updateRecord(@Body Record record);
+
     @POST("signUp")
     Call<User> signUp(@Body User user);
 

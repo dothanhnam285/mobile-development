@@ -26,6 +26,7 @@ import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.model.Record;
+import com.beast.bkara.viewmodel.RecordViewModel;
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 import com.devbrackets.android.exomedia.EMVideoView;
 import com.devbrackets.android.exomedia.exoplayer.EMExoPlayer;
@@ -57,7 +58,10 @@ public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         recordPlayerHandler.StopMediaPlayer();
+        Log.d("RECYCLERVIEW ADAPTER", "DETACHED");
     }
+
+
 
     @Override
     public ViewDataBinding onCreateBinding(LayoutInflater inflater, @LayoutRes int layoutId, ViewGroup viewGroup) {

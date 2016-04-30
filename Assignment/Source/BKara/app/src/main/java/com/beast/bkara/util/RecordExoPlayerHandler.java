@@ -14,6 +14,7 @@ import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 
+import com.beast.bkara.viewmodel.RecordViewModel;
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 
 import java.io.IOException;
@@ -90,6 +91,7 @@ public class RecordExoPlayerHandler {
 
                 if (isPlay) {
                     sbar.setEnabled(true);
+
                     for (int i = 0; i < seekBarList.size(); i++) {
                         if (i != itemIndex) {
                             seekBarList.get(i).setProgress(0);

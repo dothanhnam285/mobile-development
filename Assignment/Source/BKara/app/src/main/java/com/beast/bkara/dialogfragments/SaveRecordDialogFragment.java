@@ -117,8 +117,9 @@ public class SaveRecordDialogFragment extends DialogFragment {
                             @Override
                             public void OnUploadSuccess(String streamLink) {
                                 DeleteRecordFromLocal();
-                                Toast.makeText(mContext, streamLink, Toast.LENGTH_SHORT).show();
-                                ((KaraokeFragment) getParentFragment()).getRecordViewModel().SaveRecord(streamLink);
+                                KaraokeFragment parentFragment = (KaraokeFragment) getParentFragment();
+                                parentFragment.getRecordViewModel().SaveRecord(streamLink);
+                                parentFragment.ReloadRecordList();
                                 Toast.makeText(mContext, "Upload record successfully !", Toast.LENGTH_SHORT).show();
                                 // TODO: Create and save a record for user
                             }

@@ -8,6 +8,7 @@ package com.ant.myteam.dao;
 import com.ant.myteam.model.RatingRecord;
 import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
+import com.ant.myteam.model.Song;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -36,6 +37,16 @@ public class RecordDao {
         return false;
     }
 
+    public boolean updateRecord(Record record) {
+        try {
+            sessionFactory.getCurrentSession().update(record);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<Record> findRecordsBySongId(Long songId) {
         Query query = sessionFactory.getCurrentSession().createQuery("FROM Record R WHERE R.song.song_id IN (SELECT S.song_id FROM Song S WHERE S.song_id = :songId)");
         query.setParameter("songId", songId);
@@ -51,9 +62,9 @@ public class RecordDao {
     public boolean rateRecord(RatingRecord ratingRecord) {
         RatingRecord existed = checkExistRatingRecord(ratingRecord);
         try {
-            if (existed == null)
+            if (existed == null) {
                 sessionFactory.getCurrentSession().save(ratingRecord);
-            else {
+            } else {
                 existed.setRateValue(ratingRecord.getRateValue());
                 sessionFactory.getCurrentSession().update(existed);
             }

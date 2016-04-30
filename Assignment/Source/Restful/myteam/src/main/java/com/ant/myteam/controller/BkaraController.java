@@ -85,6 +85,18 @@ public class BkaraController {
         recordDao.rateRecord(ratingRecord);
     }
 
+    @RequestMapping(value = "/update/song", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateSong(@RequestBody Song song) {
+        songDao.updateSong(song);
+    }
+
+    @RequestMapping(value = "/update/record", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateRecord(@RequestBody Record record) {
+        recordDao.updateRecord(record);
+    }
+
     @RequestMapping(value = "/recordlist/user/{userid}", method = RequestMethod.GET)
     public List<Record> findRecordsByUserId(@PathVariable("userid") Long userId) {
         return recordDao.findRecordsByUserId(userId);
