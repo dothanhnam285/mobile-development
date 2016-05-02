@@ -6,6 +6,7 @@
 package com.ant.myteam.dao;
 
 import com.ant.myteam.model.User;
+import com.ant.myteam.model.UserGCM;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,24 +33,50 @@ public class UserDao {
         }
         return false;
     }
-    
-    public User checkUserExisted(User user){
+
+    public User checkUserExisted(User user) {
         try {
             Query query;
-            if( user.getPassword() == null || user.getPassword().equals("") ){
+            if (user.getPassword() == null || user.getPassword().equals("")) {
                 query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE username = :username");
                 query.setParameter("username", user.getUserName());
-            }else{
+            } else {
                 query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE username = :username AND password = :password");
-            query.setParameter("username", user.getUserName());
-            query.setParameter("password", user.getPassword());
+                query.setParameter("username", user.getUserName());
+                query.setParameter("password", user.getPassword());
             }
-            
+
             //if( query.uniqueResult() != null )
-                return (User) query.uniqueResult();
+            return (User) query.uniqueResult();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean saveGCM(UserGCM userGCM) {
+        try {
+            sessionFactory.getCurrentSession().save(userGCM);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteGCM(UserGCM userGCM) {
+        try {
+            sessionFactory.getCurrentSession().delete(userGCM);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public UserGCM checkUserGCMExisted(Long userId) {
+        Query query = sessionFactory.getCurrentSession().createQuery("FROM UserGCM WHERE userId = :userId");
+        query.setParameter("userId", userId);
+        return (UserGCM) query.uniqueResult();
     }
 }
