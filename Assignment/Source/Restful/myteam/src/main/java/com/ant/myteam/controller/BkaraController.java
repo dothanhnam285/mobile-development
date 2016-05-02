@@ -3,6 +3,8 @@ package com.ant.myteam.controller;
 import com.ant.myteam.dao.RecordDao;
 import com.ant.myteam.dao.SongDao;
 import com.ant.myteam.dao.UserDao;
+import com.ant.myteam.gcm.Content;
+import com.ant.myteam.gcm.POST2GCM;
 import com.ant.myteam.model.RatingRecord;
 import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
@@ -10,9 +12,11 @@ import com.ant.myteam.model.Song;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import com.ant.myteam.model.User;
+import com.ant.myteam.model.UserGCM;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.primefaces.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +38,8 @@ public class BkaraController {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");
     }
+    
+    private String SERVER_API_KEY = "AIzaSyCwsKIPZ6SBCXaS0O0yW5DJVx57Kpm5e-Y";
 
     @Autowired
     private SongDao songDao;
@@ -64,6 +70,11 @@ public class BkaraController {
         return recordDao.findRecordsBySongId(songId);
     }
 
+    @RequestMapping(value = "/recordlist/user/{userid}", method = RequestMethod.GET)
+    public List<Record> findRecordsByUserId(@PathVariable("userid") Long userId) {
+        return recordDao.findRecordsByUserId(userId);
+    }
+
     @RequestMapping(value = "/saverecord", method = RequestMethod.POST)
     public ResponseEntity<Record> saveRecord(@RequestBody Record record) {
         if (recordDao.saveRecord(record)) {
@@ -85,9 +96,33 @@ public class BkaraController {
         recordDao.rateRecord(ratingRecord);
     }
 
-    @RequestMapping(value = "/recordlist/user/{userid}", method = RequestMethod.GET)
-    public List<Record> findRecordsByUserId(@PathVariable("userid") Long userId) {
-        return recordDao.findRecordsByUserId(userId);
+    @RequestMapping(value = "/registerGCM", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void registerGCM(@RequestBody UserGCM userGCM) {
+        userDao.saveGCM(userGCM);
+    }
+
+    @RequestMapping(value = "/unregisterGCM", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void unregisterGCM(@RequestBody UserGCM userGCM) {
+        userDao.deleteGCM(userGCM);
+    }
+    
+    @RequestMapping(value = "/sendnoti/{senderId}/{receiverId}/{message}", method = RequestMethod.GET)
+    @ResponseBody
+    public String sendNoti(@PathVariable("senderId") Long senderId, @PathVariable("receiverId") Long receiverId, @PathVariable("message") String message) {
+        UserGCM sender = userDao.checkUserGCMExisted(senderId);
+        UserGCM receiver = userDao.checkUserGCMExisted(receiverId);
+//        && !sender.getRegisterId().equals(receiver.getRegisterId())
+        if (sender != null && receiver != null ) {
+            Content content = new Content();
+            content.addRegId(receiver.getRegisterId());
+            content.createData("BKara", message);
+            POST2GCM.post(SERVER_API_KEY, content);
+            return "push noti";
+        }
+        else
+            return "failed to push noti";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)

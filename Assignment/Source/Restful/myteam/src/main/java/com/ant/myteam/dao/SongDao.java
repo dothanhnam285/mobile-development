@@ -90,9 +90,9 @@ public class SongDao implements Serializable {
     public void rateSong(RatingSong ratingSong) {
         RatingSong existed = checkExistRatingSong(ratingSong);
         try {
-            if (existed == null)
+            if (existed == null) {
                 sessionFactory.getCurrentSession().save(ratingSong);
-            else {
+            } else {
                 existed.setRateValue(ratingSong.getRateValue());
                 sessionFactory.getCurrentSession().update(existed);
             }
@@ -100,7 +100,7 @@ public class SongDao implements Serializable {
             e.printStackTrace();
         }
     }
-    
+
     private RatingSong checkExistRatingSong(RatingSong ratingSong) {
         Query query = sessionFactory.getCurrentSession().createQuery("FROM RatingSong RS WHERE RS.song.song_id = :song_id AND RS.user.userId = :userId");
         query.setParameter("song_id", ratingSong.getSong().getSong_id());

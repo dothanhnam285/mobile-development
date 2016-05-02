@@ -51,9 +51,9 @@ public class RecordDao {
     public boolean rateRecord(RatingRecord ratingRecord) {
         RatingRecord existed = checkExistRatingRecord(ratingRecord);
         try {
-            if (existed == null)
+            if (existed == null) {
                 sessionFactory.getCurrentSession().save(ratingRecord);
-            else {
+            } else {
                 existed.setRateValue(ratingRecord.getRateValue());
                 sessionFactory.getCurrentSession().update(existed);
             }
