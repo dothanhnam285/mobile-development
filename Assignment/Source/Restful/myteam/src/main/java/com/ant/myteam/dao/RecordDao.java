@@ -8,6 +8,7 @@ package com.ant.myteam.dao;
 import com.ant.myteam.model.RatingRecord;
 import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
+import com.ant.myteam.model.Song;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -29,6 +30,16 @@ public class RecordDao {
     public boolean saveRecord(Record record) {
         try {
             sessionFactory.getCurrentSession().save(record);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateRecord(Record record) {
+        try {
+            sessionFactory.getCurrentSession().update(record);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

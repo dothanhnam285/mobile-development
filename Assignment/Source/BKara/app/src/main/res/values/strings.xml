@@ -38,4 +38,7 @@
     <string name="user_not_existed_error">User not found . Please try again !</string>
     <string name="sign_up_success_msg">"Sign up successfully "</string>
 
+    <!-- Google cloud messaging key -->
+    <string name="gcm_senderId">789130506501</string>
+
 </resources>

@@ -1,13 +1,20 @@
 package com.beast.bkara;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,6 +43,7 @@ import com.beast.bkara.fragments.*;
 import com.beast.bkara.model.User;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.SongSearchView;
+import com.beast.bkara.util.gcm.RegistrationIntentService;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -59,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
     private LayoutInflater mLayoutInflater;
     private PopupWindow mPopupWindow;
     private DialogFragment loginFragment,signUpFragment;
+    private Fragment currFragment;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
         mLayout = (RelativeLayout) findViewById(R.id.content_main_rl_layout);
 
         // Setup application action bar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -98,7 +108,10 @@ public class MainActivity extends AppCompatActivity implements
         // Set the default view to Home item
         displayView(R.id.nav_home);
 
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
     }
+
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -254,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements
         // Change fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, fragment, title);
             ft.commit();
         }
 
@@ -272,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements
         // Change fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, fragment, title);
             ft.commit();
         }
 
@@ -369,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 logout();
+
             }
         });
 
@@ -376,6 +390,13 @@ public class MainActivity extends AppCompatActivity implements
             CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
             ImageLoader.getInstance().displayImage(user.getAvatarLink(), avatar);
         }
+
+        if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Karaoke")) != null)
+            ((KaraokeFragment) currFragment).enableRecord(true);
+        else if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Records")) != null)
+            displayView(R.id.nav_records);
+
+        RegistrationIntentService.GetInstance().registerAtServer(controller);
     }
 
     private void logout() {
@@ -389,5 +410,18 @@ public class MainActivity extends AppCompatActivity implements
         CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
         avatar.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.img_account));
 
+        if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Karaoke")) != null)
+            ((KaraokeFragment) currFragment).enableRecord(false);
+        else if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Records")) != null)
+            displayView(R.id.nav_records);
+
+        RegistrationIntentService.GetInstance().unregisterAtServer();
+    }
+
+    public void showToolbar(boolean isShow) {
+        if (isShow)
+            toolbar.setVisibility(View.VISIBLE);
+        else
+            toolbar.setVisibility(View.GONE);
     }
 }

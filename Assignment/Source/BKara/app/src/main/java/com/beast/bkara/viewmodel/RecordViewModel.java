@@ -2,6 +2,7 @@ package com.beast.bkara.viewmodel;
 
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableList;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.beast.bkara.BR;
@@ -50,7 +51,13 @@ public class RecordViewModel {
 
     }
 
+    public void SetUser(User user) {
+        Log.d("RECORD VM", "SET USER: " + user.toString());
+        this.user = user;
+    }
+
     public void SaveRecord(String stream_link) {
+        Log.d("RECORD VM", "SAVE RECORD: " + user.toString());
         Record record = new Record();
         record.setDate_created(new Date());
         record.setSong(song);

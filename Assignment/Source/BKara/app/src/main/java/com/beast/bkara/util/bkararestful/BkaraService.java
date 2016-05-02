@@ -10,6 +10,7 @@ import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
 import com.beast.bkara.model.supportmodel.RatingRecord;
 import com.beast.bkara.model.supportmodel.RatingSong;
+import com.beast.bkara.model.supportmodel.UserGCM;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -205,6 +206,78 @@ public class BkaraService {
             }
         });
     }
+
+    public void UpdateSong(Song song) {
+        Call<Song> call = bkaraRestful.updateSong(song);
+        call.enqueue(new Callback<Song>() {
+            @Override
+            public void onResponse(Call<Song> call, Response<Song> response) {
+                Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Song> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED UPDATE SONG " + t.getMessage());
+            }
+        });
+    }
+
+    public void UpdateRecord(Record record) {
+        Call<Record> call = bkaraRestful.updateRecord(record);
+        call.enqueue(new Callback<Record>() {
+            @Override
+            public void onResponse(Call<Record> call, Response<Record> response) {
+                Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Record> call, Throwable t) {
+                Log.d("RESTFUL CALL", "FAILED UPDATE SONG " + t.getMessage());
+            }
+        });
+    }
+
+    public void RegisterGCM(UserGCM userGCM) {
+        Call<UserGCM> call = bkaraRestful.registerGCM(userGCM);
+        call.enqueue(new Callback<UserGCM>() {
+            @Override
+            public void onResponse(Call<UserGCM> call, Response<UserGCM> response) {
+            }
+
+            @Override
+            public void onFailure(Call<UserGCM> call, Throwable t) {
+            }
+        });
+    }
+
+    public void UnregisterGCM(UserGCM userGCM) {
+        Call<UserGCM> call = bkaraRestful.unregisterGCM(userGCM);
+        call.enqueue(new Callback<UserGCM>() {
+            @Override
+            public void onResponse(Call<UserGCM> call, Response<UserGCM> response) {
+            }
+
+            @Override
+            public void onFailure(Call<UserGCM> call, Throwable t) {
+            }
+        });
+    }
+
+    public void SendNoti(Long senderId, Long receiverId, String message) {
+        Call<Void> call = bkaraRestful.sendNoti(senderId, receiverId, message);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                Log.d("RESTFUL CALL", "SEND NOTI SUCCESFULLY");
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("RESTFUL CALL", "SEND NOTI UNSUCCESSFULLY");
+            }
+        });
+    }
+
 
     public void login(User user, Callback<User> cb){
         bkaraRestful.login(user).enqueue(cb);

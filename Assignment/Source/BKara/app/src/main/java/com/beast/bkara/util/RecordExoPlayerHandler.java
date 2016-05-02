@@ -14,6 +14,10 @@ import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 
+import com.beast.bkara.Controller;
+import com.beast.bkara.model.Record;
+import com.beast.bkara.util.bkararestful.BkaraService;
+import com.beast.bkara.viewmodel.RecordViewModel;
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 
 import java.io.IOException;
@@ -30,9 +34,10 @@ public class RecordExoPlayerHandler {
     private Handler threadHandler;
     private List<ToggleButton> toggleButtonList;
     private List<SeekBar> seekBarList;
-    private List<String> pathList;
+    private List<Record> recordList;
     private UpdateSeekBarThread updateSeekBarThread;
     private boolean isRemote;
+    private Controller controller;
 
     private class UpdateSeekBarThread implements Runnable {
         public SeekBar sbar;
@@ -51,14 +56,16 @@ public class RecordExoPlayerHandler {
     public RecordExoPlayerHandler(Context context, boolean isRemote) {
         this.mContext = context;
         this.isRemote = isRemote;
+        this.controller = (Controller) context.getApplicationContext();
         toggleButtonList = new ArrayList<ToggleButton>();
         seekBarList = new ArrayList<SeekBar>();
-        pathList = new ArrayList<String>();
+        recordList = new ArrayList<Record>();
         updateSeekBarThread = new UpdateSeekBarThread();
         threadHandler = new Handler();
+
     }
 
-    public void AddRecordInfo(final ToggleButton toggleButton, final SeekBar seekBar, final ProgressBar progressBar, String path) {
+    public void AddRecordInfo(final ToggleButton toggleButton, final SeekBar seekBar, final ProgressBar progressBar, final Record record) {
 
         seekBar.setEnabled(false);
 
@@ -90,6 +97,7 @@ public class RecordExoPlayerHandler {
 
                 if (isPlay) {
                     sbar.setEnabled(true);
+
                     for (int i = 0; i < seekBarList.size(); i++) {
                         if (i != itemIndex) {
                             seekBarList.get(i).setProgress(0);
@@ -122,7 +130,7 @@ public class RecordExoPlayerHandler {
 
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             try {
-                                mediaPlayer.setDataSource(mContext, Uri.parse(pathList.get(itemIndex)));
+                                mediaPlayer.setDataSource(mContext, Uri.parse(recordList.get(itemIndex).getStream_link()));
                                 mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                                     @Override
                                     public void onPrepared(MediaPlayer mp) {
@@ -139,7 +147,12 @@ public class RecordExoPlayerHandler {
                                             progressBar.setVisibility(View.GONE);
 
                                         sbar.setMax((int)mediaPlayer.getDuration());
-                                        //mediaPlayer.setLooping(true);
+
+                                        if (controller.isLogin()) {
+                                            BkaraService.getInstance().SendNoti(controller.getCurrUser().getUserId(),
+                                                    record.getUser().getUserId(),
+                                                    controller.getCurrUser().getUserName() + " is listening to your's record");
+                                        }
                                     }
                                 });
                                 for (int i = 0; i < seekBarList.size(); i++)
@@ -152,7 +165,7 @@ public class RecordExoPlayerHandler {
                                 e.printStackTrace();
                             }
                         } else {
-                            mediaPlayer.setDataSource(mContext, Uri.parse(pathList.get(itemIndex)));
+                            mediaPlayer.setDataSource(mContext, Uri.parse(recordList.get(itemIndex).getStream_link()));
                             Log.d("LOCAL PLAY DURATION", "" + (int)mediaPlayer.getDuration());
                             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                                 @Override
@@ -181,7 +194,7 @@ public class RecordExoPlayerHandler {
 
         toggleButtonList.add(toggleButton);
         seekBarList.add(seekBar);
-        pathList.add(path);
+        recordList.add(record);
     }
 
     public void StopMediaPlayer() {

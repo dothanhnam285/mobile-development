@@ -5,6 +5,7 @@ import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
 import com.beast.bkara.model.supportmodel.RatingRecord;
 import com.beast.bkara.model.supportmodel.RatingSong;
+import com.beast.bkara.model.supportmodel.UserGCM;
 
 import java.util.List;
 
@@ -47,6 +48,21 @@ public interface BkaraRestfulApi {
 
     @POST("rate/record")
     Call<Record> rateRecord(@Body RatingRecord ratingRecord);
+
+    @POST("update/song")
+    Call<Song> updateSong(@Body Song song);
+
+    @POST("update/record")
+    Call<Record> updateRecord(@Body Record record);
+
+    @POST("registerGCM")
+    Call<UserGCM> registerGCM(@Body UserGCM userGCM);
+
+    @POST("unregisterGCM")
+    Call<UserGCM> unregisterGCM(@Body UserGCM userGCM);
+
+    @GET("sendnoti/{senderId}/{receiverId}/{message}")
+    Call<Void> sendNoti(@Path("senderId") Long senderId, @Path("receiverId") Long receiverId, @Path("message") String message);
 
     @POST("signUp")
     Call<User> signUp(@Body User user);

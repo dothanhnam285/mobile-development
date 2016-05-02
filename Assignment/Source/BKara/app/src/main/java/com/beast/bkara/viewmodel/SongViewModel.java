@@ -7,6 +7,8 @@ import android.widget.ProgressBar;
 import com.beast.bkara.BR;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
+import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.RatingSong;
 import com.beast.bkara.util.bkararestful.BkaraService;
 
 import me.tatarka.bindingcollectionadapter.ItemView;

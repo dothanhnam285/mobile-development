@@ -17,6 +17,7 @@ import android.widget.ToggleButton;
 import com.beast.bkara.Controller;
 import com.beast.bkara.R;
 import com.beast.bkara.fragments.KaraokeFragment;
+import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.util.RecordExoPlayerHandler;
 import com.beast.bkara.util.UploadToSoundCloudTask;
@@ -94,7 +95,9 @@ public class SaveRecordDialogFragment extends DialogFragment {
         textViewSave = (TextView) v.findViewById(R.id.frag_save_record_textview_save);
         textViewDiscard = (TextView) v.findViewById(R.id.frag_save_record_textview_discard);
 
-        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, null, recordPath);
+        Record record = new Record();
+        record.setStream_link(recordPath);
+        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, null, record);
 
         textViewDiscard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,8 +120,9 @@ public class SaveRecordDialogFragment extends DialogFragment {
                             @Override
                             public void OnUploadSuccess(String streamLink) {
                                 DeleteRecordFromLocal();
-                                Toast.makeText(mContext, streamLink, Toast.LENGTH_SHORT).show();
-                                ((KaraokeFragment) getParentFragment()).getRecordViewModel().SaveRecord(streamLink);
+                                KaraokeFragment parentFragment = (KaraokeFragment) getParentFragment();
+                                parentFragment.getRecordViewModel().SaveRecord(streamLink);
+                                parentFragment.ReloadRecordList();
                                 Toast.makeText(mContext, "Upload record successfully !", Toast.LENGTH_SHORT).show();
                                 // TODO: Create and save a record for user
                             }

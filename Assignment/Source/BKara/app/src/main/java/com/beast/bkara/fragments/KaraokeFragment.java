@@ -1,6 +1,7 @@
 package com.beast.bkara.fragments;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.databinding.DataBindingUtil;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.MainActivity;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
@@ -35,6 +37,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.hedgehog.ratingbar.RatingBar;
 
+import java.io.File;
 import java.io.IOException;
 
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
@@ -57,6 +60,8 @@ public class KaraokeFragment extends Fragment {
     private ExpandableRelativeLayout erlSongInfo;
 
     private String recordPath = "";
+
+    private boolean isFragmentPause = false;
 
     private RecordViewModel recordVm;
     private FragmentKaraokeBinding binding;
@@ -152,6 +157,13 @@ public class KaraokeFragment extends Fragment {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
                 if (!wasRestored) {
                     yPlayer = youTubePlayer;
+                    youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION | YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
+                    youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
+                        @Override
+                        public void onFullscreen(boolean isFullScreen) {
+                            ((MainActivity) getActivity()).showToolbar(!isFullScreen);
+                        }
+                    });
                     youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
                     youTubePlayer.loadVideo(whichSong.getVideo_id());
                     youTubePlayer.play();
@@ -184,8 +196,13 @@ public class KaraokeFragment extends Fragment {
                     if (yPlayer != null)
                         yPlayer.pause();
                     stopRecording();
-                    DialogFragment saveRecordDialog = SaveRecordDialogFragment.newInstance(recordPath);
-                    saveRecordDialog.show(getChildFragmentManager(), null);
+
+                    if (!isFragmentPause && controller.isLogin()) {
+                        DialogFragment saveRecordDialog = SaveRecordDialogFragment.newInstance(recordPath);
+                        saveRecordDialog.show(getChildFragmentManager(), null);
+                    } else
+                        DeleteRecordFromLocal();
+
                 }
             }
         });
@@ -266,15 +283,18 @@ public class KaraokeFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onResume() {
+        Log.d("HAHA", "RESUME");
+        isFragmentPause = false;
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFragmentPause = true;
         if (btnRecord.isChecked())
             btnRecord.toggle();
-        stopRecording();
-
-        // Detach adapter to stop running media player
-        //rvRecordList.setAdapter(null);
-
     }
 
     @Override
@@ -304,5 +324,24 @@ public class KaraokeFragment extends Fragment {
 
     public Song getSong() {
         return whichSong;
+    }
+
+    public void enableRecord(boolean isEnable) {
+        if (isEnable)
+            recordVm.SetUser(controller.getCurrUser());
+        else
+            btnRecord.setChecked(false);
+        btnRecord.setEnabled(isEnable);
+    }
+
+    public void ReloadRecordList() {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.frag_karaoke_frame_recordlist, RecordsFragment.newInstance(true, whichSong));
+        transaction.commit();
+    }
+
+    private void DeleteRecordFromLocal() {
+        File file = new File(recordPath);
+        file.delete();
     }
 }

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class RecordsFragment extends Fragment {
     private FragmentRecordsBinding binding;
     private RecyclerView rvRecordList;
     private Controller controller;
+    private RecyclerView.Adapter rvRecordAdapter;
 
     // Bingding adapter for record list recyclerview - used for handle playing multiple records
     public BindingRecyclerViewAdapterFactory mFactory = new BindingRecyclerViewAdapterFactory() {
@@ -150,11 +152,20 @@ public class RecordsFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
 
-        if (rvRecordList != null)
+        if (rvRecordList != null) {
+            rvRecordAdapter = rvRecordList.getAdapter();
             rvRecordList.setAdapter(null);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        if (rvRecordAdapter != null)
+            rvRecordList.setAdapter(rvRecordAdapter);
+        super.onResume();
     }
 
     @Override
