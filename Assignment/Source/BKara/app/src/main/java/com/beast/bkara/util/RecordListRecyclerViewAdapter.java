@@ -93,6 +93,6 @@ public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter
             Log.d("BINDING ADAPTER", "GONE USERNAME");
         }
 
-        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, progressBar, record.getStream_link());
+        recordPlayerHandler.AddRecordInfo(toggleButton, seekBar, progressBar, record);
     }
 }

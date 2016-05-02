@@ -1,13 +1,20 @@
 package com.beast.bkara;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -36,6 +43,7 @@ import com.beast.bkara.fragments.*;
 import com.beast.bkara.model.User;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.SongSearchView;
+import com.beast.bkara.util.gcm.RegistrationIntentService;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -99,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set the default view to Home item
         displayView(R.id.nav_home);
+
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
     }
+
     boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -383,6 +395,8 @@ public class MainActivity extends AppCompatActivity implements
             ((KaraokeFragment) currFragment).enableRecord(true);
         else if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Records")) != null)
             displayView(R.id.nav_records);
+
+        RegistrationIntentService.GetInstance().registerAtServer(controller);
     }
 
     private void logout() {
@@ -401,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements
         else if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Records")) != null)
             displayView(R.id.nav_records);
 
+        RegistrationIntentService.GetInstance().unregisterAtServer();
     }
 
     public void showToolbar(boolean isShow) {
