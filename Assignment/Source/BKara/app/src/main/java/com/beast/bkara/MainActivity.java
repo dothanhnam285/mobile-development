@@ -1,31 +1,26 @@
 package com.beast.bkara;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,14 +34,35 @@ import com.beast.bkara.dialogfragments.LoginDialogFragment;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
-import com.beast.bkara.fragments.*;
+import com.beast.bkara.dialogfragments.UserInfoDialogFragment;
+import com.beast.bkara.fragments.BlankFragment;
+import com.beast.bkara.fragments.GenresFragment;
+import com.beast.bkara.fragments.HistoryFragment;
+import com.beast.bkara.fragments.HomeFragment;
+import com.beast.bkara.fragments.KaraokeFragment;
+import com.beast.bkara.fragments.RecordsFragment;
+import com.beast.bkara.fragments.SongListFragment;
+import com.beast.bkara.fragments.SongsFragment;
+import com.beast.bkara.model.Record;
+import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
-import com.beast.bkara.util.bkararestful.BkaraService;
+import com.beast.bkara.model.supportmodel.ListRecordsHistory;
+import com.beast.bkara.model.supportmodel.ListSongsHistory;
+import com.beast.bkara.util.ComplexPreferences;
 import com.beast.bkara.util.SongSearchView;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.gcm.RegistrationIntentService;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -60,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements
         LoginDialogFragment.OnLoginDialogFragmentInteractionListener,
         SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
         SaveRecordDialogFragment.OnFragmentInteractionListener,
-        RatingDialogFragment.OnFragmentInteractionListener
+        RatingDialogFragment.OnFragmentInteractionListener,
+        UserInfoDialogFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -70,10 +87,20 @@ public class MainActivity extends AppCompatActivity implements
     private Fragment currFragment;
     private Toolbar toolbar;
 
+    /**
+     * Use to store all listened songs recently
+     */
+    private ArrayList<Song> lstSongsHistory = new ArrayList<>();
+
+    /**
+     * Use to store all listened records recently
+     */
+    private ArrayList<Record> lstRecordsHistory = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
         // Set up universal image loader
         ImageLoaderConfiguration imageLoaderConfig = new ImageLoaderConfiguration.Builder(this).build();
@@ -86,6 +113,20 @@ public class MainActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Init bkara service
+        BkaraService.getInstance().setContext(this);
+
+        // Get shared preference of @listSongsHistory && @lstRecordsHistory
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
+        ListSongsHistory listSongsHistory =  complexPreferences.getObject(Constants.MY_PREF_SONGS_HISTORY, ListSongsHistory.class);
+        if( listSongsHistory != null )
+            lstSongsHistory = listSongsHistory.getLstSongsHistory();
+
+        ListRecordsHistory listRecordsHistory = complexPreferences.getObject(Constants.MY_PREF_RECORDS_HISTORY, ListRecordsHistory.class);
+        if( listRecordsHistory != null )
+            lstRecordsHistory = listRecordsHistory.getLstRecordsHistory();
+
+
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,22 +136,72 @@ public class MainActivity extends AppCompatActivity implements
             }
         });*/
 
-        // Setup navigation drawer
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+    // Setup navigation drawer
+    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    drawer.setDrawerListener(toggle);
+    toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    navigationView.setNavigationItemSelectedListener(this);
 
         // Set the default view to Home item
         displayView(R.id.nav_home);
 
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
+
     }
+
+
+    /**
+     * Auto login if user has checked remember me
+     */
+    private void autoLoginIfRemembered() {
+        SharedPreferences pref = getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
+        if( pref.getBoolean(Constants.MY_PREF_REMEMBER_ME, false)  ) {
+            User user = new User();
+            user.setUserName(pref.getString(Constants.MY_PREF_USER_NAME, ""));
+            user.setPassword(pref.getString(Constants.MY_PREF_PASSWORD,""));
+            BkaraService.getInstance().login(user, new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+
+                    if(  response.isSuccessful() && response.body() != null) {
+                        Toast.makeText( MainActivity.this , "Welcome "+ response.body().getUserName(), Toast.LENGTH_LONG).show();
+                        setUserInfoAfterLoginSuccessfully(response.body());
+                    }
+                    else Toast.makeText(MainActivity.this, R.string.user_not_existed_error, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    Toast.makeText(MainActivity.this, R.string.network_error, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * On pause -> save preference : @lstSongsHistory && @lstRecordsHistory
+     */
+    @Override
+    protected void onPause() {
+        ListSongsHistory listSongsHistory= new ListSongsHistory();
+        listSongsHistory.setLstSongsHistory(lstSongsHistory);
+
+        ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
+        listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
+
+        ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
+        complexPreferences.putObject(Constants.MY_PREF_SONGS_HISTORY, listSongsHistory);
+        complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+        complexPreferences.commit();
+
+        super.onPause();
+    }
+
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -192,6 +283,18 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserInfoDialogFragment.newInstance(null, null).show(getSupportFragmentManager(), "User Info");
+            }
+        });
+
+
+        //
+        autoLoginIfRemembered();
+
         return true;
     }
 
@@ -251,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Playlist";
                 break;
             case R.id.nav_history:
-                //fragment = new HistoryFragment();
+                fragment = new HistoryFragment();
                 title = "History";
                 break;
             case R.id.nav_records:
@@ -293,6 +396,8 @@ public class MainActivity extends AppCompatActivity implements
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
+
+
     }
 
     private void displayPopup(int layoutId) {
@@ -316,10 +421,82 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Add listened song to history list to the top of the list and remove the old one if any
+     * @param song to be added
+     */
+    public void addToHistory(Song song) {
+
+        // Loop through the song list to find the matched one if any then put it into the top of the history list
+        Iterator<Song> iterator = lstSongsHistory.iterator();
+        while( iterator.hasNext() ){
+            Song s = iterator.next();
+            if( s.getSong_id().equals(song.getSong_id()) ) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        // Change position to top list
+        lstSongsHistory.add(0,song);
+    }
+
+    /**
+     * Add listened record to history list to the top of the list and remove the old one if any
+     * @param record to be added
+     */
+    public void addToHistory(Record record) {
+        // Loop through the song list to find the matched one if any then put it into the top of the history list
+        Iterator<Record> iterator = lstRecordsHistory.iterator();
+        while( iterator.hasNext() ){
+            Record r = iterator.next();
+            if( r.getId().equals(record.getId()) ) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        // Change position to top list
+        lstRecordsHistory.add(0,record);
+    }
+
+    /**
+     * Check if a song is viewed one day after now then add 1 'view' to song.getView()
+     * @param song
+     * @return
+     */
+    public boolean checkViewed(Song song) {
+        if( new Date().getTime() - song.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+            return true;
+        return false;
+    }
+
+    /**
+     * Check if a record is viewed one day after now then add 1 'view' to record.getView()
+     * @param record
+     * @return
+     */
+    public boolean checkViewed(Record record) {
+
+        if( new Date().getTime() - record.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+            return true;
+        return false;
+    }
+
+    public ArrayList<Song> getLstSongsHistory() {
+        return lstSongsHistory;
+    }
+
+
+    public ArrayList<Record> getLstRecordsHistory() {
+        return lstRecordsHistory;
+    }
+
+
     public void login(View v) {
         loginFragment = LoginDialogFragment.newInstance(null, null);
         loginFragment.show(getSupportFragmentManager(),"LOGIN");
-}
+    }
 
     @Override
     public void onLoginDialogFragmentInteraction(Uri uri) {
@@ -334,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onLoginSuccessfully(User user) {
+    public void onLoginSuccessfully(User user, boolean isRemembered) {
 
         if( loginFragment != null && loginFragment.getDialog() != null )
             loginFragment.dismiss();
@@ -344,6 +521,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         setUserInfoAfterLoginSuccessfully(user);
+        saveUserToSharedPreference(user,isRemembered);
     }
 
 
@@ -356,6 +534,19 @@ public class MainActivity extends AppCompatActivity implements
             signUpFragment.dismiss();
 
         setUserInfoAfterLoginSuccessfully(user);
+    }
+
+
+    private void saveUserToSharedPreference(User user, boolean isRemembered) {
+
+        SharedPreferences pref = getSharedPreferences(Constants.MY_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor edit = pref.edit();
+        edit.putBoolean(Constants.MY_PREF_REMEMBER_ME, isRemembered);
+        if( isRemembered ) {
+            edit.putString(Constants.MY_PREF_PASSWORD, user.getPassword());
+            edit.putString(Constants.MY_PREF_USER_NAME, user.getUserName());
+        }
+        edit.commit();
     }
 
     private void setUserInfoAfterLoginSuccessfully(User user) {
@@ -403,6 +594,8 @@ public class MainActivity extends AppCompatActivity implements
         Controller controller = (Controller) getApplicationContext();
         // isLogin() returns false
         controller.setCurrUser(null);
+
+        saveUserToSharedPreference(null,false);
 
         findViewById(R.id.nav_header_tv_welcome).setVisibility(View.GONE);
         findViewById(R.id.nav_header_tv_login).setVisibility(View.VISIBLE);

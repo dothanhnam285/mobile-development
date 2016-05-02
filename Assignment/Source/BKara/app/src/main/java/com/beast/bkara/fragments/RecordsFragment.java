@@ -14,12 +14,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.databinding.FragmentRecordsBinding;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
+import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.viewmodel.RecordViewModel;
 
 import me.tatarka.bindingcollectionadapter.BindingRecyclerViewAdapter;
@@ -52,10 +54,12 @@ public class RecordsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String HISTORY_LIST = "param";
     private static final String IS_SHOW_USER = "param1";
     private static final String SONG = "param2";
 
     // TODO: Rename and change types of parameters
+    private BkaraService.HistoryList historyList;
     private boolean isShowUser;
     private Song song;
 
@@ -83,12 +87,21 @@ public class RecordsFragment extends Fragment {
         return fragment;
     }
 
+    public static RecordsFragment newInstance(BkaraService.HistoryList param) {
+        RecordsFragment fragment = new RecordsFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(HISTORY_LIST, param);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             isShowUser = getArguments().getBoolean(IS_SHOW_USER);
             song = getArguments().getParcelable(SONG);
+            historyList = (BkaraService.HistoryList) getArguments().getSerializable(HISTORY_LIST);
         }
         controller = (Controller) getActivity().getApplicationContext();
     }
@@ -118,6 +131,11 @@ public class RecordsFragment extends Fragment {
         if (isShowUser) {
             textViewPleaseLogin.setVisibility(View.GONE);
             recordVm = new RecordViewModel(null, song, progressBar);
+        }
+        else if( historyList != null ) {
+            textViewPleaseLogin.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            recordVm = new RecordViewModel(((MainActivity) getActivity()).getLstRecordsHistory());
         }
         else {
             if (controller.isLogin()) {

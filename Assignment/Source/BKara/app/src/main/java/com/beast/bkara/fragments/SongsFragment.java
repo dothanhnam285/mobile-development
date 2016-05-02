@@ -30,14 +30,14 @@ public class SongsFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String IS_SEARCH = "param1";
-    private static final String SEARCH_WHAT = "param2";
+    protected static final String IS_SEARCH = "param1";
+    protected static final String SEARCH_WHAT = "param2";
 
     // TODO: Rename and change types of parameters
-    private boolean isSearch;
-    private String searchWhat;
+    protected boolean isSearch;
+    protected String searchWhat;
 
-    private OnFragmentInteractionListener mListener;
+    protected OnFragmentInteractionListener mListener;
 
     public SongsFragment() {
         // Required empty public constructor
@@ -104,7 +104,7 @@ public class SongsFragment extends Fragment {
         return v;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    protected class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -133,7 +133,7 @@ public class SongsFragment extends Fragment {
         }
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    protected void setupViewPager(ViewPager viewPager) {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFrag(SongListFragment.newInstance(BkaraService.WhichList.ALL), getString(R.string.frag_songs_tab_all));

@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.User;
+import com.beast.bkara.util.SHAEncryptionService;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.ImageCaptureHandler;
 import com.beast.bkara.util.imgur.ImageResponse;
@@ -151,12 +152,16 @@ public class SignUpDialogFragment extends DialogFragment {
         boolean isValid = false;
         if( userName.getText().toString().equalsIgnoreCase("") )
             userName.setError("Please fill in 'UserName' field");
+        else if( userName.getText().toString().length() < 4 )
+            userName.setError("Username must be at least 4 characters");
         else if( email.getText().toString().equalsIgnoreCase("") )
             email.setError("Please fill in 'Email' field");
         else if ( !isEmailValid(email.getText().toString()) )
             email.setError("Email is not valid");
         else if( password.getText().toString().equalsIgnoreCase("") )
             password.setError("Please fill in 'Password' field");
+        else if( password.getText().toString().length() < 4 )
+            userName.setError("Password must be at least 4 characters");
         else if( repassword.getText().toString().equalsIgnoreCase("") )
             repassword.setError("Please re-type password");
         else if ( !password.getText().toString().equals(repassword.getText().toString()) )
@@ -204,7 +209,7 @@ public class SignUpDialogFragment extends DialogFragment {
         // Post new user info to our server
         final User user = new User();
         user.setUserName(userName.getText().toString());
-        user.setPassword(password.getText().toString());
+        user.setPassword(SHAEncryptionService.getInstance().encrypt(password.getText().toString()));
         user.setEmail(email.getText().toString());
         if( imgLink != null )
             user.setAvatarLink(imgLink);

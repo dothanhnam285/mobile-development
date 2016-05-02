@@ -20,6 +20,9 @@ import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.ItemClickSupport;
 import com.beast.bkara.viewmodel.SongViewModel;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by Darka on 4/10/2016.
  */
@@ -28,18 +31,19 @@ public class SongListFragment extends Fragment {
     private FragmentListSongBinding binding;
     private SongViewModel songVm;
 
-    private Controller controller;
 
     RecyclerView rvSongList;
     ProgressBar progressBarWaiting;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String HISTORY_LIST = "param";
     private static final String WHICH_LIST = "param1";
     private static final String SEARCH_FILTER = "param2";
     private static final String SEARCH_VALUE = "param3";
 
     // TODO: Rename and change types of parameters
+    private BkaraService.HistoryList historyList;
     private BkaraService.WhichList whichList;
     private BkaraService.SongSearchFilter searchFilter;
     private String searchValue;
@@ -48,6 +52,15 @@ public class SongListFragment extends Fragment {
 
     public SongListFragment() {
 
+    }
+
+
+    public static SongListFragment newInstance(BkaraService.HistoryList param) {
+        SongListFragment fragment = new SongListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(HISTORY_LIST, param);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**
@@ -92,10 +105,11 @@ public class SongListFragment extends Fragment {
             if (whichList == null) {
                 searchFilter = (BkaraService.SongSearchFilter) getArguments().getSerializable(SEARCH_FILTER);
                 searchValue = getArguments().getString(SEARCH_VALUE);
+                if( searchFilter == null || searchValue == null )
+                    historyList = (BkaraService.HistoryList) getArguments().getSerializable(HISTORY_LIST);
             }
         }
 
-        controller = (Controller) getActivity().getApplicationContext();
     }
 
     @Override
@@ -109,8 +123,17 @@ public class SongListFragment extends Fragment {
 
         if (whichList != null)
             songVm = new SongViewModel(whichList, progressBarWaiting);
-        else
+        else if( searchFilter != null && searchValue != null )
             songVm = new SongViewModel(searchFilter, searchValue, progressBarWaiting);
+        else if( historyList == BkaraService.HistoryList.SONG ) {
+            progressBarWaiting.setVisibility(View.GONE);
+            songVm = new SongViewModel(((MainActivity) getActivity()).getLstSongsHistory());
+        }
+        else if( historyList == BkaraService.HistoryList.RECORD ){
+            progressBarWaiting.setVisibility(View.GONE);
+        }
+
+
         binding.setSongVm(songVm);
 
         ItemClickSupport.addTo(rvSongList).setOnItemClickListener(
@@ -119,7 +142,15 @@ public class SongListFragment extends Fragment {
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         Song song = null;
                         song = songVm.songList.get(position);
+
+                        // Display karaoke fragment and add song to history
                         if (song != null) {
+                            if( ((MainActivity) getActivity()).checkViewed(song) ) {
+                                song.setView(song.getView() + 1);
+                                song.setLastTimeViewed(new Date());
+                                BkaraService.getInstance().UpdateSong(song);
+                            }
+                            ((MainActivity) getActivity()).addToHistory(song);
                             Fragment karaokeFragment = KaraokeFragment.newInstance(song, "bla");
                             ((MainActivity) getActivity()).displayCustomFragment(karaokeFragment, "Karaoke");
                         }

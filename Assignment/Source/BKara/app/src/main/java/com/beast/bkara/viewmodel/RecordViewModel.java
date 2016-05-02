@@ -13,6 +13,7 @@ import com.beast.bkara.model.User;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.UploadToSoundCloudTask;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import me.tatarka.bindingcollectionadapter.ItemView;
@@ -29,6 +30,12 @@ public class RecordViewModel {
     private Song song;
 
     private BkaraService bkaraService;
+
+
+    public RecordViewModel(ArrayList<Record> lstRecordsHistory) {
+        recordList = new ObservableArrayList<>();
+        recordList.addAll(lstRecordsHistory);
+    }
 
     public RecordViewModel(User user, Song song, ProgressBar progressBar) {
         recordList = new ObservableArrayList<>();
@@ -48,7 +55,7 @@ public class RecordViewModel {
         }
 
         bkaraService.FindRecords(searchFilter, searchValue, recordList, progressBar);
-
+        
     }
 
     public void SetUser(User user) {

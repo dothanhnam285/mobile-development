@@ -32,6 +32,15 @@ public class Song extends BaseObservable implements Parcelable {
     private String genre;
     private Singer singer;
     private String video_id;
+    private Date lastTimeViewed = new Date(0);
+
+    public Date getLastTimeViewed() {
+        return lastTimeViewed;
+    }
+
+    public void setLastTimeViewed(Date lastTimeViewed) {
+        this.lastTimeViewed = lastTimeViewed;
+    }
 
     @BindingAdapter("app:setGenre")
     public static void setGenre(TextView view, String songGenre) {
@@ -158,6 +167,7 @@ public class Song extends BaseObservable implements Parcelable {
         parcel.writeString(getPoster());
         parcel.writeParcelable(getSinger(), i);
         parcel.writeString(getVideo_id());
+        parcel.writeValue(getLastTimeViewed());
     }
 
     private Song(Parcel in) {
@@ -170,6 +180,7 @@ public class Song extends BaseObservable implements Parcelable {
         setPoster(in.readString());
         setSinger((Singer) in.readParcelable(Singer.class.getClassLoader()));
         setVideo_id(in.readString());
+        setLastTimeViewed((Date)in.readValue(null));
     }
 
     @Override

@@ -7,9 +7,9 @@ import android.widget.ProgressBar;
 import com.beast.bkara.BR;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Song;
-import com.beast.bkara.model.User;
-import com.beast.bkara.model.supportmodel.RatingSong;
 import com.beast.bkara.util.bkararestful.BkaraService;
+
+import java.util.ArrayList;
 
 import me.tatarka.bindingcollectionadapter.ItemView;
 
@@ -22,6 +22,11 @@ public class SongViewModel {
     public final ItemView songView = ItemView.of(BR.song, R.layout.song_item);
 
     private BkaraService bkaraService;
+
+    public SongViewModel(ArrayList<Song> lstSongsHistory){
+        songList = new ObservableArrayList<>();
+        songList.addAll(lstSongsHistory);
+    }
 
     public SongViewModel(BkaraService.WhichList whichList, ProgressBar progressBar) {
         bkaraService = BkaraService.getInstance();

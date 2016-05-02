@@ -233,7 +233,9 @@ public class KaraokeFragment extends Fragment {
     }
 
     private String GenerateRecordPath() {
-        String path = Environment.getExternalStorageDirectory() + "/";
+        //String path = Environment.getExternalStorageDirectory() + "/";
+        String path = getActivity().getFilesDir() + "/";
+        Log.i(getClass().getSimpleName(), "@GenerateRecordPath: " + path);
 
         return path + controller.getCurrUser().getUserId() + "_" + whichSong.getVideo_id() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
     }

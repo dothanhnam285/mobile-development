@@ -28,9 +28,18 @@ public class Record extends BaseObservable implements Parcelable {
     private Song song;
     private User user;
     private String stream_link;
+    private Date lastTimeViewed = new Date(0);
 
     public Record() {
 
+    }
+
+    public Date getLastTimeViewed() {
+        return lastTimeViewed;
+    }
+
+    public void setLastTimeViewed(Date lastTimeViewed) {
+        this.lastTimeViewed = lastTimeViewed;
     }
 
     @BindingAdapter("app:setDate")

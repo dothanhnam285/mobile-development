@@ -1,10 +1,14 @@
 package com.beast.bkara.util.bkararestful;
 
+import android.content.Context;
 import android.databinding.ObservableList;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.beast.bkara.MainActivity;
+import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
@@ -19,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,10 +44,14 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = "http://bkararestfulservice.herokuapp.com/bkaraservice/";
-//            "http://192.168.1.108:8084/myteam/bkaraservice/";
-            //"http://192.168.0.101:8080/myteam/bkaraservice/";
+    private final String RESTFUL_URL = //"http://192.168.1.108:8084/myteam/bkaraservice/";
+            //"http://192.168.0.103:8080/myteam/bkaraservice/";
+            "https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
+
+    public enum HistoryList{
+        SONG, RECORD
+    }
 
     public enum WhichList {
         ALL, HOT, NEW, SEARCH
@@ -73,6 +82,11 @@ public class BkaraService {
         bkaraRestful = retrofit.create(BkaraRestfulApi.class);
     }
 
+    private Context context;
+    public void setContext(Context context){
+        this.context = context;
+    }
+
     public void GetSongList(final WhichList whichList, final ObservableList<Song> songList, final ProgressBar progressBar) {
         Call<List<Song>> call;
 
@@ -94,6 +108,15 @@ public class BkaraService {
                 Log.d("RESTFUL CALL", "SUCCESS");
                 songList.clear();
                 songList.addAll(response.body());
+
+                ArrayList<Song> lstSongsHistory =  ((MainActivity) context).getLstSongsHistory();
+                if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
+                    for (Song song : songList) {
+                        for (Song s: lstSongsHistory ) {
+                            if( song.getSong_id().equals(s.getSong_id()) )
+                                song.setLastTimeViewed(s.getLastTimeViewed());
+                        }
+                    }
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -167,6 +190,16 @@ public class BkaraService {
                 Log.d("RESTFUL CALL", "SUCCESS");
                 recordList.clear();
                 recordList.addAll(response.body());
+
+                ArrayList<Record> lstRecordsHistory =  ((MainActivity) context).getLstRecordsHistory();
+                if( lstRecordsHistory != null && lstRecordsHistory.size() > 0 && recordList != null && recordList.size() > 0)
+                    for (Record record : recordList) {
+                        for (Record r: lstRecordsHistory ) {
+                            if( record.getId().equals(r.getId()) )
+                                record.setLastTimeViewed(r.getLastTimeViewed());
+                        }
+                    }
+
                 progressBar.setVisibility(View.GONE);
             }
 

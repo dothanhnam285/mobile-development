@@ -2,6 +2,7 @@ package com.beast.bkara.dialogfragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -10,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.beast.bkara.R;
 import com.beast.bkara.model.User;
+import com.beast.bkara.util.SHAEncryptionService;
 import com.beast.bkara.util.bkararestful.BkaraService;
 
 import retrofit2.Call;
@@ -31,6 +34,7 @@ import retrofit2.Response;
  */
 public class LoginDialogFragment extends DialogFragment {
     private EditText userName , password;
+    private CheckBox remember;
     private ProgressDialog progressDialog;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -77,7 +81,7 @@ public class LoginDialogFragment extends DialogFragment {
         //setRetainInstance(true);
 
         // Full screen dialog
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_Dialog);
     }
 
     @Override
@@ -90,6 +94,7 @@ public class LoginDialogFragment extends DialogFragment {
 
         userName = (EditText) v.findViewById(R.id.login_username);
         password = (EditText) v.findViewById(R.id.login_password);
+        remember = (CheckBox) v.findViewById(R.id.login_remember);
 
         // Sign up button
         Button btnOpenSignUpForm = (Button) v.findViewById(R.id.sign_up_button);
@@ -118,7 +123,7 @@ public class LoginDialogFragment extends DialogFragment {
 
         final User user = new User();
         user.setUserName(userName.getText().toString());
-        user.setPassword(password.getText().toString());
+        user.setPassword(SHAEncryptionService.getInstance().encrypt(password.getText().toString()));
 
         BkaraService.getInstance().login(user, new Callback<User>() {
             @Override
@@ -126,7 +131,7 @@ public class LoginDialogFragment extends DialogFragment {
 
                 if(  response.isSuccessful() && response.body() != null) {
                     Toast.makeText(getActivity().getApplicationContext(), "Welcome "+ response.body().getUserName(), Toast.LENGTH_LONG).show();
-                    mListener.onLoginSuccessfully(response.body());
+                    mListener.onLoginSuccessfully(response.body(),remember.isChecked());
                 }
                 else Toast.makeText(getActivity().getApplicationContext(), R.string.user_not_existed_error, Toast.LENGTH_LONG).show();
                 showProgress(false);
@@ -197,6 +202,6 @@ public class LoginDialogFragment extends DialogFragment {
         void onLoginDialogFragmentInteraction(Uri uri);
         void onOpenSignUpForm();
 
-        void onLoginSuccessfully(User user);
+        void onLoginSuccessfully(User user, boolean isRemembered);
     }
 }

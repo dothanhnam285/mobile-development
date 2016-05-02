@@ -14,11 +14,13 @@ import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
+import com.beast.bkara.MainActivity;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -92,6 +94,14 @@ public class RecordPlayerHandler {
                 int currentProgress = seekBarList.get(itemIndex).getProgress();
 
                 if (isPlay) {
+                    // Update view
+                    if( ((MainActivity) mContext).checkViewed(record) ) {
+                        record.setView(record.getView() + 1);
+                        record.setLastTimeViewed(new Date());
+                        BkaraService.getInstance().UpdateRecord(record);
+                    }
+                    ((MainActivity) mContext).addToHistory(record);
+
                     sbar.setEnabled(true);
 
                     for (int i = 0; i < seekBarList.size(); i++) {
