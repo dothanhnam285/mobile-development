@@ -20,6 +20,7 @@ import com.beast.bkara.fragments.KaraokeFragment;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.util.RecordExoPlayerHandler;
+import com.beast.bkara.util.RecordPlayerHandler;
 import com.beast.bkara.util.UploadToSoundCloudTask;
 
 import java.io.File;
@@ -34,7 +35,7 @@ import java.io.File;
  */
 public class SaveRecordDialogFragment extends DialogFragment {
 
-    private RecordExoPlayerHandler recordPlayerHandler;
+    private RecordPlayerHandler recordPlayerHandler;
     private TextView textViewSave;
     private TextView textViewDiscard;
 
@@ -78,7 +79,7 @@ public class SaveRecordDialogFragment extends DialogFragment {
             recordPath = getArguments().getString(RECORD_PATH);
         }
 
-        recordPlayerHandler = new RecordExoPlayerHandler(getActivity(), false);
+        recordPlayerHandler = new RecordPlayerHandler(getActivity(), false);
         controller = (Controller) getActivity().getApplicationContext();
         song = ((KaraokeFragment) getParentFragment()).getSong();
     }

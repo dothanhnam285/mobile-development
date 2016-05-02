@@ -43,13 +43,13 @@ import me.tatarka.bindingcollectionadapter.ItemViewArg;
  */
 public class RecordListRecyclerViewAdapter<T> extends BindingRecyclerViewAdapter<T> {
 
-    private RecordExoPlayerHandler recordPlayerHandler;
+    private RecordPlayerHandler recordPlayerHandler;
     private boolean isShowUsername;
     private Context mContext;
 
     public RecordListRecyclerViewAdapter(@NonNull ItemViewArg<T> arg, Context context, boolean isShowUsername) {
         super(arg);
-        recordPlayerHandler = new RecordExoPlayerHandler(context, true);
+        recordPlayerHandler = new RecordPlayerHandler(context, true);
         this.isShowUsername = isShowUsername;
         this.mContext = context;
     }
