@@ -162,24 +162,36 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+
+            <!-- <EditText
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:hint="Country"
+                 android:maxLines="1"
+                 android:singleLine="true"
+                 />-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Country"
+                android:textColor="@android:color/darker_gray"
+                android:paddingLeft="3dp"
+                android:textSize="13dp"
+                />
+
+            <Spinner
+                android:id="@+id/user_info_country"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:entries= "@array/countries_array"
+                android:enabled="false"
+                android:layoutMode="opticalBounds"
+                android:outlineProvider="background"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:spinnerMode="dialog" />
 
-                <EditText
-                    android:id="@+id/user_info_country"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Country"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:inputType="textEmailAddress"
-                    android:imeOptions="actionNext"
-                    android:text="abc@gmail.com"
-                    android:enabled="false"
-                    />
 
-            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

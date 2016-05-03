@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements
     private DialogFragment loginFragment,signUpFragment;
     private Fragment currFragment;
     private Toolbar toolbar;
+    private NavigationView navigationView;
+    private Controller controller;
 
     /**
      * Use to store all listened songs recently
@@ -101,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+        controller = (Controller) getApplicationContext();
 
         // Set up universal image loader
         ImageLoaderConfiguration imageLoaderConfig = new ImageLoaderConfiguration.Builder(this).build();
@@ -143,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
     drawer.setDrawerListener(toggle);
     toggle.syncState();
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
 
         // Set the default view to Home item
@@ -152,8 +156,20 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
 
-    }
+        CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( controller.isLogin() )
+                    UserInfoDialogFragment.newInstance(null, null).show(getSupportFragmentManager(), "User Info");
+            }
+        });
 
+
+        //
+        autoLoginIfRemembered();
+
+    }
 
     /**
      * Auto login if user has checked remember me
@@ -188,15 +204,20 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     protected void onPause() {
-        ListSongsHistory listSongsHistory= new ListSongsHistory();
-        listSongsHistory.setLstSongsHistory(lstSongsHistory);
-
-        ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
-        listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
-
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
-        complexPreferences.putObject(Constants.MY_PREF_SONGS_HISTORY, listSongsHistory);
-        complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+
+        if( lstSongsHistory.size() > 0 ) {
+            ListSongsHistory listSongsHistory = new ListSongsHistory();
+            listSongsHistory.setLstSongsHistory(lstSongsHistory);
+            complexPreferences.putObject(Constants.MY_PREF_SONGS_HISTORY, listSongsHistory);
+        }
+
+        if( lstRecordsHistory.size() > 0  ){
+            ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
+            listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
+            complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+        }
+
         complexPreferences.commit();
 
         super.onPause();
@@ -283,17 +304,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserInfoDialogFragment.newInstance(null, null).show(getSupportFragmentManager(), "User Info");
-            }
-        });
 
-
-        //
-        autoLoginIfRemembered();
 
         return true;
     }
@@ -419,6 +430,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void onUpdateUserInfoSuccessfully(User user) {
+        setUserInfoAfterLoginSuccessfully(user);
     }
 
     /**
@@ -561,11 +577,10 @@ public class MainActivity extends AppCompatActivity implements
 
         login.setVisibility(View.GONE);
 
-        final Controller controller = (Controller) getApplicationContext();
         // it also means user has logon -> isLogin() returns true
         controller.setCurrUser(user);
 
-        welcome.setText("Hi, " +user.getUserName());
+        welcome.setText(user.getUserName());
         welcome.setVisibility(View.VISIBLE);
 
         logout.setVisibility(View.VISIBLE);
@@ -578,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         if( user.getAvatarLink() != null ) {
-            CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+            CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
             ImageLoader.getInstance().displayImage(user.getAvatarLink(), avatar);
         }
 
@@ -591,7 +606,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void logout() {
-        Controller controller = (Controller) getApplicationContext();
         // isLogin() returns false
         controller.setCurrUser(null);
 
@@ -600,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_header_tv_welcome).setVisibility(View.GONE);
         findViewById(R.id.nav_header_tv_login).setVisibility(View.VISIBLE);
         findViewById(R.id.nav_header_tv_logout).setVisibility(View.GONE);
-        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+        CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
         avatar.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.img_account));
 
         if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Karaoke")) != null)

@@ -38,7 +38,7 @@ public interface BkaraRestfulApi {
     Call<List<Song>> findSongsBySingerName(@Path("singername") String singerName);
 
     @POST("saverecord")
-    Call<Record> saveRecord(@Body Record record);
+    Call<Long> saveRecord(@Body Record record);
 
     @GET("recordlist/song/{songid}")
     Call<List<Record>> findRecordsBySongId(@Path("songid") Long songId);
@@ -57,6 +57,9 @@ public interface BkaraRestfulApi {
 
     @POST("update/record")
     Call<Record> updateRecord(@Body Record record);
+
+    @POST("update/user")
+    Call<Void> updateUser(@Body User user);
 
     @POST("registerGCM")
     Call<UserGCM> registerGCM(@Body UserGCM userGCM);

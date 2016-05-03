@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
@@ -83,8 +84,8 @@ public class BkaraService {
         bkaraRestful = retrofit.create(BkaraRestfulApi.class);
     }
 
-    private Context context;
-    public void setContext(Context context){
+    private MainActivity context;
+    public void setContext(MainActivity context){
         this.context = context;
     }
 
@@ -110,12 +111,14 @@ public class BkaraService {
                 songList.clear();
                 songList.addAll(response.body());
 
-                ArrayList<Song> lstSongsHistory =  ((MainActivity) context).getLstSongsHistory();
+                ArrayList<Song> lstSongsHistory =  context.getLstSongsHistory();
                 if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
                     for (Song song : songList) {
                         for (Song s: lstSongsHistory ) {
-                            if( song.getSong_id().equals(s.getSong_id()) )
+                            if( song.getSong_id().equals(s.getSong_id()) ) {
                                 song.setLastTimeViewed(s.getLastTimeViewed());
+                                s.setView(song.getView());
+                            }
                         }
                     }
 
@@ -162,16 +165,17 @@ public class BkaraService {
         });
     }
 
-    public void SaveRecord(Record record) {
-        Call<Record> call = bkaraRestful.saveRecord(record);
-        call.enqueue(new Callback<Record>() {
+    public void SaveRecord(final Record record) {
+        Call<Long> call = bkaraRestful.saveRecord(record);
+        call.enqueue(new Callback<Long>() {
             @Override
-            public void onResponse(Call<Record> call, Response<Record> response) {
+            public void onResponse(Call<Long> call, Response<Long> response) {
                 Log.d("RESTFUL CALL", "SUCCESS SAVE RECORD " + response.body());
+                record.setId( (response.body()) );
             }
 
             @Override
-            public void onFailure(Call<Record> call, Throwable t) {
+            public void onFailure(Call<Long> call, Throwable t) {
                 Log.d("RESTFUL CALL", "FAIL SAVE RECORD " + t.getMessage());
             }
         });
@@ -196,12 +200,14 @@ public class BkaraService {
                 recordList.clear();
                 recordList.addAll(response.body());
 
-                ArrayList<Record> lstRecordsHistory =  ((MainActivity) context).getLstRecordsHistory();
+                ArrayList<Record> lstRecordsHistory =  context.getLstRecordsHistory();
                 if( lstRecordsHistory != null && lstRecordsHistory.size() > 0 && recordList != null && recordList.size() > 0)
                     for (Record record : recordList) {
                         for (Record r: lstRecordsHistory ) {
-                            if( record.getId().equals(r.getId()) )
+                            if( record.getId().equals(r.getId()) ) {
                                 record.setLastTimeViewed(r.getLastTimeViewed());
+                                r.setView(record.getView());
+                            }
                         }
                     }
 
@@ -252,6 +258,7 @@ public class BkaraService {
         call.enqueue(new Callback<Song>() {
             @Override
             public void onResponse(Call<Song> call, Response<Song> response) {
+
                 Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
             }
 
@@ -318,6 +325,9 @@ public class BkaraService {
         });
     }
 
+    public void UpdateUser(final User user, Callback<Void> cb){
+        bkaraRestful.updateUser(user).enqueue(cb);
+    }
 
     public void login(User user, Callback<User> cb){
         bkaraRestful.login(user).enqueue(cb);

@@ -34,6 +34,17 @@ public class UserDao {
         return false;
     }
 
+    public boolean update(User user){
+        try{
+            sessionFactory.getCurrentSession().update(user);
+            return true;
+        } catch( Exception e ){
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+    
     public User checkUserExisted(User user) {
         try {
             Query query;
