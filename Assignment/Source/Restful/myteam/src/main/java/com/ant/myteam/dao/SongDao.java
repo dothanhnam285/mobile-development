@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import com.ant.myteam.model.Song;
-import org.apache.log4j.Logger;
 import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -73,6 +72,12 @@ public class SongDao implements Serializable {
     public List<Song> findAllSongs() {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Song.class);
         return (List<Song>) criteria.list();
+    }
+    
+    public List<Song> findNewSongs() {
+        Query query = sessionFactory.getCurrentSession().createQuery("FROM Song S ORDER BY S.date_added DESC");
+        query.setMaxResults(4);
+        return (List<Song>) query.list();
     }
 
     public List<Song> findSongsByName(String name) {
