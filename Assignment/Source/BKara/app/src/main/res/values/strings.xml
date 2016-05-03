@@ -41,4 +41,18 @@
     <!-- Google cloud messaging key -->
     <string name="gcm_senderId">789130506501</string>
 
+    <string name="country_prompt">Choose a country</string>
+    <string-array name="countries_array">
+        <item>Viet Nam</item>
+        <item>Malaysia</item>
+        <item>United States</item>
+        <item>Indonesia</item>
+        <item>France</item>
+        <item>Italy</item>
+        <item>Singapore</item>
+        <item>New Zealand</item>
+        <item>India</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>

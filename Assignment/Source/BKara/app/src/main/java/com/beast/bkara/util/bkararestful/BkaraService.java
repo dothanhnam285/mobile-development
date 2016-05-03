@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.beast.bkara.Controller;
 import com.beast.bkara.MainActivity;
-import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
@@ -45,8 +45,8 @@ public class BkaraService {
     }
 
     private final String RESTFUL_URL = //"http://192.168.1.108:8084/myteam/bkaraservice/";
-            //"http://192.168.0.103:8080/myteam/bkaraservice/";
-            "https://bkararestfulservice.herokuapp.com/bkaraservice/";
+            "http://192.168.0.105:8080/myteam/bkaraservice/";
+            //"https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
 
     public enum HistoryList{
@@ -82,8 +82,8 @@ public class BkaraService {
         bkaraRestful = retrofit.create(BkaraRestfulApi.class);
     }
 
-    private Context context;
-    public void setContext(Context context){
+    private MainActivity context;
+    public void setContext(MainActivity context){
         this.context = context;
     }
 
@@ -109,7 +109,7 @@ public class BkaraService {
                 songList.clear();
                 songList.addAll(response.body());
 
-                ArrayList<Song> lstSongsHistory =  ((MainActivity) context).getLstSongsHistory();
+                ArrayList<Song> lstSongsHistory =  context.getLstSongsHistory();
                 if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
                     for (Song song : songList) {
                         for (Song s: lstSongsHistory ) {
@@ -191,7 +191,7 @@ public class BkaraService {
                 recordList.clear();
                 recordList.addAll(response.body());
 
-                ArrayList<Record> lstRecordsHistory =  ((MainActivity) context).getLstRecordsHistory();
+                ArrayList<Record> lstRecordsHistory =  context.getLstRecordsHistory();
                 if( lstRecordsHistory != null && lstRecordsHistory.size() > 0 && recordList != null && recordList.size() > 0)
                     for (Record record : recordList) {
                         for (Record r: lstRecordsHistory ) {
@@ -312,6 +312,9 @@ public class BkaraService {
         });
     }
 
+    public void UpdateUser(final User user, Callback<Void> cb){
+        bkaraRestful.updateUser(user).enqueue(cb);
+    }
 
     public void login(User user, Callback<User> cb){
         bkaraRestful.login(user).enqueue(cb);

@@ -55,6 +55,9 @@ public interface BkaraRestfulApi {
     @POST("update/record")
     Call<Record> updateRecord(@Body Record record);
 
+    @POST("update/user")
+    Call<Void> updateUser(@Body User user);
+
     @POST("registerGCM")
     Call<UserGCM> registerGCM(@Body UserGCM userGCM);
 

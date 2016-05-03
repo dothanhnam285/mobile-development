@@ -130,6 +130,14 @@ public class BkaraController {
         }
     }
 
+    @RequestMapping(value="/update/user", method = RequestMethod.POST)
+    public ResponseEntity<String> updateUser(@RequestBody User user){
+        System.out.println("Update User " + user.getUserName());
+        if( userDao.update(user) )
+            return new ResponseEntity<String>(HttpStatus.OK);
+        return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+    }
+    
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody User user) {
         System.out.println("Creating User " + user.getUserName());
