@@ -81,12 +81,26 @@ public class BkaraController {
     }
 
     @RequestMapping(value = "/saverecord", method = RequestMethod.POST)
-    public ResponseEntity<Record> saveRecord(@RequestBody Record record) {
-        if (recordDao.saveRecord(record)) {
-            return new ResponseEntity<Record>(record, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<Record>(record, HttpStatus.NOT_ACCEPTABLE);
-        }
+    @ResponseBody
+    public Long saveRecord(@RequestBody Record record) {
+        Record rec = recordDao.saveRecord(record);
+        if (rec != null)
+            return rec.getRecordId();
+        else
+            return null;
+        
+    }
+
+    @RequestMapping(value = "/update/song", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateSong(@RequestBody Song song) {
+        songDao.updateSong(song);
+    }
+
+    @RequestMapping(value = "/update/record", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateRecord(@RequestBody Record record) {
+        recordDao.updateRecord(record);
     }
 
     @RequestMapping(value = "/rate/song", method = RequestMethod.POST)
@@ -130,14 +144,15 @@ public class BkaraController {
         }
     }
 
-    @RequestMapping(value="/update/user", method = RequestMethod.POST)
-    public ResponseEntity<String> updateUser(@RequestBody User user){
+    @RequestMapping(value = "/update/user", method = RequestMethod.POST)
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
         System.out.println("Update User " + user.getUserName());
-        if( userDao.update(user) )
+        if (userDao.update(user)) {
             return new ResponseEntity<String>(HttpStatus.OK);
+        }
         return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
     }
-    
+
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody User user) {
         System.out.println("Creating User " + user.getUserName());
