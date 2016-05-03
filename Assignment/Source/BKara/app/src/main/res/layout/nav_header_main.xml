@@ -37,17 +37,20 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
             android:clickable="true"
             android:onClick="login"
-            android:textSize="20sp"/>
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/nav_header_tv_welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hi, User"
+            android:text="UserHasALongName"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:clickable="true"
             android:visibility="gone"
-            android:textSize="30sp"/>
+            android:textSize="25sp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            />
 
         <TextView
             android:id="@+id/nav_header_tv_logout"
@@ -58,7 +61,7 @@
             android:clickable="true"
             android:onClick="logout"
             android:visibility="gone"
-            android:textSize="20sp"/>
+            android:textSize="15sp"/>
 
         <!--<TextView
             android:layout_marginTop="8dp"

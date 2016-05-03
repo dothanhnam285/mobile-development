@@ -188,15 +188,20 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     protected void onPause() {
-        ListSongsHistory listSongsHistory= new ListSongsHistory();
-        listSongsHistory.setLstSongsHistory(lstSongsHistory);
-
-        ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
-        listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
-
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
-        complexPreferences.putObject(Constants.MY_PREF_SONGS_HISTORY, listSongsHistory);
-        complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+
+        if( lstSongsHistory.size() > 0 ) {
+            ListSongsHistory listSongsHistory = new ListSongsHistory();
+            listSongsHistory.setLstSongsHistory(lstSongsHistory);
+            complexPreferences.putObject(Constants.MY_PREF_SONGS_HISTORY, listSongsHistory);
+        }
+
+        if( lstRecordsHistory.size() > 0  ){
+            ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
+            listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
+            complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+        }
+
         complexPreferences.commit();
 
         super.onPause();
@@ -421,6 +426,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onUpdateUserInfoSuccessfully(User user) {
+        setUserInfoAfterLoginSuccessfully(user);
+    }
+
     /**
      * Add listened song to history list to the top of the list and remove the old one if any
      * @param song to be added
@@ -565,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements
         // it also means user has logon -> isLogin() returns true
         controller.setCurrUser(user);
 
-        welcome.setText("Hi, " +user.getUserName());
+        welcome.setText(user.getUserName());
         welcome.setVisibility(View.VISIBLE);
 
         logout.setVisibility(View.VISIBLE);

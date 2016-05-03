@@ -20,6 +20,7 @@ import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.User;
 import com.beast.bkara.util.SHAEncryptionService;
+import com.beast.bkara.util.ValidationUtil;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.ImageCaptureHandler;
 import com.beast.bkara.util.imgur.ImageResponse;
@@ -47,9 +48,6 @@ import retrofit2.Response;
  */
 public class SignUpDialogFragment extends DialogFragment {
     private final String TAG = "SignUpDialogFragment";
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
 
     private ImageCaptureHandler mImageCaptureHandler;
     private CircularImageView mImageView;
@@ -142,12 +140,6 @@ public class SignUpDialogFragment extends DialogFragment {
     }
 
 
-    public boolean isEmailValid(String email) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-        return matcher.find();
-    }
-
-
     private boolean isSignUpFormValid() {
         boolean isValid = false;
         if( userName.getText().toString().equalsIgnoreCase("") )
@@ -156,7 +148,7 @@ public class SignUpDialogFragment extends DialogFragment {
             userName.setError("Username must be at least 4 characters");
         else if( email.getText().toString().equalsIgnoreCase("") )
             email.setError("Please fill in 'Email' field");
-        else if ( !isEmailValid(email.getText().toString()) )
+        else if ( !ValidationUtil.isEmailValid(email.getText().toString()) )
             email.setError("Email is not valid");
         else if( password.getText().toString().equalsIgnoreCase("") )
             password.setError("Please fill in 'Password' field");

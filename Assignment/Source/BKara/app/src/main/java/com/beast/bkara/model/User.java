@@ -10,7 +10,6 @@ import java.util.ArrayList;
  */
 public class User implements Parcelable {
 
-
     private Long userId;
     private String userName;
     private String email;
@@ -25,6 +24,20 @@ public class User implements Parcelable {
 
     public User() {
 
+    }
+    
+    public User(User user){
+        this.userId = user. userId;
+        this.userName = user. userName;
+        this.email = user. email;
+        this.password = user. password;
+        this.firstName = user. firstName;
+        this.lastName = user. lastName;
+        this.phoneNumber = user. phoneNumber;
+        this.avatarLink = user. avatarLink;
+        this.country = user. country;
+        this.address = user. address;
+        this.records = user. records;
     }
 
     public Long getUserId() {
