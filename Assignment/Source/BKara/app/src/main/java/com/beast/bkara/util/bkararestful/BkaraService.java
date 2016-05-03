@@ -44,9 +44,10 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = //"http://192.168.1.108:8084/myteam/bkaraservice/";
+    private final String RESTFUL_URL = //"http://restfulservice-bkara.rhcloud.com/myteam/bkaraservice/";
+            "http://192.168.1.108:8084/myteam/bkaraservice/";
             //"http://192.168.0.103:8080/myteam/bkaraservice/";
-            "https://bkararestfulservice.herokuapp.com/bkaraservice/";
+            //"https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
 
     public enum HistoryList{
@@ -95,7 +96,7 @@ public class BkaraService {
                 call = bkaraRestful.getSongListAll();
                 break;
             case NEW:
-                call = bkaraRestful.getSongListAll();
+                call = bkaraRestful.getSongListNew();
                 break;
             default:
                 call = bkaraRestful.getSongListAll();
@@ -117,7 +118,9 @@ public class BkaraService {
                                 song.setLastTimeViewed(s.getLastTimeViewed());
                         }
                     }
-                progressBar.setVisibility(View.GONE);
+
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -146,7 +149,9 @@ public class BkaraService {
                 Log.d("RESTFUL CALL", "SUCCESS " + response.toString());
                 songList.clear();
                 songList.addAll(response.body());
-                progressBar.setVisibility(View.GONE);
+
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -200,7 +205,8 @@ public class BkaraService {
                         }
                     }
 
-                progressBar.setVisibility(View.GONE);
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
             }
 
             @Override

@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.beast.bkara.MainActivity;
 import com.beast.bkara.R;
+import com.beast.bkara.util.bkararestful.BkaraService;
+import com.beast.bkara.viewmodel.SongViewModel;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 
@@ -26,7 +28,8 @@ import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
  */
 public class HomeFragment extends Fragment {
 
-    SliderLayout sliderLayout;
+    private SliderLayout sliderLayout;
+    private SongViewModel songVm;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -86,6 +89,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        songVm = new SongViewModel(BkaraService.WhichList.NEW, null);
     }
 
     @Override

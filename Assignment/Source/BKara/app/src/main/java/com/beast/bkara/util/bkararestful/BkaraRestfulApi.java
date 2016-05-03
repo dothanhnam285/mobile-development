@@ -28,6 +28,9 @@ public interface BkaraRestfulApi {
     @GET("songlist/all")
     Call<List<Song>> getSongListAll();
 
+    @GET("songlist/new")
+    Call<List<Song>> getSongListNew();
+
     @GET("songlist/search/songname/{songname}")
     Call<List<Song>> findSongsByName(@Path("songname") String songName);
 
