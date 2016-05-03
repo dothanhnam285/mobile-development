@@ -32,6 +32,13 @@
             org.springframework.web.context.request.RequestContextListener
         </listener-class>
     </listener>
+    
+    <!-- Change to "Production" when you are ready to deploy -->
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
+    </context-param>
+    
     <filter>
         <filter-name>hibernateFilter</filter-name>
         <filter-class>

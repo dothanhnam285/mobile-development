@@ -27,14 +27,14 @@ public class RecordDao {
     @Autowired
     SessionFactory sessionFactory;
 
-    public boolean saveRecord(Record record) {
+    public Record saveRecord(Record record) {
         try {
             sessionFactory.getCurrentSession().save(record);
-            return true;
+            return record;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public boolean updateRecord(Record record) {

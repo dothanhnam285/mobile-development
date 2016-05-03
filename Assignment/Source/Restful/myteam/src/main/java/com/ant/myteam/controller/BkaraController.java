@@ -38,7 +38,7 @@ public class BkaraController {
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
         return pattern.matcher(temp).replaceAll("");
     }
-    
+
     private String SERVER_API_KEY = "AIzaSyCwsKIPZ6SBCXaS0O0yW5DJVx57Kpm5e-Y";
 
     @Autowired
@@ -53,6 +53,11 @@ public class BkaraController {
     @RequestMapping(value = "/songlist/all", method = RequestMethod.GET)
     public List<Song> getListSongAll() {
         return songDao.findAllSongs();
+    }
+
+    @RequestMapping(value = "/songlist/new", method = RequestMethod.GET)
+    public List<Song> getListSongNew() {
+        return songDao.findNewSongs();
     }
 
     @RequestMapping(value = "/songlist/search/songname/{songname}", method = RequestMethod.GET)
@@ -76,12 +81,26 @@ public class BkaraController {
     }
 
     @RequestMapping(value = "/saverecord", method = RequestMethod.POST)
-    public ResponseEntity<Record> saveRecord(@RequestBody Record record) {
-        if (recordDao.saveRecord(record)) {
-            return new ResponseEntity<Record>(record, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<Record>(record, HttpStatus.NOT_ACCEPTABLE);
-        }
+    @ResponseBody
+    public Long saveRecord(@RequestBody Record record) {
+        Record rec = recordDao.saveRecord(record);
+        if (rec != null)
+            return rec.getRecordId();
+        else
+            return null;
+        
+    }
+
+    @RequestMapping(value = "/update/song", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateSong(@RequestBody Song song) {
+        songDao.updateSong(song);
+    }
+
+    @RequestMapping(value = "/update/record", method = RequestMethod.POST)
+    @ResponseStatus(value = HttpStatus.OK)
+    public void updateRecord(@RequestBody Record record) {
+        recordDao.updateRecord(record);
     }
 
     @RequestMapping(value = "/rate/song", method = RequestMethod.POST)
@@ -107,32 +126,33 @@ public class BkaraController {
     public void unregisterGCM(@RequestBody UserGCM userGCM) {
         userDao.deleteGCM(userGCM);
     }
-    
+
     @RequestMapping(value = "/sendnoti/{senderId}/{receiverId}/{message}", method = RequestMethod.GET)
     @ResponseBody
     public String sendNoti(@PathVariable("senderId") Long senderId, @PathVariable("receiverId") Long receiverId, @PathVariable("message") String message) {
         UserGCM sender = userDao.checkUserGCMExisted(senderId);
         UserGCM receiver = userDao.checkUserGCMExisted(receiverId);
 //        && !sender.getRegisterId().equals(receiver.getRegisterId())
-        if (sender != null && receiver != null ) {
+        if (sender != null && receiver != null && !sender.getRegisterId().equals(receiver.getRegisterId())) {
             Content content = new Content();
             content.addRegId(receiver.getRegisterId());
             content.createData("BKara", message);
             POST2GCM.post(SERVER_API_KEY, content);
             return "push noti";
-        }
-        else
+        } else {
             return "failed to push noti";
+        }
     }
 
-    @RequestMapping(value="/update/user", method = RequestMethod.POST)
-    public ResponseEntity<String> updateUser(@RequestBody User user){
+    @RequestMapping(value = "/update/user", method = RequestMethod.POST)
+    public ResponseEntity<String> updateUser(@RequestBody User user) {
         System.out.println("Update User " + user.getUserName());
-        if( userDao.update(user) )
+        if (userDao.update(user)) {
             return new ResponseEntity<String>(HttpStatus.OK);
+        }
         return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
     }
-    
+
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public ResponseEntity<User> signUp(@RequestBody User user) {
         System.out.println("Creating User " + user.getUserName());
