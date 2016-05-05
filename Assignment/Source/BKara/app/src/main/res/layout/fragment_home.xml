@@ -20,8 +20,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                            <com.daimajia.slider.library.SliderLayout
+                <ProgressBar
+                    android:id="@+id/frag_home_progressbar_hot"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
 
+                            <com.daimajia.slider.library.SliderLayout
                                 android:id="@+id/sliderHot"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
@@ -53,8 +58,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
 
+                    <ProgressBar
+                        android:id="@+id/frag_home_progressbar_new0"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                 <ImageView
-                    android:src="@drawable/img_home_test7"
+                    android:onClick="fragHomeNewSongClick"
+                    android:id="@+id/frag_home_image_new0"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layout_aspectRatio="100%"
@@ -75,9 +87,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp">
 
-                        <ImageView
+                        <ProgressBar
+                            android:id="@+id/frag_home_progressbar_new1"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
 
-                            android:src="@drawable/img_home_test5"
+                        <ImageView
+                            android:onClick="fragHomeNewSongClick"
+                            android:id="@+id/frag_home_image_new1"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             app:layout_aspectRatio="100%"
@@ -90,8 +108,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp">
 
+                        <ProgressBar
+                            android:id="@+id/frag_home_progressbar_new2"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
                         <ImageView
-                            android:src="@drawable/img_home_test4"
+                            android:onClick="fragHomeNewSongClick"
+                            android:id="@+id/frag_home_image_new2"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             app:layout_aspectRatio="100%"
@@ -104,8 +129,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp">
 
+                        <ProgressBar
+                            android:id="@+id/frag_home_progressbar_new3"
+                            android:layout_centerInParent="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
                         <ImageView
-                            android:src="@drawable/img_home_test6"
+                            android:onClick="fragHomeNewSongClick"
+                            android:id="@+id/frag_home_image_new3"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             app:layout_aspectRatio="100%"

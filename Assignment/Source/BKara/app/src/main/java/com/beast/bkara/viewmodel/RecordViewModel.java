@@ -57,19 +57,4 @@ public class RecordViewModel {
         bkaraService.FindRecords(searchFilter, searchValue, recordList, progressBar);
         
     }
-
-    public void SetUser(User user) {
-        Log.d("RECORD VM", "SET USER: " + user.toString());
-        this.user = user;
-    }
-
-    public void SaveRecord(String stream_link) {
-        Log.d("RECORD VM", "SAVE RECORD: " + user.toString());
-        Record record = new Record();
-        record.setDate_created(new Date());
-        record.setSong(song);
-        record.setUser(user);
-        record.setStream_link(stream_link + "?client_id=" + UploadToSoundCloudTask.CLIENT_ID);
-        bkaraService.SaveRecord(record);
-    }
 }

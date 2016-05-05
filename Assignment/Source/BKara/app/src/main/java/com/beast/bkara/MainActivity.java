@@ -52,6 +52,7 @@ import com.beast.bkara.util.ComplexPreferences;
 import com.beast.bkara.util.SongSearchView;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.gcm.RegistrationIntentService;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -425,6 +426,10 @@ public class MainActivity extends AppCompatActivity implements
         // Create popup window
         mPopupWindow = new PopupWindow(container, (int) (height * 0.7), (int) (width * 0.8), true);
         mPopupWindow.showAtLocation(mLayout, Gravity.CENTER, 0, 0);
+    }
+
+    public void fragHomeNewSongClick(View v) {
+        displayCustomFragment(SongsFragment.newInstance(SongsFragment.NEW_TAB_POSITION), "Songs");
     }
 
     @Override

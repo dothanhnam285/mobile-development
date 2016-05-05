@@ -3,6 +3,7 @@ package com.beast.bkara.util.bkararestful;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.HotSong;
 import com.beast.bkara.model.supportmodel.RatingRecord;
 import com.beast.bkara.model.supportmodel.RatingSong;
 import com.beast.bkara.model.supportmodel.UserGCM;
@@ -30,6 +31,9 @@ public interface BkaraRestfulApi {
 
     @GET("songlist/new")
     Call<List<Song>> getSongListNew();
+
+    @GET("songlist/hot")
+    Call<List<HotSong>> getSongListHot();
 
     @GET("songlist/search/songname/{songname}")
     Call<List<Song>> findSongsByName(@Path("songname") String songName);

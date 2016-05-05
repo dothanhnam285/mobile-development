@@ -22,8 +22,14 @@ import com.beast.bkara.model.Song;
 import com.beast.bkara.util.RecordExoPlayerHandler;
 import com.beast.bkara.util.RecordPlayerHandler;
 import com.beast.bkara.util.UploadToSoundCloudTask;
+import com.beast.bkara.util.bkararestful.BkaraService;
 
 import java.io.File;
+import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,6 +95,7 @@ public class SaveRecordDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getDialog().setCanceledOnTouchOutside(false);
         View v = inflater.inflate(R.layout.fragment_save_record_dialog, container, false);
 
         ToggleButton toggleButton = (ToggleButton) v.findViewById(R.id.frag_save_record_btnPlay);
@@ -121,9 +128,25 @@ public class SaveRecordDialogFragment extends DialogFragment {
                             @Override
                             public void OnUploadSuccess(String streamLink) {
                                 DeleteRecordFromLocal();
-                                KaraokeFragment parentFragment = (KaraokeFragment) getParentFragment();
-                                parentFragment.getRecordViewModel().SaveRecord(streamLink);
-                                parentFragment.ReloadRecordList();
+                                final KaraokeFragment parentFragment = (KaraokeFragment) getParentFragment();
+                                //parentFragment.getRecordViewModel().SaveRecord(streamLink);
+                                Record record = new Record();
+                                record.setDate_created(new Date());
+                                record.setSong(song);
+                                record.setUser(controller.getCurrUser());
+                                record.setStream_link(streamLink + "?client_id=" + UploadToSoundCloudTask.CLIENT_ID);
+                                BkaraService.getInstance().SaveRecord(record, new Callback<Long>() {
+                                    @Override
+                                    public void onResponse(Call<Long> call, Response<Long> response) {
+                                        parentFragment.ReloadRecordList();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Long> call, Throwable t) {
+
+                                    }
+                                });
+
                                 Toast.makeText(mContext, "Upload record successfully !", Toast.LENGTH_SHORT).show();
                                 // TODO: Create and save a record for user
                             }

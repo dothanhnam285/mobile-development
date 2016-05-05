@@ -63,7 +63,6 @@ public class KaraokeFragment extends Fragment {
 
     private boolean isFragmentPause = false;
 
-    private RecordViewModel recordVm;
     private FragmentKaraokeBinding binding;
 
     // Controller
@@ -134,13 +133,8 @@ public class KaraokeFragment extends Fragment {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
         View v = binding.getRoot();
-
-        ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.frag_karaoke_progressBarWaiting);
         ratingBar = (RatingBar) v.findViewById(R.id.frag_karaoke_ratingbar);
 
-        recordVm = new RecordViewModel(controller.getCurrUser(), whichSong, progressBar);
-
-        binding.setRecordVm(recordVm);
         binding.setSong(whichSong);
         binding.setKaraokeFrag(this);
 
@@ -155,8 +149,9 @@ public class KaraokeFragment extends Fragment {
         youTubePlayerFragment.initialize(controller.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                Log.d("KARAOKEFRAGMENT", "Youtube Initialization");
+                yPlayer = youTubePlayer;
                 if (!wasRestored) {
-                    yPlayer = youTubePlayer;
                     youTubePlayer.setFullscreenControlFlags(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION | YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
                     youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
                         @Override
@@ -177,6 +172,7 @@ public class KaraokeFragment extends Fragment {
                 Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
                 Log.d("errorMessage: ", errorMessage);
             }
+
         });
 
         btnRecord = (ToggleButton) v.findViewById(R.id.frag_karaoke_btnRecord);
@@ -286,7 +282,6 @@ public class KaraokeFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Log.d("HAHA", "RESUME");
         isFragmentPause = false;
         super.onResume();
     }
@@ -320,18 +315,12 @@ public class KaraokeFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public RecordViewModel getRecordViewModel() {
-        return recordVm;
-    }
-
     public Song getSong() {
         return whichSong;
     }
 
     public void enableRecord(boolean isEnable) {
-        if (isEnable)
-            recordVm.SetUser(controller.getCurrUser());
-        else
+        if (!isEnable)
             btnRecord.setChecked(false);
         btnRecord.setEnabled(isEnable);
     }

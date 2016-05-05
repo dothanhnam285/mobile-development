@@ -33,6 +33,7 @@ public class Song extends BaseObservable implements Parcelable {
     private Singer singer;
     private String video_id;
     private Date lastTimeViewed = new Date(0);
+    private String title_search;
 
     public Date getLastTimeViewed() {
         return lastTimeViewed;
@@ -204,4 +205,12 @@ public class Song extends BaseObservable implements Parcelable {
             return new Song[size];
         }
     };
+
+    public String getTitle_search() {
+        return title_search;
+    }
+
+    public void setTitle_search(String title_search) {
+        this.title_search = title_search;
+    }
 }

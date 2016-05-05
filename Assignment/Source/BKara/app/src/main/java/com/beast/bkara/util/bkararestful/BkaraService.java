@@ -13,6 +13,7 @@ import com.beast.bkara.R;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.HotSong;
 import com.beast.bkara.model.supportmodel.RatingRecord;
 import com.beast.bkara.model.supportmodel.RatingSong;
 import com.beast.bkara.model.supportmodel.UserGCM;
@@ -45,8 +46,8 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = //"http://restfulservice-bkara.rhcloud.com/myteam/bkaraservice/";
-            "http://192.168.1.108:8084/myteam/bkaraservice/";
+    private final String RESTFUL_URL = "http://restfulservice-bkara.rhcloud.com/bkaraservice/";
+            //"http://192.168.1.108:8084/myteam/bkaraservice/";
             //"http://192.168.0.103:8080/myteam/bkaraservice/";
             //"https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
@@ -90,12 +91,84 @@ public class BkaraService {
     }
 
     public void GetSongList(final WhichList whichList, final ObservableList<Song> songList, final ProgressBar progressBar) {
+        Call<List<Song>> call = null;
+        Call<List<HotSong>> callHotSong = null;
+
+        if (whichList == WhichList.ALL)
+            call = bkaraRestful.getSongListAll();
+        else if (whichList == WhichList.NEW)
+            call = bkaraRestful.getSongListNew();
+        else
+            callHotSong = bkaraRestful.getSongListHot();
+
+        if (call != null) {
+            call.enqueue(new Callback<List<Song>>() {
+                @Override
+                public void onResponse(Call<List<Song>> call, Response<List<Song>> response) {
+                    Log.d("RESTFUL CALL", "SUCCESS");
+                    songList.clear();
+                    songList.addAll(response.body());
+
+                    ArrayList<Song> lstSongsHistory =  context.getLstSongsHistory();
+                    if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
+                        for (Song song : songList) {
+                            for (Song s: lstSongsHistory ) {
+                                if( song.getSong_id().equals(s.getSong_id()) ) {
+                                    song.setLastTimeViewed(s.getLastTimeViewed());
+                                    s.setView(song.getView());
+                                }
+                            }
+                        }
+
+                    if (progressBar != null)
+                        progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Call<List<Song>> call, Throwable t) {
+                    Log.d("RESTFUL CALL", "FAILED " + t.getMessage());
+                    GetSongList(whichList, songList, progressBar);
+                }
+            });
+        }
+
+        if (callHotSong != null) {
+            callHotSong.enqueue(new Callback<List<HotSong>>() {
+                @Override
+                public void onResponse(Call<List<HotSong>> call, Response<List<HotSong>> response) {
+                    Log.d("RESTFUL CALL", "SUCCESS");
+                    songList.clear();
+                    for (int i = 0; i < response.body().size(); i++)
+                        songList.add(response.body().get(i).getSong());
+
+                    ArrayList<Song> lstSongsHistory =  context.getLstSongsHistory();
+                    if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
+                        for (Song song : songList) {
+                            for (Song s: lstSongsHistory ) {
+                                if( song.getSong_id().equals(s.getSong_id()) ) {
+                                    song.setLastTimeViewed(s.getLastTimeViewed());
+                                    s.setView(song.getView());
+                                }
+                            }
+                        }
+
+                    if (progressBar != null)
+                        progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Call<List<HotSong>> call, Throwable t) {
+
+                }
+            });
+        }
+
+    }
+
+    public void GetSongList(final WhichList whichList, Callback<List<Song>> callback) {
         Call<List<Song>> call;
 
         switch(whichList) {
-            case HOT:
-                call = bkaraRestful.getSongListAll();
-                break;
             case NEW:
                 call = bkaraRestful.getSongListNew();
                 break;
@@ -104,34 +177,12 @@ public class BkaraService {
                 break;
         }
 
-        call.enqueue(new Callback<List<Song>>() {
-            @Override
-            public void onResponse(Call<List<Song>> call, Response<List<Song>> response) {
-                Log.d("RESTFUL CALL", "SUCCESS");
-                songList.clear();
-                songList.addAll(response.body());
+        call.enqueue(callback);
+    }
 
-                ArrayList<Song> lstSongsHistory =  context.getLstSongsHistory();
-                if( lstSongsHistory != null && lstSongsHistory.size() > 0 && songList != null && songList.size() > 0)
-                    for (Song song : songList) {
-                        for (Song s: lstSongsHistory ) {
-                            if( song.getSong_id().equals(s.getSong_id()) ) {
-                                song.setLastTimeViewed(s.getLastTimeViewed());
-                                s.setView(song.getView());
-                            }
-                        }
-                    }
-
-                if (progressBar != null)
-                    progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(Call<List<Song>> call, Throwable t) {
-                Log.d("RESTFUL CALL", "FAILED " + t.getMessage());
-                GetSongList(whichList, songList, progressBar);
-            }
-        });
+    public void GetSongListHot(Callback<List<HotSong>> callback) {
+        Call<List<HotSong>> call = bkaraRestful.getSongListHot();
+        call.enqueue(callback);
     }
 
     public void FindSongs(final SongSearchFilter searchFilter, final String searchValue, final ObservableList<Song> songList, final ProgressBar progressBar) {
@@ -179,6 +230,11 @@ public class BkaraService {
                 Log.d("RESTFUL CALL", "FAIL SAVE RECORD " + t.getMessage());
             }
         });
+    }
+
+    public void SaveRecord(final Record record, Callback<Long> mCallback) {
+        Call<Long> call = bkaraRestful.saveRecord(record);
+        call.enqueue(mCallback);
     }
 
     public void FindRecords(final RecordSearchFilter searchFilter, final Long searchValue, final ObservableList<Record> recordList, final ProgressBar progressBar) {
