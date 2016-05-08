@@ -18,11 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.beast.bkara.Controller;
 import com.beast.bkara.MainActivity;
+import com.beast.bkara.dialogfragments.PlaylistDialogFragment;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.util.RecordListRecyclerViewAdapter;
@@ -58,6 +60,7 @@ public class KaraokeFragment extends Fragment {
     private ToggleButton btnExpand;
     private RatingBar ratingBar;
     private ExpandableRelativeLayout erlSongInfo;
+    private TextView tvAddPlaylist;
 
     private String recordPath = "";
 
@@ -134,6 +137,7 @@ public class KaraokeFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_karaoke, container, false);
         View v = binding.getRoot();
         ratingBar = (RatingBar) v.findViewById(R.id.frag_karaoke_ratingbar);
+        tvAddPlaylist = (TextView) v.findViewById(R.id.frag_karaoke_btnAddToPlaylist);
 
         binding.setSong(whichSong);
         binding.setKaraokeFrag(this);
@@ -225,41 +229,15 @@ public class KaraokeFragment extends Fragment {
             }
         });
 
+        tvAddPlaylist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlaylistDialogFragment playlistDialogFragment = PlaylistDialogFragment.newInstance(whichSong, null);
+                playlistDialogFragment.show(getChildFragmentManager(), null);
+            }
+        });
+
         return v;
-    }
-
-    private String GenerateRecordPath() {
-        //String path = Environment.getExternalStorageDirectory() + "/";
-        String path = getActivity().getFilesDir() + "/";
-        Log.i(getClass().getSimpleName(), "@GenerateRecordPath: " + path);
-
-        return path + controller.getCurrUser().getUserId() + "_" + whichSong.getVideo_id() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
-    }
-
-    private void startRecording(String filepath) {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mRecorder.setAudioEncodingBitRate(96000);
-        mRecorder.setAudioSamplingRate(44100);
-        mRecorder.setOutputFile(filepath);
-
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mRecorder.start();
-    }
-
-    private void stopRecording() {
-        if (mRecorder != null) {
-            mRecorder.stop();
-            mRecorder.reset();
-            mRecorder.release();
-            mRecorder = null;
-        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -301,6 +279,92 @@ public class KaraokeFragment extends Fragment {
     }
 
     /**
+     * Get current song
+     *
+     * @return
+     */
+    public Song getSong() {
+        return whichSong;
+    }
+
+    /**
+     * Enable record function for logged in user
+     *
+     * @param isEnable
+     */
+    public void enableRecord(boolean isEnable) {
+        if (!isEnable)
+            btnRecord.setChecked(false);
+        btnRecord.setEnabled(isEnable);
+    }
+
+    /**
+     * Refresh record list
+     */
+    public void ReloadRecordList() {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.frag_karaoke_frame_recordlist, RecordsFragment.newInstance(true, whichSong));
+        transaction.commit();
+    }
+
+    ////////////////////////////////////////////////////////////////////////
+    ///////////////////////////PRIVATE SECTION//////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Generate path for record file in internal storage
+     * @return
+     */
+    private String GenerateRecordPath() {
+        //String path = Environment.getExternalStorageDirectory() + "/";
+        String path = getActivity().getFilesDir() + "/";
+        Log.i(getClass().getSimpleName(), "@GenerateRecordPath: " + path);
+
+        return path + controller.getCurrUser().getUserId() + "_" + whichSong.getVideo_id() + "_" + String.valueOf(System.currentTimeMillis()) + ".mp3";
+    }
+
+    /**
+     *
+     * @param filepath
+     */
+    private void startRecording(String filepath) {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mRecorder.setAudioEncodingBitRate(96000);
+        mRecorder.setAudioSamplingRate(44100);
+        mRecorder.setOutputFile(filepath);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mRecorder.start();
+    }
+
+    /**
+     *
+     */
+    private void stopRecording() {
+        if (mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.reset();
+            mRecorder.release();
+            mRecorder = null;
+        }
+    }
+
+    /**
+     *
+     */
+    private void DeleteRecordFromLocal() {
+        File file = new File(recordPath);
+        file.delete();
+    }
+
+    /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
@@ -313,26 +377,5 @@ public class KaraokeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public Song getSong() {
-        return whichSong;
-    }
-
-    public void enableRecord(boolean isEnable) {
-        if (!isEnable)
-            btnRecord.setChecked(false);
-        btnRecord.setEnabled(isEnable);
-    }
-
-    public void ReloadRecordList() {
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.frag_karaoke_frame_recordlist, RecordsFragment.newInstance(true, whichSong));
-        transaction.commit();
-    }
-
-    private void DeleteRecordFromLocal() {
-        File file = new File(recordPath);
-        file.delete();
     }
 }

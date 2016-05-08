@@ -31,21 +31,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
+import com.beast.bkara.dialogfragments.PlaylistDialogFragment;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.dialogfragments.UserInfoDialogFragment;
+import com.beast.bkara.fragments.AboutFragment;
 import com.beast.bkara.fragments.BlankFragment;
 import com.beast.bkara.fragments.GenresFragment;
 import com.beast.bkara.fragments.HistoryFragment;
 import com.beast.bkara.fragments.HomeFragment;
 import com.beast.bkara.fragments.KaraokeFragment;
+import com.beast.bkara.fragments.PlaylistFragment;
 import com.beast.bkara.fragments.RecordsFragment;
 import com.beast.bkara.fragments.SongListFragment;
 import com.beast.bkara.fragments.SongsFragment;
+import com.beast.bkara.model.Playlist;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.ListPlaylist;
 import com.beast.bkara.model.supportmodel.ListRecordsHistory;
 import com.beast.bkara.model.supportmodel.ListSongsHistory;
 import com.beast.bkara.util.ComplexPreferences;
@@ -60,6 +65,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements
         SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
         SaveRecordDialogFragment.OnFragmentInteractionListener,
         RatingDialogFragment.OnFragmentInteractionListener,
-        UserInfoDialogFragment.OnFragmentInteractionListener
+        UserInfoDialogFragment.OnFragmentInteractionListener,
+        PlaylistDialogFragment.OnFragmentInteractionListener,
+        PlaylistFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -99,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements
      * Use to store all listened records recently
      */
     private ArrayList<Record> lstRecordsHistory = new ArrayList<>();
+
+    /**
+     * Use to store all playlist
+     */
+    private List<Playlist> lstPlaylist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
         // Init bkara service
         BkaraService.getInstance().setContext(this);
 
-        // Get shared preference of @listSongsHistory && @lstRecordsHistory
+        // Get shared preference of @listSongsHistory && @lstRecordsHistory && @lstPlaylist
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
         ListSongsHistory listSongsHistory =  complexPreferences.getObject(Constants.MY_PREF_SONGS_HISTORY, ListSongsHistory.class);
         if( listSongsHistory != null )
@@ -130,6 +143,10 @@ public class MainActivity extends AppCompatActivity implements
         ListRecordsHistory listRecordsHistory = complexPreferences.getObject(Constants.MY_PREF_RECORDS_HISTORY, ListRecordsHistory.class);
         if( listRecordsHistory != null )
             lstRecordsHistory = listRecordsHistory.getLstRecordsHistory();
+
+        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
+        if( listPlaylist != null )
+            lstPlaylist = listPlaylist.getLstRecordsHistory();
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -170,6 +187,11 @@ public class MainActivity extends AppCompatActivity implements
         //
         autoLoginIfRemembered();
 
+        // Dummy playlist;
+        Playlist playlist1 = new Playlist("MyPlaylist");
+        Playlist playlist2 = new Playlist("MyOtherPlaylist");
+        addPlaylist(playlist1);
+        addPlaylist(playlist2);
     }
 
     /**
@@ -217,6 +239,10 @@ public class MainActivity extends AppCompatActivity implements
             ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
             listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
             complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+        }
+
+        if( lstSongsHistory.size() > 0 ) {
+            complexPreferences.putObject(Constants.MY_PREF_PLAYLIST, lstPlaylist);
         }
 
         complexPreferences.commit();
@@ -362,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Genres";
                 break;
             case R.id.nav_playlist:
-                //fragment = new PlaylistFragment();
+                fragment = new PlaylistFragment();
                 title = "Playlist";
                 break;
             case R.id.nav_history:
@@ -376,6 +402,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_setting:
                 break;
             case R.id.nav_about:
+                fragment = new AboutFragment();
+                title = "About";
                 break;
         }
 
@@ -479,6 +507,39 @@ public class MainActivity extends AppCompatActivity implements
 
         // Change position to top list
         lstRecordsHistory.add(0,record);
+    }
+
+    /**
+     *
+     * @param playlist
+     */
+    public void addPlaylist(Playlist playlist) {
+        // Loop through the song list to find the matched one if any then put it into the top of the history list
+        Iterator<Playlist> iterator = lstPlaylist.iterator();
+        while( iterator.hasNext() ){
+            Playlist r = iterator.next();
+            if( r.getName().equals(playlist.getName()) ) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        // Add to list playlist
+        lstPlaylist.add(playlist);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<Playlist> getPlaylist() {
+        return lstPlaylist;
+    }
+
+    /**
+     *
+     */
+    public void addToPlaylist() {
     }
 
     /**
