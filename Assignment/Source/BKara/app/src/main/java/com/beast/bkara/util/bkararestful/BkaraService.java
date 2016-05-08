@@ -46,8 +46,8 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = //"http://restfulservice-bkara.rhcloud.com/bkaraservice/";
-            "http://192.168.1.108:8084/myteam/bkaraservice/";
+    private final String RESTFUL_URL = "http://restfulservice-bkara.rhcloud.com/bkaraservice/";
+            //"http://192.168.1.108:8084/myteam/bkaraservice/";
             //"http://192.168.0.103:8080/myteam/bkaraservice/";
             //"https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
