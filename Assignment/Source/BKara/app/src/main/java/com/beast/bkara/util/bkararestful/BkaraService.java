@@ -46,8 +46,8 @@ public class BkaraService {
         return ourInstance;
     }
 
-    private final String RESTFUL_URL = "http://restfulservice-bkara.rhcloud.com/bkaraservice/";
-            //"http://192.168.1.108:8084/myteam/bkaraservice/";
+    private final String RESTFUL_URL = //"http://restfulservice-bkara.rhcloud.com/bkaraservice/";
+            "http://192.168.1.108:8084/myteam/bkaraservice/";
             //"http://192.168.0.103:8080/myteam/bkaraservice/";
             //"https://bkararestfulservice.herokuapp.com/bkaraservice/";
     private BkaraRestfulApi bkaraRestful;
@@ -326,16 +326,17 @@ public class BkaraService {
     }
 
     public void UpdateRecord(Record record) {
-        Call<Record> call = bkaraRestful.updateRecord(record);
+        Call<Record> call = bkaraRestful.
+                updateRecord(record);
         call.enqueue(new Callback<Record>() {
             @Override
             public void onResponse(Call<Record> call, Response<Record> response) {
-                Log.d("RESTFUL CALL", "SUCCESS UPDATE SONG " + response.body());
+                Log.d("RESTFUL CALL", "SUCCESS UPDATE RECORD " + response.body());
             }
 
             @Override
             public void onFailure(Call<Record> call, Throwable t) {
-                Log.d("RESTFUL CALL", "FAILED UPDATE SONG " + t.getMessage());
+                Log.d("RESTFUL CALL", "FAILED UPDATE RECORD " + t.getMessage());
             }
         });
     }

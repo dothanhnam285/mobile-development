@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beast.bkara.model.supportmodel.HotSong;
 import com.beast.bkara.model.supportmodel.RatingSong;
 import com.beast.bkara.util.RatingBarView;
 import com.github.siyamed.shapeimageview.CircularImageView;
@@ -34,6 +35,9 @@ public class Song extends BaseObservable implements Parcelable {
     private String video_id;
     private Date lastTimeViewed = new Date(0);
     private String title_search;
+    private ArrayList<Record> records;
+    private ArrayList<RatingSong> ratingSongs;
+    private HotSong hotSong;
 
     public Date getLastTimeViewed() {
         return lastTimeViewed;
@@ -212,5 +216,29 @@ public class Song extends BaseObservable implements Parcelable {
 
     public void setTitle_search(String title_search) {
         this.title_search = title_search;
+    }
+
+    public ArrayList<Record> getRecords() {
+        return records;
+    }
+
+    public void setRecords(ArrayList<Record> records) {
+        this.records = records;
+    }
+
+    public ArrayList<RatingSong> getRatingSongs() {
+        return ratingSongs;
+    }
+
+    public void setRatingSongs(ArrayList<RatingSong> ratingSongs) {
+        this.ratingSongs = ratingSongs;
+    }
+
+    public HotSong getHotSong() {
+        return hotSong;
+    }
+
+    public void setHotSong(HotSong hotSong) {
+        this.hotSong = hotSong;
     }
 }

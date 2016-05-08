@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("MainActivity", "Ver 17");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
@@ -144,9 +145,9 @@ public class MainActivity extends AppCompatActivity implements
         if( listRecordsHistory != null )
             lstRecordsHistory = listRecordsHistory.getLstRecordsHistory();
 
-        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
-        if( listPlaylist != null )
-            lstPlaylist = listPlaylist.getLstRecordsHistory();
+//        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
+//        if( listPlaylist != null )
+//            lstPlaylist = listPlaylist.getLstRecordsHistory();
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -548,8 +549,8 @@ public class MainActivity extends AppCompatActivity implements
      * @return
      */
     public boolean checkViewed(Song song) {
-        if( new Date().getTime() - song.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
-            return true;
+        if (song.getLastTimeViewed() == null || new Date().getTime() - song.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+                return true;
         return false;
     }
 
@@ -559,9 +560,8 @@ public class MainActivity extends AppCompatActivity implements
      * @return
      */
     public boolean checkViewed(Record record) {
-
-        if( new Date().getTime() - record.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
-            return true;
+            if (record.getLastTimeViewed() == null || new Date().getTime() - record.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+                return true;
         return false;
     }
 

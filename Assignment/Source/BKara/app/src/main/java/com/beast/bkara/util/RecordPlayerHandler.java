@@ -96,9 +96,11 @@ public class RecordPlayerHandler {
                 if (isPlay) {
                     if (isRemote) {
                         if (((MainActivity) mContext).checkViewed(record)) {
+                            Log.d("RECORDPLAYERHANDLER", "PREPARE TO UPDATE RECORD");
                             record.setView(record.getView() + 1);
                             record.setLastTimeViewed(new Date());
                             BkaraService.getInstance().UpdateRecord(record);
+                            Log.d("RECORDPLAYERHANDLER", "UPDATED RECORD");
                         }
                         ((MainActivity) mContext).addToHistory(record);
                     }
