@@ -95,7 +95,7 @@ public class SaveRecordDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        getDialog().setCanceledOnTouchOutside(false);
+        setCancelable(false);
         View v = inflater.inflate(R.layout.fragment_save_record_dialog, container, false);
 
         ToggleButton toggleButton = (ToggleButton) v.findViewById(R.id.frag_save_record_btnPlay);
