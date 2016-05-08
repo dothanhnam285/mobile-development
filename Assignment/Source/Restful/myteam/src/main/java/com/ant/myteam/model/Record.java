@@ -55,6 +55,9 @@ public class Record implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "recordId")
     private Collection<RatingRecord> ratingRecords;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastTimeViewed;
 
     public Date getDate_created() {
         return date_created;
@@ -73,7 +76,7 @@ public class Record implements Serializable {
     }
 
     public Float getRating() {
-        ArrayList<RatingRecord> ratingList = new ArrayList<RatingRecord>(ratingRecords);
+        ArrayList<RatingRecord> ratingList = new ArrayList<RatingRecord>(getRatingRecords());
         if (ratingList.size() > 0) {
             for (int i = 0; i < ratingList.size(); i++) {
                 rating += (float) ratingList.get(i).getRateValue();
@@ -143,6 +146,34 @@ public class Record implements Serializable {
      */
     public void setStream_link(String stream_link) {
         this.stream_link = stream_link;
+    }
+
+    /**
+     * @return the ratingRecords
+     */
+    public Collection<RatingRecord> getRatingRecords() {
+        return ratingRecords;
+    }
+
+    /**
+     * @param ratingRecords the ratingRecords to set
+     */
+    public void setRatingRecords(Collection<RatingRecord> ratingRecords) {
+        this.ratingRecords = ratingRecords;
+    }
+
+    /**
+     * @return the lastTimeViewed
+     */
+    public Date getLastTimeViewed() {
+        return lastTimeViewed;
+    }
+
+    /**
+     * @param lastTimeViewed the lastTimeViewed to set
+     */
+    public void setLastTimeViewed(Date lastTimeViewed) {
+        this.lastTimeViewed = lastTimeViewed;
     }
 
 }

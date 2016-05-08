@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -64,6 +65,14 @@ public class Song implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "song_id")
     private Collection<RatingSong> ratingSongs;
+    
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "song_id")
+    private HotSong hotSong;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastTimeViewed;
 
     public int getView() {
         return view;
@@ -194,6 +203,34 @@ public class Song implements Serializable {
      */
     public void setRatingSongs(Collection<RatingSong> ratingSongs) {
         this.ratingSongs = ratingSongs;
+    }
+
+    /**
+     * @return the hotSong
+     */
+    public HotSong getHotSong() {
+        return hotSong;
+    }
+
+    /**
+     * @param hotSong the hotSong to set
+     */
+    public void setHotSong(HotSong hotSong) {
+        this.hotSong = hotSong;
+    }
+
+    /**
+     * @return the lastTimeViewed
+     */
+    public Date getLastTimeViewed() {
+        return lastTimeViewed;
+    }
+
+    /**
+     * @param lastTimeViewed the lastTimeViewed to set
+     */
+    public void setLastTimeViewed(Date lastTimeViewed) {
+        this.lastTimeViewed = lastTimeViewed;
     }
 
 }

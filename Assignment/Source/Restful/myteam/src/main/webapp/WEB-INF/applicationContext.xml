@@ -23,20 +23,20 @@
     <context:component-scan base-package="com.ant.myteam" />
 	
     <!-- Data Source Declaration -->
-    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+<!--    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="jdbc:postgresql://localhost:5432"/>
         <property name="username" value="postgres"/>
         <property name="password" value="postgres"/>
-    </bean>
+    </bean>-->
         
     <!-- Data Source Declaration -->
-<!--    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="jdbc:postgresql://ec2-184-73-239-214.compute-1.amazonaws.com:5432/ddh6rcacp3p7r4?ssl=true&amp;sslfactory=org.postgresql.ssl.NonValidatingFactory"/>
         <property name="username" value="ukjtoczebrfjfg"/>
         <property name="password" value="pMiP5rS8FstFqDb-Lq-C4sztMW"/>
-    </bean>-->
+    </bean>
  	
     <!-- Session Factory Declaration -->
     <bean id="mySessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">

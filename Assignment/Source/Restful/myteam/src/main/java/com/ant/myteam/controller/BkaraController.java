@@ -5,6 +5,7 @@ import com.ant.myteam.dao.SongDao;
 import com.ant.myteam.dao.UserDao;
 import com.ant.myteam.gcm.Content;
 import com.ant.myteam.gcm.POST2GCM;
+import com.ant.myteam.model.HotSong;
 import com.ant.myteam.model.RatingRecord;
 import com.ant.myteam.model.RatingSong;
 import com.ant.myteam.model.Record;
@@ -60,6 +61,11 @@ public class BkaraController {
         return songDao.findNewSongs();
     }
 
+    @RequestMapping(value = "/songlist/hot", method = RequestMethod.GET)
+    public List<HotSong> getListSongHot() {
+        return songDao.findHotSongs();
+    }
+
     @RequestMapping(value = "/songlist/search/songname/{songname}", method = RequestMethod.GET)
     public List<Song> findSongsByName(@PathVariable("songname") String songName) {
         return songDao.findSongsByName(songName);
@@ -84,11 +90,12 @@ public class BkaraController {
     @ResponseBody
     public Long saveRecord(@RequestBody Record record) {
         Record rec = recordDao.saveRecord(record);
-        if (rec != null)
+        if (rec != null) {
             return rec.getRecordId();
-        else
+        } else {
             return null;
-        
+        }
+
     }
 
     @RequestMapping(value = "/update/song", method = RequestMethod.POST)
