@@ -3,6 +3,9 @@ package com.beast.bkara.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.beast.bkara.model.supportmodel.RatingRecord;
+import com.beast.bkara.model.supportmodel.RatingSong;
+
 import java.util.ArrayList;
 
 /**
@@ -21,6 +24,8 @@ public class User implements Parcelable {
     private String country;
     private String address;
     private ArrayList<Record> records;
+    private ArrayList<RatingRecord> ratingRecords;
+    private ArrayList<RatingSong> ratingSongs;
 
     public User() {
 
@@ -181,4 +186,20 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public ArrayList<RatingRecord> getRatingRecords() {
+        return ratingRecords;
+    }
+
+    public void setRatingRecords(ArrayList<RatingRecord> ratingRecords) {
+        this.ratingRecords = ratingRecords;
+    }
+
+    public ArrayList<RatingSong> getRatingSongs() {
+        return ratingSongs;
+    }
+
+    public void setRatingSongs(ArrayList<RatingSong> ratingSongs) {
+        this.ratingSongs = ratingSongs;
+    }
 }

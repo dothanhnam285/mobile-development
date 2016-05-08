@@ -28,14 +28,16 @@ import java.util.List;
  */
 public class SongsFragment extends Fragment {
 
+    public static final int ALL_TAB_POSITION = 0;
+    public static final int HOT_TAB_POSITION = 1;
+    public static final int NEW_TAB_POSITION = 2;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    protected static final String IS_SEARCH = "param1";
-    protected static final String SEARCH_WHAT = "param2";
+    protected static final String DEFAULT_TAB_POSITION = "param2";
 
     // TODO: Rename and change types of parameters
-    protected boolean isSearch;
-    protected String searchWhat;
+    protected int defaultTabPos = ALL_TAB_POSITION;
 
     protected OnFragmentInteractionListener mListener;
 
@@ -48,15 +50,13 @@ public class SongsFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment SongsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SongsFragment newInstance(boolean param1, String param2) {
+    public static SongsFragment newInstance(int param1) {
         SongsFragment fragment = new SongsFragment();
         Bundle args = new Bundle();
-        args.putBoolean(IS_SEARCH, param1);
-        args.putString(SEARCH_WHAT, param2);
+        args.putInt(DEFAULT_TAB_POSITION, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,8 +65,7 @@ public class SongsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isSearch = getArguments().getBoolean(IS_SEARCH);
-            searchWhat = getArguments().getString(SEARCH_WHAT);
+            defaultTabPos = getArguments().getInt(DEFAULT_TAB_POSITION);
         }
     }
 
@@ -141,6 +140,7 @@ public class SongsFragment extends Fragment {
         adapter.addFrag(SongListFragment.newInstance(BkaraService.WhichList.NEW), getString(R.string.frag_songs_tab_new));
 
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(defaultTabPos);
     }
 
 

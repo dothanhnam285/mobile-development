@@ -94,13 +94,16 @@ public class RecordPlayerHandler {
                 int currentProgress = seekBarList.get(itemIndex).getProgress();
 
                 if (isPlay) {
-                    // Update view
-                    if( ((MainActivity) mContext).checkViewed(record) ) {
-                        record.setView(record.getView() + 1);
-                        record.setLastTimeViewed(new Date());
-                        BkaraService.getInstance().UpdateRecord(record);
+                    if (isRemote) {
+                        if (((MainActivity) mContext).checkViewed(record)) {
+                            Log.d("RECORDPLAYERHANDLER", "PREPARE TO UPDATE RECORD");
+                            record.setView(record.getView() + 1);
+                            record.setLastTimeViewed(new Date());
+                            BkaraService.getInstance().UpdateRecord(record);
+                            Log.d("RECORDPLAYERHANDLER", "UPDATED RECORD");
+                        }
+                        ((MainActivity) mContext).addToHistory(record);
                     }
-                    ((MainActivity) mContext).addToHistory(record);
 
                     sbar.setEnabled(true);
 
@@ -126,7 +129,12 @@ public class RecordPlayerHandler {
 //                                sbar.setEnabled(false);
 //                            }
 //                        });
+
+
+
                         if (isRemote) {
+
+                            // Update view
 
                             toggleButton.setVisibility(View.INVISIBLE);
                             seekBar.setVisibility(View.INVISIBLE);

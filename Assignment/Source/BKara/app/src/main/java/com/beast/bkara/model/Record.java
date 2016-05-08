@@ -6,11 +6,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.TextView;
 
+import com.beast.bkara.model.supportmodel.RatingRecord;
 import com.beast.bkara.util.RatingBarView;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -29,9 +32,14 @@ public class Record extends BaseObservable implements Parcelable {
     private User user;
     private String stream_link;
     private Date lastTimeViewed = new Date(0);
+    private ArrayList<RatingRecord> ratingRecords;
 
     public Record() {
 
+    }
+
+    public static Creator<Record> getCREATOR() {
+        return CREATOR;
     }
 
     public Date getLastTimeViewed() {
@@ -162,7 +170,7 @@ public class Record extends BaseObservable implements Parcelable {
         return 0;
     }
 
-    public static final Parcelable.Creator<Record> CREATOR
+    private static final Parcelable.Creator<Record> CREATOR
             = new Parcelable.Creator<Record>() {
 
         // This simply calls our new constructor (typically private) and

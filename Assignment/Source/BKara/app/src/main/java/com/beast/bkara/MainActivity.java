@@ -31,27 +31,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
+import com.beast.bkara.dialogfragments.PlaylistDialogFragment;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
 import com.beast.bkara.dialogfragments.SaveRecordDialogFragment;
 import com.beast.bkara.dialogfragments.SignUpDialogFragment;
 import com.beast.bkara.dialogfragments.UserInfoDialogFragment;
+import com.beast.bkara.fragments.AboutFragment;
 import com.beast.bkara.fragments.BlankFragment;
 import com.beast.bkara.fragments.GenresFragment;
 import com.beast.bkara.fragments.HistoryFragment;
 import com.beast.bkara.fragments.HomeFragment;
 import com.beast.bkara.fragments.KaraokeFragment;
+import com.beast.bkara.fragments.PlaylistFragment;
 import com.beast.bkara.fragments.RecordsFragment;
 import com.beast.bkara.fragments.SongListFragment;
 import com.beast.bkara.fragments.SongsFragment;
+import com.beast.bkara.model.Playlist;
 import com.beast.bkara.model.Record;
 import com.beast.bkara.model.Song;
 import com.beast.bkara.model.User;
+import com.beast.bkara.model.supportmodel.ListPlaylist;
 import com.beast.bkara.model.supportmodel.ListRecordsHistory;
 import com.beast.bkara.model.supportmodel.ListSongsHistory;
 import com.beast.bkara.util.ComplexPreferences;
 import com.beast.bkara.util.SongSearchView;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.gcm.RegistrationIntentService;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -59,6 +65,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,7 +84,9 @@ public class MainActivity extends AppCompatActivity implements
         SignUpDialogFragment.OnSignUpDialogFragmentInteractionListener,
         SaveRecordDialogFragment.OnFragmentInteractionListener,
         RatingDialogFragment.OnFragmentInteractionListener,
-        UserInfoDialogFragment.OnFragmentInteractionListener
+        UserInfoDialogFragment.OnFragmentInteractionListener,
+        PlaylistDialogFragment.OnFragmentInteractionListener,
+        PlaylistFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -86,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements
     private DialogFragment loginFragment,signUpFragment;
     private Fragment currFragment;
     private Toolbar toolbar;
+    private NavigationView navigationView;
+    private Controller controller;
 
     /**
      * Use to store all listened songs recently
@@ -97,10 +108,18 @@ public class MainActivity extends AppCompatActivity implements
      */
     private ArrayList<Record> lstRecordsHistory = new ArrayList<>();
 
+    /**
+     * Use to store all playlist
+     */
+    private List<Playlist> lstPlaylist = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("MainActivity", "Ver 17");
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+        controller = (Controller) getApplicationContext();
 
         // Set up universal image loader
         ImageLoaderConfiguration imageLoaderConfig = new ImageLoaderConfiguration.Builder(this).build();
@@ -116,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
         // Init bkara service
         BkaraService.getInstance().setContext(this);
 
-        // Get shared preference of @listSongsHistory && @lstRecordsHistory
+        // Get shared preference of @listSongsHistory && @lstRecordsHistory && @lstPlaylist
         ComplexPreferences complexPreferences = ComplexPreferences.getComplexPreferences(getBaseContext(), Constants.MY_PREF, MODE_PRIVATE);
         ListSongsHistory listSongsHistory =  complexPreferences.getObject(Constants.MY_PREF_SONGS_HISTORY, ListSongsHistory.class);
         if( listSongsHistory != null )
@@ -125,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements
         ListRecordsHistory listRecordsHistory = complexPreferences.getObject(Constants.MY_PREF_RECORDS_HISTORY, ListRecordsHistory.class);
         if( listRecordsHistory != null )
             lstRecordsHistory = listRecordsHistory.getLstRecordsHistory();
+
+//        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
+//        if( listPlaylist != null )
+//            lstPlaylist = listPlaylist.getLstRecordsHistory();
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -143,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
     drawer.setDrawerListener(toggle);
     toggle.syncState();
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
 
         // Set the default view to Home item
@@ -152,8 +175,25 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
 
-    }
+        CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if( controller.isLogin() )
+                    UserInfoDialogFragment.newInstance(null, null).show(getSupportFragmentManager(), "User Info");
+            }
+        });
 
+
+        //
+        autoLoginIfRemembered();
+
+        // Dummy playlist;
+        Playlist playlist1 = new Playlist("MyPlaylist");
+        Playlist playlist2 = new Playlist("MyOtherPlaylist");
+        addPlaylist(playlist1);
+        addPlaylist(playlist2);
+    }
 
     /**
      * Auto login if user has checked remember me
@@ -200,6 +240,10 @@ public class MainActivity extends AppCompatActivity implements
             ListRecordsHistory listRecordsHistory = new ListRecordsHistory();
             listRecordsHistory.setLstRecordsHistory(lstRecordsHistory);
             complexPreferences.putObject(Constants.MY_PREF_RECORDS_HISTORY, listRecordsHistory);
+        }
+
+        if( lstSongsHistory.size() > 0 ) {
+            complexPreferences.putObject(Constants.MY_PREF_PLAYLIST, lstPlaylist);
         }
 
         complexPreferences.commit();
@@ -288,17 +332,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserInfoDialogFragment.newInstance(null, null).show(getSupportFragmentManager(), "User Info");
-            }
-        });
 
-
-        //
-        autoLoginIfRemembered();
 
         return true;
     }
@@ -355,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements
                 title = "Genres";
                 break;
             case R.id.nav_playlist:
-                //fragment = new PlaylistFragment();
+                fragment = new PlaylistFragment();
                 title = "Playlist";
                 break;
             case R.id.nav_history:
@@ -369,6 +403,8 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_setting:
                 break;
             case R.id.nav_about:
+                fragment = new AboutFragment();
+                title = "About";
                 break;
         }
 
@@ -421,6 +457,10 @@ public class MainActivity extends AppCompatActivity implements
         mPopupWindow.showAtLocation(mLayout, Gravity.CENTER, 0, 0);
     }
 
+    public void fragHomeNewSongClick(View v) {
+        displayCustomFragment(SongsFragment.newInstance(SongsFragment.NEW_TAB_POSITION), "Songs");
+    }
+
     @Override
     public void onFragmentInteraction(Uri uri) {
 
@@ -471,13 +511,46 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     *
+     * @param playlist
+     */
+    public void addPlaylist(Playlist playlist) {
+        // Loop through the song list to find the matched one if any then put it into the top of the history list
+        Iterator<Playlist> iterator = lstPlaylist.iterator();
+        while( iterator.hasNext() ){
+            Playlist r = iterator.next();
+            if( r.getName().equals(playlist.getName()) ) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        // Add to list playlist
+        lstPlaylist.add(playlist);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<Playlist> getPlaylist() {
+        return lstPlaylist;
+    }
+
+    /**
+     *
+     */
+    public void addToPlaylist() {
+    }
+
+    /**
      * Check if a song is viewed one day after now then add 1 'view' to song.getView()
      * @param song
      * @return
      */
     public boolean checkViewed(Song song) {
-        if( new Date().getTime() - song.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
-            return true;
+        if (song.getLastTimeViewed() == null || new Date().getTime() - song.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+                return true;
         return false;
     }
 
@@ -487,9 +560,8 @@ public class MainActivity extends AppCompatActivity implements
      * @return
      */
     public boolean checkViewed(Record record) {
-
-        if( new Date().getTime() - record.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
-            return true;
+            if (record.getLastTimeViewed() == null || new Date().getTime() - record.getLastTimeViewed().getTime() >= Constants.TIME_BETWEEN_VIEWS_COUNT)
+                return true;
         return false;
     }
 
@@ -571,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements
 
         login.setVisibility(View.GONE);
 
-        final Controller controller = (Controller) getApplicationContext();
         // it also means user has logon -> isLogin() returns true
         controller.setCurrUser(user);
 
@@ -588,7 +659,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         if( user.getAvatarLink() != null ) {
-            CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+            CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
             ImageLoader.getInstance().displayImage(user.getAvatarLink(), avatar);
         }
 
@@ -601,7 +672,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void logout() {
-        Controller controller = (Controller) getApplicationContext();
         // isLogin() returns false
         controller.setCurrUser(null);
 
@@ -610,7 +680,7 @@ public class MainActivity extends AppCompatActivity implements
         findViewById(R.id.nav_header_tv_welcome).setVisibility(View.GONE);
         findViewById(R.id.nav_header_tv_login).setVisibility(View.VISIBLE);
         findViewById(R.id.nav_header_tv_logout).setVisibility(View.GONE);
-        CircularImageView avatar = (CircularImageView) findViewById(R.id.imageView);
+        CircularImageView avatar = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.imageView);
         avatar.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.img_account));
 
         if ( (currFragment = getSupportFragmentManager().findFragmentByTag("Karaoke")) != null)

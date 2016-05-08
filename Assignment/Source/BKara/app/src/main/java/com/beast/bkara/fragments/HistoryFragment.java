@@ -32,11 +32,9 @@ public class HistoryFragment extends SongsFragment {
 
     }
 
-    public static HistoryFragment newInstance(boolean param1, String param2) {
+    public static HistoryFragment newInstance() {
         HistoryFragment fragment = new HistoryFragment();
         Bundle args = new Bundle();
-        args.putBoolean(IS_SEARCH, param1);
-        args.putString(SEARCH_WHAT, param2);
         fragment.setArguments(args);
         return fragment;
     }

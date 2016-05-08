@@ -20,7 +20,8 @@
         android:src="@drawable/img_account"
         app:siBorderWidth="3dp"
         app:siBorderColor="@color/colorLightBlueDark"
-        android:layout_gravity="center_vertical" />
+        android:layout_gravity="center_vertical"
+        />
 
     <LinearLayout
         android:layout_marginLeft="15dp"

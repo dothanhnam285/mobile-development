@@ -5,9 +5,6 @@
             name="song"
             type="com.beast.bkara.model.Song" />
         <variable
-            name="recordVm"
-            type="com.beast.bkara.viewmodel.RecordViewModel" />
-        <variable
             name="karaokeFrag"
             type="com.beast.bkara.fragments.KaraokeFragment" />
         <import type="me.tatarka.bindingcollectionadapter.LayoutManagers" />
@@ -109,16 +106,18 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/frag_karaoke_btnAddToPlaylist"
                         android:layout_marginLeft="4dp"
                         android:gravity="center_vertical"
                         android:text="Add to playlist"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"/>
 
                     <com.beast.bkara.util.RatingBarView
                         android:id="@+id/frag_karaoke_ratingbar"
                         android:gravity="right|center_vertical"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         app:setRating="@{song.rating}"
                         hedgehog:starEmpty="@drawable/ic_star_empty"
@@ -149,14 +148,6 @@
                 android:textSize="20dp"
                 android:layout_marginTop="@dimen/fab_margin"
                 android:text="Top Records"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ProgressBar
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/fab_margin"
-                android:layout_below="@id/frag_karaoke_textViewTopRecords"
-                android:id="@+id/frag_karaoke_progressBarWaiting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

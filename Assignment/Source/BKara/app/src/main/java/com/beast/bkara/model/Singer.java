@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import android.text.Html;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Darka on 4/19/2016.
  */
@@ -14,6 +16,7 @@ public class Singer implements Parcelable {
     private int singer_id;
     private String name;
     private String poster;
+    private ArrayList<Song> songs;
 
     public Singer() {
 
@@ -78,4 +81,12 @@ public class Singer implements Parcelable {
             return new Singer[size];
         }
     };
+
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(ArrayList<Song> songs) {
+        this.songs = songs;
+    }
 }
