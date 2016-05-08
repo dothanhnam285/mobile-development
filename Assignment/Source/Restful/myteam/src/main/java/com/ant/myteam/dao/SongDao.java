@@ -1,5 +1,6 @@
 package com.ant.myteam.dao;
 
+import com.ant.myteam.model.HotSong;
 import com.ant.myteam.model.RatingRecord;
 import com.ant.myteam.model.RatingSong;
 import java.io.Serializable;
@@ -73,11 +74,16 @@ public class SongDao implements Serializable {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Song.class);
         return (List<Song>) criteria.list();
     }
-    
+
     public List<Song> findNewSongs() {
         Query query = sessionFactory.getCurrentSession().createQuery("FROM Song S ORDER BY S.date_added DESC");
         query.setMaxResults(4);
         return (List<Song>) query.list();
+    }
+
+    public List<HotSong> findHotSongs() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(HotSong.class);
+        return (List<HotSong>) criteria.list();
     }
 
     public List<Song> findSongsByName(String name) {

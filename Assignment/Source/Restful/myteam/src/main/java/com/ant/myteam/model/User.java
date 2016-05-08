@@ -152,4 +152,32 @@ public class User implements Serializable {
     public void setRecords(Collection<Record> records) {
         this.records = records;
     }
+
+    /**
+     * @return the ratingRecords
+     */
+    public Collection<RatingRecord> getRatingRecords() {
+        return ratingRecords;
+    }
+
+    /**
+     * @param ratingRecords the ratingRecords to set
+     */
+    public void setRatingRecords(Collection<RatingRecord> ratingRecords) {
+        this.ratingRecords = ratingRecords;
+    }
+
+    /**
+     * @return the ratingSongs
+     */
+    public Collection<RatingSong> getRatingSongs() {
+        return ratingSongs;
+    }
+
+    /**
+     * @param ratingSongs the ratingSongs to set
+     */
+    public void setRatingSongs(Collection<RatingSong> ratingSongs) {
+        this.ratingSongs = ratingSongs;
+    }
 }
