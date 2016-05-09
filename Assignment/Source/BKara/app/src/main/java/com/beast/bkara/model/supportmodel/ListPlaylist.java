@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by dotha on 5/7/2016.
  */
 public class ListPlaylist {
-    public ArrayList<Playlist> getLstRecordsHistory() {
+    public ArrayList<Playlist> getListPlaylist() {
         return lstPlaylist;
     }
 

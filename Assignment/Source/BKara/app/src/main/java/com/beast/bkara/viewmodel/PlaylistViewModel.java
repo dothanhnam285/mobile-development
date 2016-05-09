@@ -25,4 +25,8 @@ public class PlaylistViewModel {
         playlists = new ObservableArrayList<>();
         playlists.addAll(lstPlaylist);
     }
+
+    public Playlist getPlaylistAt(int index) {
+        return this.playlists.get(index);
+    }
 }

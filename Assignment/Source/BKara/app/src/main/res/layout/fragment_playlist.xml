@@ -32,7 +32,7 @@
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/frag_playlists_rv_playlistList"
+                android:tag="frag_playlists_rv_playlist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/frag_playlist_add"

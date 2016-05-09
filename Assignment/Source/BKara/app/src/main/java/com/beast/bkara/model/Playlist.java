@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class Playlist extends BaseObservable implements Parcelable {
     private String name;
-    private List<Song> songList;
+    private ArrayList<Song> songList;
 
     public Playlist(String name) {
         this.name = name;
         songList = new ArrayList<Song>();
     }
 
-    public Playlist(String name, List<Song> songList) {
+    public Playlist(String name, ArrayList<Song> songList) {
         this.name = name;
         this.songList = songList;
     }
@@ -32,15 +32,23 @@ public class Playlist extends BaseObservable implements Parcelable {
         this.name = name;
     }
 
-    public List<Song> getSongList() {
+    public ArrayList<Song> getSongList() {
         return songList;
     }
 
-    public void setSongList(List<Song> songList) {
+    public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
 
     public void addSong(Song song) {
+        Long song_id = song.getSong_id();
+
+        for (Song s: songList) {
+            if (s.getSong_id().equals(song_id)) {
+                return;
+            }
+        }
+
         this.songList.add(song);
     }
 

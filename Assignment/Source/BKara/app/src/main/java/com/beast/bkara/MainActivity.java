@@ -1,5 +1,6 @@
 package com.beast.bkara;
 
+import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -7,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beast.bkara.dialogfragments.AddPlaylistDialogFragment;
 import com.beast.bkara.dialogfragments.LoginDialogFragment;
 import com.beast.bkara.dialogfragments.PlaylistDialogFragment;
 import com.beast.bkara.dialogfragments.RatingDialogFragment;
@@ -43,6 +45,7 @@ import com.beast.bkara.fragments.HistoryFragment;
 import com.beast.bkara.fragments.HomeFragment;
 import com.beast.bkara.fragments.KaraokeFragment;
 import com.beast.bkara.fragments.PlaylistFragment;
+import com.beast.bkara.fragments.PlaylistSongsFragment;
 import com.beast.bkara.fragments.RecordsFragment;
 import com.beast.bkara.fragments.SongListFragment;
 import com.beast.bkara.fragments.SongsFragment;
@@ -57,7 +60,6 @@ import com.beast.bkara.util.ComplexPreferences;
 import com.beast.bkara.util.SongSearchView;
 import com.beast.bkara.util.bkararestful.BkaraService;
 import com.beast.bkara.util.gcm.RegistrationIntentService;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.github.siyamed.shapeimageview.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -65,7 +67,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -86,7 +87,10 @@ public class MainActivity extends AppCompatActivity implements
         RatingDialogFragment.OnFragmentInteractionListener,
         UserInfoDialogFragment.OnFragmentInteractionListener,
         PlaylistDialogFragment.OnFragmentInteractionListener,
-        PlaylistFragment.OnFragmentInteractionListener
+        PlaylistFragment.OnFragmentInteractionListener,
+        PlaylistSongsFragment.OnFragmentInteractionListener,
+        AddPlaylistDialogFragment.OnFragmentInteractionListener,
+        AboutFragment.OnFragmentInteractionListener
 {
 
     private RelativeLayout mLayout;
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Use to store all playlist
      */
-    private List<Playlist> lstPlaylist = new ArrayList<>();
+    private ArrayList<Playlist> lstPlaylist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements
         if( listRecordsHistory != null )
             lstRecordsHistory = listRecordsHistory.getLstRecordsHistory();
 
-//        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
-//        if( listPlaylist != null )
-//            lstPlaylist = listPlaylist.getLstRecordsHistory();
+        ListPlaylist listPlaylist = complexPreferences.getObject(Constants.MY_PREF_PLAYLIST, ListPlaylist.class);
+        if( listPlaylist != null )
+            lstPlaylist = listPlaylist.getListPlaylist();
 
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -184,15 +188,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-
-        //
         autoLoginIfRemembered();
-
-        // Dummy playlist;
-        Playlist playlist1 = new Playlist("MyPlaylist");
-        Playlist playlist2 = new Playlist("MyOtherPlaylist");
-        addPlaylist(playlist1);
-        addPlaylist(playlist2);
     }
 
     /**
@@ -243,7 +239,9 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         if( lstSongsHistory.size() > 0 ) {
-            complexPreferences.putObject(Constants.MY_PREF_PLAYLIST, lstPlaylist);
+            ListPlaylist listPlaylist = new ListPlaylist();
+            listPlaylist.setLstPlaylist(lstPlaylist);
+            complexPreferences.putObject(Constants.MY_PREF_PLAYLIST, listPlaylist);
         }
 
         complexPreferences.commit();
@@ -257,24 +255,31 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-
-        // Double back pressed
-        if( doubleBackToExitPressedOnce ){
-            super.onBackPressed();
             return;
         }
 
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, R.string.press_twice_exit_app_msg, Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+        else {
+            // Double back pressed
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
             }
-        }, 2000);
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, R.string.press_twice_exit_app_msg, Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
     }
 
     @Override
@@ -410,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // Change fragment
         if (fragment != null) {
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment, title);
             ft.commit();
@@ -429,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements
         // Change fragment
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment, title);
+            ft.replace(R.id.content_frame, fragment, title).addToBackStack(title);
             ft.commit();
         }
 
@@ -533,14 +539,8 @@ public class MainActivity extends AppCompatActivity implements
      *
      * @return
      */
-    public List<Playlist> getPlaylist() {
+    public ArrayList<Playlist> getPlaylist() {
         return lstPlaylist;
-    }
-
-    /**
-     *
-     */
-    public void addToPlaylist() {
     }
 
     /**
